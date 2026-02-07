@@ -137,4 +137,15 @@ const { title, category, difficulty, date, status, tags } = Astro.props;
     background: none;
     padding: 0;
   }
+
+  /* Force CJK-aware monospace font for all code blocks, including Shiki */
+  .topic-content :global(.astro-code) {
+    font-family: 'Noto Sans Mono CJK SC', 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Droid Sans Mono', 'Source Code Pro', 'Menlo', 'Consolas', 'Courier New', monospace !important;
+    font-variant-ligatures: none;
+    letter-spacing: 0;
+  }
+
+  .topic-content :global(.astro-code .line) {
+    font-family: 'Noto Sans Mono CJK SC', 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Droid Sans Mono', 'Source Code Pro', 'Menlo', 'Consolas', 'Courier New', monospace !important;
+  }
 </style>
