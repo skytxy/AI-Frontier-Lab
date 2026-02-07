@@ -1,0 +1,163 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allAgentTopics = await getCollection('agent');
+const allAlgoTopics = await getCollection('algo');
+
+// Sort by sort field, then by date
+const sortBySort = (items) =>
+  items.sort((a, b) => {
+    const aSort = a.data.sort || parseFloat(a.data.date.toISOString().slice(0, 4));
+    const bSort = b.data.sort || parseFloat(b.data.date.toISOString().slice(0, 4));
+    return aSort - bSort;
+  });
+
+const agentTopics = sortBySort(allAgentTopics);
+const algoTopics = sortBySort(allAlgoTopics);
+---
+
+<BaseLayout title="All Topics - AI Frontier Lab">
+  <section class="topics-listing">
+    <h1>All Topics</h1>
+
+    <section class="topic-section">
+      <h2>Agent Topics</h2>
+      <div class="topic-grid">
+        {agentTopics.map((topic) => (
+          <a href={`/topics/${topic.id.replace(/\/readme$/, '')}/`} class="topic-card">
+            <h3>{topic.data.title}</h3>
+            <p class="topic-category">{topic.data.category}</p>
+            <div class="topic-meta">
+              <span class="difficulty-badge" data-level={topic.data.difficulty}>
+                {topic.data.difficulty}
+              </span>
+              <span class="status-badge" data-status={topic.data.status}>
+                {topic.data.status}
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    {algoTopics.length > 0 && (
+      <section class="topic-section">
+        <h2>Algo Topics</h2>
+        <div class="topic-grid">
+          {algoTopics.map((topic) => (
+            <a href={`/algo/${topic.id.replace(/\/readme$/, '')}/`} class="topic-card">
+              <h3>{topic.data.title}</h3>
+              <p class="topic-category">{topic.data.category}</p>
+              <div class="topic-meta">
+                <span class="difficulty-badge" data-level={topic.data.difficulty}>
+                  {topic.data.difficulty}
+                </span>
+                <span class="status-badge" data-status={topic.data.status}>
+                  {topic.data.status}
+                </span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .topics-listing {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: var(--text-primary);
+  }
+
+  .topic-section {
+    margin-bottom: 3rem;
+  }
+
+  .topic-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+  }
+
+  .topic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .topic-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s;
+  }
+
+  .topic-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px var(--shadow);
+    border-color: var(--accent);
+  }
+
+  .topic-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+  }
+
+  .topic-category {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .topic-meta {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .difficulty-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .difficulty-badge[data-level="beginner"] { background: #d4edda; color: #155724; }
+  .difficulty-badge[data-level="intermediate"] { background: #fff3cd; color: #856404; }
+  .difficulty-badge[data-level="advanced"] { background: #f8d7da; color: #721c24; }
+
+  :global([data-effective-theme="dark"]) .difficulty-badge[data-level="beginner"] {
+    background: #1a4d1a;
+    color: #90ee90;
+  }
+  :global([data-effective-theme="dark"]) .difficulty-badge[data-level="intermediate"] {
+    background: #4d3d00;
+    color: #ffd700;
+  }
+  :global([data-effective-theme="dark"]) .difficulty-badge[data-level="advanced"] {
+    background: #4d1a1a;
+    color: #ff6b6b;
+  }
+
+  .status-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+</style>

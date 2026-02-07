@@ -19,7 +19,7 @@ prerequisites: ['01-protocol-inspector', '02-mcp-server', '03-mcp-client']
 - **安全审计**：如何检测和防御恶意行为
 
 > **零基础？** 推荐先阅读：
-> - [MCP 安全模型](../../concepts/security-model.md)
+> - [MCP 安全模型](/topics/001-mcp-deep-dive/concepts/security-model.md)
 > - **必须先完成**：Exp-01、Exp-02、Exp-03
 
 ## 🎯 学习目标
