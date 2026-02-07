@@ -34,5 +34,9 @@ pre-commit run check-utf8-encoding --all-files
 ## 紧急修复
 
 ```bash
-python3 scripts/fix-encoding.py --all
+# 方式一：使用 check-encoding.sh（推荐）
+bash scripts/check-encoding.sh fix
+
+# 方式二：使用 npm script（从 site 目录）
+npm run fix-encoding
 ```
