@@ -124,7 +124,7 @@ export class StdioTransport extends EventEmitter {
     // Kill server process
     if (this.process.pid) {
       this.process.kill('SIGTERM');
-      
+
       // Force kill after 5 seconds
       setTimeout(() => {
         if (this.process.pid) {

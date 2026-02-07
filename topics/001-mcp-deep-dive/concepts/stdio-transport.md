@@ -87,10 +87,10 @@ let buffer = '';
 
 stdout.on('data', (data) => {
   buffer += data.toString();
-  
+
   const lines = buffer.split('\n');
   buffer = lines.pop() || '';  // 保留不完整的最后一行
-  
+
   for (const line of lines) {
     if (line.trim()) {
       const message = JSON.parse(line);

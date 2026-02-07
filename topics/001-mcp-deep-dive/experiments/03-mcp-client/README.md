@@ -135,10 +135,10 @@ private buffer = '';
 
 private handleData(data: Buffer): void {
   this.buffer += data.toString();
-  
+
   const lines = this.buffer.split('\n');
   this.buffer = lines.pop() || '';  // 保留不完整的最后一行
-  
+
   for (const line of lines) {
     const message = decodeMessage(line);
     if (message) {
@@ -155,13 +155,13 @@ private pendingRequests = new Map();
 
 async request(method: string, params?: unknown): Promise<unknown> {
   const id = ++this.requestId;
-  
+
   return new Promise((resolve, reject) => {
     const timeout = setTimeout(() => {
       this.pendingRequests.delete(id);
       reject(new Error('Timeout'));
     }, 30000);
-    
+
     this.pendingRequests.set(id, { resolve, reject, timeout });
     this.writeLine(encodeRequest(id, method, params));
   });
@@ -173,7 +173,7 @@ private handleMessage(message): void {
     if (pending) {
       clearTimeout(pending.timeout);
       this.pendingRequests.delete(message.id);
-      
+
       if (message.error) {
         pending.reject(new Error(message.error.message));
       } else {
@@ -198,10 +198,10 @@ async initialize(clientInfo): Promise<ServerInfo> {
     capabilities: { ... },
     clientInfo,
   });
-  
+
   // 2. 发送 initialized 通知
   this.transport.notify('notifications/initialized');
-  
+
   return result;
 }
 ```
@@ -456,7 +456,7 @@ process.stdin.on('data', (data) => {
   const lines = data.toString().split('\n');
   for (const line of lines) {
     if (!line.trim()) continue;
-    
+
     const msg = JSON.parse(line);
     if (msg.method === 'initialize') {
       process.stdout.write(JSON.stringify({

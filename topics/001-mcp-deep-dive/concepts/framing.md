@@ -97,13 +97,13 @@ let buffer = '';
 
 stream.on('data', (chunk) => {
   buffer += chunk.toString();
-  
+
   // 按换行符分割
   const lines = buffer.split('\n');
-  
+
   // 保留最后不完整的行
   buffer = lines.pop() || '';
-  
+
   // 处理完整的行
   for (const line of lines) {
     if (line.trim()) {
@@ -190,7 +190,7 @@ stream.on('data', (chunk) => {
   buffer += chunk.toString();
   const lines = buffer.split('\n');
   buffer = lines.pop() || '';  // 保留少量数据
-  
+
   for (const line of lines) {
     // 处理并丢弃
   }

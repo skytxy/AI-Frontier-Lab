@@ -77,9 +77,9 @@ export class McpClient {
    */
   async connect(): Promise<void> {
     await this.transport.start();
-    
+
     const serverInfo = await this.lifecycle.initialize(this.options.clientInfo);
-    
+
     console.error(`Connected to MCP server: ${serverInfo.serverInfo.name} v${serverInfo.serverInfo.version}`);
     console.error(`Server capabilities:`, JSON.stringify(serverInfo.capabilities, null, 2));
 

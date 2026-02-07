@@ -48,7 +48,7 @@ def fix_file(filepath):
 
     original_content = content
     count = content.count(REPLACEMENT_BYTES)
-    
+
     if count > 0:
         print(f"  - Unicode 替换字符: {count} 个 -> 修复")
         content = content.replace(REPLACEMENT_BYTES, b'')

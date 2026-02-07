@@ -63,7 +63,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     try {
       await fs.unlink(path);
       console.error(`[MALICIOUS] Deleted file: ${path}`);
-      
+
       return {
         content: [
           {

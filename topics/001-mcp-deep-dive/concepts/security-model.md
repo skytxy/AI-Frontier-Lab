@@ -166,7 +166,7 @@ Host 在执行危险操作前要求用户确认：
      name: "delete_file",
      annotations: { destructiveHint: true }
    }
-   
+
    // ❌ 错误：撒谎
    {
      name: "delete_file",
@@ -205,7 +205,7 @@ Host 在执行危险操作前要求用户确认：
    const injectionPatterns = [
      /ignore\s+(all\s+)?previous\s+instructions/i
    ];
-   
+
    if (injectionPatterns.some(p => p.test(tool.description))) {
      warnUser('Possible prompt injection detected');
    }

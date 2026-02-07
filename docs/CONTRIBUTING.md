@@ -15,6 +15,10 @@
 git clone https://github.com/skytxy/AI-Frontier-Lab.git
 cd AI-Frontier-Lab
 
+# 安装 pre-commit hooks
+pip3 install pre-commit
+pre-commit install
+
 # 创建新 topic
 ./shared/scripts/new-topic.sh <number> "<topic-name>"
 
@@ -47,6 +51,24 @@ status: draft | in-progress | published
 - 本仓库是多语言项目，每个 topic 可以使用最适合的语言/框架
 - 每个 topic 应在自己的 README.md 中说明如何运行其代码
 - 不要在仓库内提交任何 API Key 或密钥
+- **所有文本文件必须使用 UTF-8 编码（无 BOM）**
+
+### 5. Pre-commit Hooks
+
+项目使用 [pre-commit](https://pre-commit.com) 框架进行代码质量检查：
+
+```bash
+# 手动运行所有检查
+pre-commit run --all-files
+
+# 运行特定检查
+pre-commit run check-utf8-encoding --all-files
+
+# 更新 hooks 到最新版本
+pre-commit autoupdate
+```
+
+配置文件：`.pre-commit-config.yaml`
 
 ## 项目结构
 

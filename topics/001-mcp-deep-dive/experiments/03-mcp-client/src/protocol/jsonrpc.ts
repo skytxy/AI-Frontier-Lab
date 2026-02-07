@@ -76,7 +76,7 @@ export function encodeNotification(method: string, params?: unknown): string {
 export function decodeMessage(line: string): JsonRpcMessageOrNotification | null {
   try {
     const msg = JSON.parse(line) as JsonRpcMessageOrNotification;
-    
+
     // Validate jsonrpc version
     if (msg.jsonrpc !== '2.0') {
       return null;
