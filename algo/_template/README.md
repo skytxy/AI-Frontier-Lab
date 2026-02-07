@@ -1,13 +1,15 @@
 ---
 title: "Topic Title"
-tags: [tag1, tag2]
-category: category-name
-difficulty: beginner | intermediate | advanced
-date: YYYY-MM-DD
-status: draft
-sort: YYYY.MM
+tags: []
+category: "category-name"
+difficulty: "beginner"
+date: 2025-01-01
+status: "draft"
+sort: 2025.01
+---
 
-# Algo 专用字段（可选）
+<!--
+Algo 专用字段（可选）:
 paper_title: "Paper Title"
 paper_arxiv: "arxiv-id"
 paper_year: YYYY
@@ -17,7 +19,7 @@ prerequisites:
 papers:
   - id: "paper-id-1"
     role: "predecessor"
----
+-->
 
 # Topic Title
 

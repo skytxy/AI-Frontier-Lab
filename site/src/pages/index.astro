@@ -2,8 +2,21 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
-const topics = await getCollection('topics');
-topics.sort((a, b) => a.id.localeCompare(b.id));
+const allAgentTopics = await getCollection('agent');
+const allAlgoTopics = await getCollection('algo');
+
+// Sort by sort field, then by date
+const sortBySort = (items) =>
+  items.sort((a, b) => {
+    const aSort = a.data.sort || parseFloat(a.data.date.toISOString().slice(0, 4));
+    const bSort = b.data.sort || parseFloat(b.data.date.toISOString().slice(0, 4));
+    return aSort - bSort;
+  });
+
+const agentTopics = sortBySort(allAgentTopics);
+const algoTopics = sortBySort(allAlgoTopics);
+
+// View state (client-side)
 ---
 
 <BaseLayout title="AI Frontier Lab - 探索AI前沿技术的实验室">
@@ -12,17 +25,17 @@ topics.sort((a, b) => a.id.localeCompare(b.id));
       <div class="hero-badge">🚀 探索 AI 前沿</div>
       <h1>AI Frontier Lab</h1>
       <p class="hero-description">
-        一个持续演进的 AI 前沿技术探索实验室，专注于实际应用与深度研究
+        一个持续演进的 AI 前沿技术探索实验室，涵盖 Agent 基础设施与核心算法研究
       </p>
-      <p class="hero-subtitle">跟上 AI 的速度，掌握未来的技术</p>
+      <p class="hero-subtitle">双向探索：Agent 工程与算法前沿</p>
       <div class="hero-stats">
         <div class="stat">
-          <div class="stat-number">3</div>
-          <div class="stat-label">实验项目</div>
+          <div class="stat-number">{agentTopics.length}</div>
+          <div class="stat-label">Agent 主题</div>
         </div>
         <div class="stat">
-          <div class="stat-number">4</div>
-          <div class="stat-label">递进实验</div>
+          <div class="stat-number">{algoTopics.length}</div>
+          <div class="stat-label">Algo 主题</div>
         </div>
         <div class="stat">
           <div class="stat-number">Expert</div>
@@ -32,15 +45,25 @@ topics.sort((a, b) => a.id.localeCompare(b.id));
     </div>
   </section>
 
-  <section class="topics-section">
+  <!-- View Toggle -->
+  <section class="view-toggle-section">
+    <div class="view-toggle">
+      <button id="view-all" class="view-btn active" data-view="all">全部</button>
+      <button id="view-agent" class="view-btn" data-view="agent">Agent</button>
+      <button id="view-algo" class="view-btn" data-view="algo">Algo</button>
+    </div>
+  </section>
+
+  <!-- Agent Topics -->
+  <section id="agent-section" class="topics-section">
     <div class="section-header">
-      <h2>实验项目</h2>
-      <p class="section-description">从协议原理到安全攻防，系统性掌握 MCP 技术栈</p>
+      <h2>Agent 主题</h2>
+      <p class="section-description">Agent 基础设施：MCP、Workflows、LSP、Hooks</p>
     </div>
 
-    <div class="topics-grid">
-      {topics.map((topic) => (
-        <a href={`/topics/${topic.id.replace(/\/readme$/, '')}/`} class="topic-card">
+    <div class="topics-grid" id="agent-grid">
+      {agentTopics.map((topic) => (
+        <a href={`/agent/${topic.id.replace(/\/readme$/, '')}/`} class="topic-card" data-type="agent">
           <div class="card-header">
             <span class="topic-id">{topic.id}</span>
             <span class="difficulty-badge" data-level={topic.data.difficulty}>
@@ -85,34 +108,189 @@ topics.sort((a, b) => a.id.localeCompare(b.id));
     </div>
   </section>
 
+  <!-- Algo Topics -->
+  <section id="algo-section" class="topics-section">
+    <div class="section-header">
+      <h2>Algo 主题</h2>
+      <p class="section-description">核心算法：深度学习、Transformer、强化学习</p>
+    </div>
+
+    <div class="topics-grid" id="algo-grid">
+      {algoTopics.length > 0 ? (
+        algoTopics.map((topic) => (
+          <a href={`/algo/${topic.id.replace(/\/readme$/, '')}/`} class="topic-card" data-type="algo">
+            <div class="card-header">
+              <span class="topic-id">{topic.id}</span>
+              <span class="difficulty-badge" data-level={topic.data.difficulty}>
+                {topic.data.difficulty === 'beginner' && '🟢 初级'}
+                {topic.data.difficulty === 'intermediate' && '🟡 中级'}
+                {topic.data.difficulty === 'advanced' && '🔴 高级'}
+              </span>
+            </div>
+
+            <h3 class="topic-title">{topic.data.title}</h3>
+
+            {topic.data.paper_title && (
+              <div class="paper-info">
+                <span class="paper-icon">📄</span>
+                <span class="paper-title">{topic.data.paper_title}</span>
+                {topic.data.paper_year && (
+                  <span class="paper-year">({topic.data.paper_year})</span>
+                )}
+              </div>
+            )}
+
+            <div class="topic-meta">
+              <span class="category-tag">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 002.828 0l-7-7A1.994 1.994 0 0012.01 3H7a4 4 0 110-8h2a2 2 0 012 2v12a2 2 0 01-2 2H7a4 4 0 01-4-4V7a4 4 0 014-4z"/>
+                </svg>
+                {topic.data.category}
+              </span>
+              <span class="status-badge" data-status={topic.data.status}>
+                {topic.data.status === 'completed' && '✓ 已完成'}
+                {topic.data.status === 'in-progress' && '🔄 进行中'}
+                {topic.data.status === 'published' && '📦 已发布'}
+              </span>
+            </div>
+
+            <div class="topic-footer">
+              <time datetime={topic.data.date.toISOString()}>
+                {topic.data.date.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })}
+              </time>
+            </div>
+
+            <div class="topic-tags">
+              {topic.data.tags.slice(0, 4).map((tag: string) => (
+                <span class="tag">#{tag}</span>
+              ))}
+              {topic.data.tags.length > 4 && (
+                <span class="tag-more">+{topic.data.tags.length - 4}</span>
+              )}
+            </div>
+          </a>
+        ))
+      ) : (
+        <div class="empty-state">
+          <p>Algo 主题即将推出...</p>
+          <p class="empty-hint">第一个 Algo 主题正在规划中</p>
+        </div>
+      )}
+    </div>
+  </section>
+
   <section class="features">
     <h2>为什么选择 AI Frontier Lab?</h2>
     <div class="features-grid">
       <div class="feature">
+        <div class="feature-icon">🤖</div>
+        <h3>Agent 基础设施</h3>
+        <p>MCP 协议、Agent Workflows、LSP 增强、Hooks 系统</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🧮</div>
+        <h3>核心算法研究</h3>
+        <p>深度学习、Transformer、强化学习前沿论文与实现</p>
+      </div>
+      <div class="feature">
         <div class="feature-icon">🔬</div>
         <h3>深度研究</h3>
-        <p>不满足于表面，深入协议内部，从零实现 Client 和 Server</p>
+        <p>不满足于表面，深入协议内部与算法原理</p>
       </div>
       <div class="feature">
         <div class="feature-icon">⚡</div>
         <h3>实战导向</h3>
         <p>可运行的代码胜过千言万语，每个实验都是完整项目</p>
       </div>
-      <div class="feature">
-        <div class="feature-icon">🛡️</div>
-        <h3>安全意识</h3>
-        <p>实战安全攻防，理解威胁，建立防御体系</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">📚</div>
-        <h3>系统学习</h3>
-        <p>从概念到实践，循序渐进的知识体系</p>
-      </div>
     </div>
   </section>
 </BaseLayout>
 
 <style>
+  /* View Toggle */
+  .view-toggle-section {
+    max-width: 1200px;
+    margin: -2rem auto 2rem;
+    padding: 0 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg-primary);
+  }
+
+  .view-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+
+  .view-btn {
+    padding: 0.5rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+
+  .view-btn:hover {
+    background: var(--bg-tertiary);
+  }
+
+  .view-btn.active {
+    background: var(--accent);
+    color: white;
+  }
+
+  /* Paper Info */
+  .paper-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+
+  .paper-icon {
+    font-size: 1rem;
+  }
+
+  .paper-title {
+    font-style: italic;
+  }
+
+  .paper-year {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+
+  /* Empty State */
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    border: 2px dashed var(--border);
+  }
+
+  .empty-state p {
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+  }
+
+  .empty-hint {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
   /* Hero Section */
   .hero {
     text-align: center;
@@ -184,8 +362,8 @@ topics.sort((a, b) => a.id.localeCompare(b.id));
   /* Topics Section */
   .topics-section {
     max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem 3rem;
+    margin: 0 auto 3rem;
+    padding: 0 1rem;
   }
 
   .section-header {
@@ -244,6 +422,10 @@ topics.sort((a, b) => a.id.localeCompare(b.id));
     transform: translateY(-4px);
     box-shadow: 0 12px 24px var(--shadow);
     border-color: var(--accent);
+  }
+
+  .topic-card[data-type="algo"]::before {
+    background: linear-gradient(90deg, #f59e0b, #ef4444);
   }
 
   .card-header {
@@ -418,3 +600,32 @@ topics.sort((a, b) => a.id.localeCompare(b.id));
     }
   }
 </style>
+
+<script>
+  // View toggle functionality
+  const viewBtns = document.querySelectorAll('.view-btn');
+  const agentSection = document.getElementById('agent-section');
+  const algoSection = document.getElementById('algo-section');
+
+  viewBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const view = btn.dataset.view;
+
+      // Update active state
+      viewBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Toggle sections
+      if (view === 'all') {
+        agentSection.style.display = 'block';
+        algoSection.style.display = 'block';
+      } else if (view === 'agent') {
+        agentSection.style.display = 'block';
+        algoSection.style.display = 'none';
+      } else if (view === 'algo') {
+        agentSection.style.display = 'none';
+        algoSection.style.display = 'block';
+      }
+    });
+  });
+</script>
