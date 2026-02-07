@@ -1,0 +1,18 @@
+meta:
+  title: "Convolutional Neural Networks"
+  description: "从 LeNet 到 ResNet 的演进"
+  color: "#3b82f6"
+
+timeline:
+  - year: 1998
+    event: "LeNet"
+  - year: 2012
+    event: "AlexNet"
+  - year: 2014
+    event: "VGG"
+  - year: 2015
+    event: "ResNet"
+
+topics: []
+papers: []
+relations: []

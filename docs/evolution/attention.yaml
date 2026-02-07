@@ -1,0 +1,21 @@
+meta:
+  title: "Attention Mechanism"
+  description: "从 Seq2Seq 到 Self-Attention 的演进"
+  color: "#e94560"
+
+timeline:
+  - year: 2014
+    event: "Bahdanau Attention 提出"
+  - year: 2015
+    event: "Luong Attention"
+  - year: 2017
+    event: "Self-Attention (Transformer)"
+
+# Topics will be added as they are created
+topics: []
+
+# Papers will be added as they are included
+papers: []
+
+# Relations will be added as topics are connected
+relations: []
