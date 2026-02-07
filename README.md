@@ -1,6 +1,6 @@
 # AI-Frontier-Lab
 
-> A continuously evolving laboratory for exploring bleeding-edge AI technologies.
+> 一个持续演进的 AI 前沿技术探索实验室，涵盖 Agent 基础设施与核心算法研究。
 
 ## Vision
 
@@ -8,15 +8,37 @@ As a senior C++ systems engineer following the **75/25 principle** (75% deepenin
 
 **Goal: Keep up with AI speed.**
 
-## Current Topics
+## 项目结构
 
-| # | Topic | Status | Description |
-|---|-------|--------|-------------|
-| 001 | [MCP Deep Dive](topics/001-mcp-deep-dive/) | Draft | Model Context Protocol 深度解构 |
-| 002 | [Agent Workflows](topics/002-agent-workflows/) | Draft | Multi-Agent 协作工作流探索 |
-| 003 | [LSP Enhancement](topics/003-lsp-enhancement/) | Draft | Language Server Protocol AI 增强 |
+```
+AI-Frontier-Lab/
+├── agent/              # Agent 方向：MCP、Workflows、LSP、Hooks
+│   ├── agent-001-mcp-deep-dive/
+│   ├── agent-002-agent-workflows/
+│   ├── agent-003-lsp-enhancement/
+│   └── agent-004-hooks/
+│
+├── algo/               # Algo 方向：深度学习、Transformer、RL
+│   ├── foundations/    # 通用基础知识
+│   ├── cnn/            # 卷积神经网络
+│   ├── transformer/    # Transformer 架构
+│   ├── rl/             # 强化学习
+│   ├── attention/      # 注意力机制
+│   └── diffusion/      # 扩散模型
+│
+├── site/               # 展示站点（Astro）
+├── docs/               # 文档与设计
+│   ├── plans/          # 设计文档
+│   ├── evolution/      # 技术演进图谱数据
+│   ├── proposals/      # 论文提案
+│   └── candidates/     # 候选论文
+│
+└── shared/scripts/     # 共享脚本
+    ├── new-agent-topic.sh   # 创建 Agent 主题
+    └── new-algo-topic.sh    # 创建 Algo 主题
+```
 
-## Quick Start
+## 快速开始
 
 ### Prerequisites
 
@@ -31,13 +53,7 @@ cp .env.example .env
 # Edit .env with your API keys
 ```
 
-### Create a New Topic
-
-```bash
-./shared/scripts/new-topic.sh 004 "your-topic-name"
-```
-
-### Start the Website
+### 查看网站
 
 ```bash
 # 方式一：快捷启动（推荐）
@@ -57,12 +73,58 @@ npm run preview          # 预览构建后的网站
 - 开发模式：http://localhost:4321
 - 构建产物：`site/dist/` 目录（可部署到任何静态托管服务）
 
+### 创建新主题
+
+**Agent 主题：**
+```bash
+./shared/scripts/new-agent-topic.sh 005 "langchain-integration"
+```
+
+**Algo 主题：**
+```bash
+./shared/scripts/new-algo-topic.sh transformer original 2017
+```
+
+### 论文发现流程
+
+```bash
+# 1. 运行发现脚本
+./shared/scripts/papers/discover-papers.sh
+
+# 2. 审查候选并创建提案
+cp docs/proposals/_template.md docs/proposals/PROPO-2026-001-title.md
+
+# 3. 接受后执行提案
+./shared/scripts/papers/promote-proposal.sh PROPO-2026-001
+```
+
+## 两个方向
+
+### Agent 方向
+
+专注于 AI Agent 基础设施技术：
+- **MCP (Model Context Protocol)** - 深入协议原理
+- **Agent Workflows** - 编排模式与实践
+- **LSP Enhancement** - 语言服务器协议增强
+- **Hooks** - 事件驱动架构
+
+### Algo 方向
+
+专注于核心算法与模型研究：
+- **Foundations** - 梯度下降、反向传播、优化
+- **CNN** - LeNet、AlexNet、VGG、ResNet
+- **Transformer** - 架构原理、编码器/解码器
+- **RL** - DQN、Policy Gradient、PPO
+- **Attention** - 注意力机制演进
+- **Diffusion** - 扩散模型
+
 ## Architecture
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the full architectural overview.
 
 **Key ideas:**
-- **`topics/`** — Each topic is a self-contained sub-project with its own code, docs, and optional agent configs
+- **`agent/`** — Agent 方向主题，编号前缀 `agent-`
+- **`algo/`** — Algo 方向主题，按领域子目录组织
 - **`site/`** — A plugin-based presentation layer that aggregates all topics into a rich, interactive showcase
 - **`.agents/`** — Multi-agent configuration (Claude, Gemini, Codex) with repo-level baseline + topic-level overrides
 - **`shared/`** — Cross-topic utilities and templates
@@ -70,6 +132,13 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the full architectural over
 ## Contributing
 
 See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for contribution guidelines.
+
+## 技术栈
+
+- **站点**: Astro 5 + React
+- **公式**: KaTeX
+- **可视化**: D3.js
+- **脚本**: Bash + Python
 
 ## License
 
