@@ -6,143 +6,410 @@ const topics = await getCollection('topics');
 topics.sort((a, b) => a.id.localeCompare(b.id));
 ---
 
-<BaseLayout title="Home">
+<BaseLayout title="AI Frontier Lab - 探索AI前沿技术的实验室">
   <section class="hero">
-    <h1>AI-Frontier-Lab</h1>
-    <p>A continuously evolving laboratory for exploring bleeding-edge AI technologies.</p>
-    <p class="subtitle">Keep up with AI speed.</p>
+    <div class="hero-content">
+      <div class="hero-badge">🚀 探索 AI 前沿</div>
+      <h1>AI Frontier Lab</h1>
+      <p class="hero-description">
+        一个持续演进的 AI 前沿技术探索实验室，专注于实际应用与深度研究
+      </p>
+      <p class="hero-subtitle">跟上 AI 的速度，掌握未来的技术</p>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-number">3</div>
+          <div class="stat-label">实验项目</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">4</div>
+          <div class="stat-label">递进实验</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">Expert</div>
+          <div class="stat-label">难度等级</div>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <section class="topics-grid">
-    <h2>Topics</h2>
-    <div class="grid">
+  <section class="topics-section">
+    <div class="section-header">
+      <h2>实验项目</h2>
+      <p class="section-description">从协议原理到安全攻防，系统性掌握 MCP 技术栈</p>
+    </div>
+
+    <div class="topics-grid">
       {topics.map((topic) => (
-        <a href={`/topics/${topic.id.replace(/\/readme$/, '')}/`} class="card">
-          <div class="card-meta">
-            <span class="category">{topic.data.category}</span>
-            <span class="difficulty" data-level={topic.data.difficulty}>{topic.data.difficulty}</span>
+        <a href={`/topics/${topic.id.replace(/\/readme$/, '')}/`} class="topic-card">
+          <div class="card-header">
+            <span class="topic-id">{topic.id}</span>
+            <span class="difficulty-badge" data-level={topic.data.difficulty}>
+              {topic.data.difficulty === 'beginner' && '🟢 初级'}
+              {topic.data.difficulty === 'intermediate' && '🟡 中级'}
+              {topic.data.difficulty === 'advanced' && '🔴 高级'}
+            </span>
           </div>
-          <h3>{topic.data.title}</h3>
-          <div class="card-footer">
-            <span class="status" data-status={topic.data.status}>{topic.data.status}</span>
-            <time datetime={topic.data.date.toISOString()}>{topic.data.date.toLocaleDateString('zh-CN')}</time>
+
+          <h3 class="topic-title">{topic.data.title}</h3>
+
+          <div class="topic-meta">
+            <span class="category-tag">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 002.828 0l-7-7A1.994 1.994 0 0012.01 3H7a4 4 0 110-8h2a2 2 0 012 2v12a2 2 0 01-2 2H7a4 4 0 01-4-4V7a4 4 0 014-4z"/>
+              </svg>
+              {topic.data.category}
+            </span>
+            <span class="status-badge" data-status={topic.data.status}>
+              {topic.data.status === 'completed' && '✓ 已完成'}
+              {topic.data.status === 'in-progress' && '🔄 进行中'}
+              {topic.data.status === 'published' && '📦 已发布'}
+            </span>
           </div>
-          <div class="tags">
-            {topic.data.tags.map((tag: string) => <span class="tag">#{tag}</span>)}
+
+          <div class="topic-footer">
+            <time datetime={topic.data.date.toISOString()}>
+              {topic.data.date.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })}
+            </time>
+          </div>
+
+          <div class="topic-tags">
+            {topic.data.tags.slice(0, 4).map((tag: string) => (
+              <span class="tag">#{tag}</span>
+            ))}
+            {topic.data.tags.length > 4 && (
+              <span class="tag-more">+{topic.data.tags.length - 4}</span>
+            )}
           </div>
         </a>
       ))}
     </div>
   </section>
+
+  <section class="features">
+    <h2>为什么选择 AI Frontier Lab?</h2>
+    <div class="features-grid">
+      <div class="feature">
+        <div class="feature-icon">🔬</div>
+        <h3>深度研究</h3>
+        <p>不满足于表面，深入协议内部，从零实现 Client 和 Server</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">⚡</div>
+        <h3>实战导向</h3>
+        <p>可运行的代码胜过千言万语，每个实验都是完整项目</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🛡️</div>
+        <h3>安全意识</h3>
+        <p>实战安全攻防，理解威胁，建立防御体系</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📚</div>
+        <h3>系统学习</h3>
+        <p>从概念到实践，循序渐进的知识体系</p>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
+  /* Hero Section */
   .hero {
     text-align: center;
-    padding: 3rem 0 2rem;
+    padding: 4rem 1rem 3rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    margin-bottom: 3rem;
+  }
+
+  .hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    backdrop-filter: blur(10px);
   }
 
   .hero h1 {
-    font-size: 2.5rem;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .hero-description {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    opacity: 0.95;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+    font-weight: 500;
+    opacity: 0.9;
+    margin-bottom: 2rem;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 2rem;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-label {
+    font-size: 0.875rem;
+    opacity: 0.9;
+  }
+
+  /* Topics Section */
+  .topics-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .section-header h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
     color: #1a1a2e;
   }
 
-  .hero p {
-    color: #555;
-    font-size: 1.1rem;
-    margin-top: 0.5rem;
+  .section-description {
+    color: #666;
+    font-size: 1rem;
   }
 
-  .subtitle {
-    color: #e94560 !important;
-    font-weight: 600;
-  }
-
-  .topics-grid h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .grid {
+  .topics-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
   }
 
-  .card {
+  .topic-card {
     background: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 1.25rem;
+    border: 1px solid #e8e8e8;
+    border-radius: 12px;
+    padding: 1.5rem;
     text-decoration: none;
     color: inherit;
-    transition: box-shadow 0.2s, transform 0.2s;
-  }
-
-  .card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
-  }
-
-  .card-meta {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
-    font-size: 0.8rem;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
   }
 
-  .category {
-    background: #1a1a2e;
-    color: #fff;
-    padding: 0.1rem 0.4rem;
-    border-radius: 3px;
+  .topic-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
   }
 
-  .difficulty {
-    padding: 0.1rem 0.4rem;
-    border-radius: 3px;
-    font-weight: 600;
+  .topic-card:hover::before {
+    transform: scaleX(1);
   }
 
-  .difficulty[data-level="beginner"] { background: #d4edda; color: #155724; }
-  .difficulty[data-level="intermediate"] { background: #fff3cd; color: #856404; }
-  .difficulty[data-level="advanced"] { background: #f8d7da; color: #721c24; }
-
-  .card h3 {
-    font-size: 1.15rem;
-    margin-bottom: 0.75rem;
+  .topic-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    border-color: #d4d4d4;
   }
 
-  .card-footer {
+  .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.8rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
   }
 
-  .status {
-    padding: 0.1rem 0.4rem;
-    border-radius: 3px;
-    border: 1px solid #ccc;
-  }
-
-  .status[data-status="draft"] { border-color: #aaa; color: #666; }
-  .status[data-status="in-progress"] { border-color: #ffc107; color: #856404; }
-  .status[data-status="published"] { border-color: #28a745; color: #155724; }
-
-  time {
+  .topic-id {
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
     color: #888;
+    background: #f5f5f5;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
   }
 
-  .tags {
+  .difficulty-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  .difficulty-badge[data-level="beginner"] { background: #d4edda; color: #155724; }
+  .difficulty-badge[data-level="intermediate"] { background: #fff3cd; color: #856404; }
+  .difficulty-badge[data-level="advanced"] { background: #f8d7da; color: #721c24; }
+
+  .topic-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: #1a1a2e;
+    line-height: 1.4;
+  }
+
+  .topic-meta {
     display: flex;
-    gap: 0.4rem;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
     flex-wrap: wrap;
   }
 
-  .tag {
-    color: #e94560;
+  .category-tag {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
     font-size: 0.75rem;
+    color: #666;
+    background: #f8f9fa;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  .category-tag svg {
+    flex-shrink: 0;
+  }
+
+  .status-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  .status-badge[data-status="completed"] { background: #d4edda; color: #155724; }
+  .status-badge[data-status="in-progress"] { background: #fff3cd; color: #856404; }
+  .status-badge[data-status="published"] { background: #d1e7dd; color: #0c5460; }
+
+  .topic-footer {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .topic-footer time {
+    font-size: 0.8rem;
+    color: #999;
+  }
+
+  .topic-tags {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+
+  .tag {
+    font-size: 0.75rem;
+    color: #764ba2;
+    background: #f0f0ff;
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
+  }
+
+  .tag-more {
+    font-size: 0.75rem;
+    color: #999;
+    font-style: italic;
+  }
+
+  /* Features Section */
+  .features {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 3rem 1rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+  }
+
+  .features h2 {
+    text-align: center;
+    font-size: 1.75rem;
+    margin-bottom: 2rem;
+    color: #1a1a2e;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .feature {
+    text-align: center;
+    padding: 1.5rem;
+    background: #fff;
+    border-radius: 8px;
+    transition: transform 0.2s;
+  }
+
+  .feature:hover {
+    transform: translateY(-2px);
+  }
+
+  .feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .feature h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: #1a1a2e;
+  }
+
+  .feature p {
+    font-size: 0.875rem;
+    color: #666;
+    line-height: 1.5;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero-stats {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .topics-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

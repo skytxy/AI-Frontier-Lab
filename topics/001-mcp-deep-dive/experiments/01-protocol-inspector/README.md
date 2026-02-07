@@ -13,7 +13,7 @@ difficulty: beginner
 **开始前你需要了解**：
 
 - **进程间通信 (IPC)**：不同进程之间交换数据的方式。`stdio`（标准输入/输出）是最简单的 IPC 形式，一个进程写入 stdout，另一个进程从 stdin 读取。
-- **JSON-RPC 2.0**：一种轻量级的远程过程调用协议，使用 JSON 格式编码。核心概念：Request（请求）、Response（响应）、Notification（通知）、Notification（单向通知）。
+- **JSON-RPC 2.0**：一种轻量级的远程过程调用协议，使用 JSON 格式编码。核心概念：Request（请求）、Response（响应）、Notification（单向通知，无需响应）。
 - **透明代理**：在网络/通信中插入中间层，转发所有数据但不修改内容，用于观察、调试或记录。
 - **Node.js Child Process**：Node.js 的 `spawn` API 可以启动子进程并控制其 stdin/stdout/stderr 流。
 
