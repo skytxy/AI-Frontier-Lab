@@ -28,13 +28,12 @@ cp -r "$TEMPLATE_DIR" "$TOPIC_DIR"
 
 # Replace placeholders in README.md
 TODAY=$(date +%Y-%m-%d)
-sed -i '' "s/YYYY-MM-DD/$TODAY/g" "$TOPIC_DIR/README.md"
-sed -i '' "s/Topic Title/${NAME}/g" "$TOPIC_DIR/README.md"
+perl -pi -e "s/YYYY-MM-DD/$TODAY/g" "$TOPIC_DIR/README.md"
+perl -pi -e "s/Topic Title/${NAME}/g" "$TOPIC_DIR/README.md"
 
 # Add sort field
-sed -i '' "/^status:/a\\
-sort: ${TODAY//-/.}
-" "$TOPIC_DIR/README.md"
+SORT_DATE="${TODAY//-/.}"
+perl -pi -e "if (/^status:/) { \$_ .= \"sort: $SORT_DATE\n\" }" "$TOPIC_DIR/README.md"
 
 echo "Created new agent topic: $TOPIC_DIR"
 echo "Next steps:"

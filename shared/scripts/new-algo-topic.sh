@@ -36,13 +36,13 @@ cp -r "$TEMPLATE_DIR" "$TOPIC_DIR"
 
 # Replace placeholders in README.md
 TODAY=$(date +%Y-%m-%d)
-sed -i '' "s/YYYY-MM-DD/$TODAY/g" "$TOPIC_DIR/README.md"
-sed -i '' "s/Topic Title/${NAME}/g" "$TOPIC_DIR/README.md"
+perl -pi -e "s/YYYY-MM-DD/$TODAY/g" "$TOPIC_DIR/README.md"
+perl -pi -e "s/Topic Title/${NAME}/g" "$TOPIC_DIR/README.md"
 
 # Update sort field
 if [ -n "$YEAR" ]; then
-    sed -i '' "s/sort: YYYY.MM/sort: ${YEAR}.01/" "$TOPIC_DIR/README.md"
-    sed -i '' "s/paper_year: YYYY/paper_year: ${YEAR}/" "$TOPIC_DIR/README.md"
+    perl -pi -e "s/sort: YYYY.MM/sort: ${YEAR}.01/" "$TOPIC_DIR/README.md"
+    perl -pi -e "s/paper_year: YYYY/paper_year: ${YEAR}/" "$TOPIC_DIR/README.md"
 fi
 
 echo "Created new algo topic: $TOPIC_DIR"
