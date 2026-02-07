@@ -30,11 +30,13 @@ echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 
 # 检查目录
-DIST_DIR="site/dist"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+DIST_DIR="$PROJECT_ROOT/site/dist"
 
 if [[ ! -d "$DIST_DIR" ]]; then
     echo -e "${RED}✗ 错误：找不到构建输出目录 $DIST_DIR${NC}"
-    echo -e "${YELLOW}请先运行: npm run build${NC}"
+    echo -e "${YELLOW}请先运行: cd site && npm run build${NC}"
     exit 1
 fi
 
