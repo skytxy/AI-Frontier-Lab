@@ -4,8 +4,8 @@ import TopicLayout from '../../layouts/TopicLayout.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
-  const topics = await getCollection('topics');
-  return topics.map((topic) => {
+  const agentTopics = await getCollection('agent');
+  return agentTopics.map((topic) => {
     const slug = topic.id.replace(/\/readme$/, '');
     return {
       params: { slug },

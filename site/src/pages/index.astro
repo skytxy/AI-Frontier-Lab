@@ -63,7 +63,7 @@ const algoTopics = sortBySort(allAlgoTopics);
 
     <div class="topics-grid" id="agent-grid">
       {agentTopics.map((topic) => (
-        <a href={`/agent/${topic.id.replace(/\/readme$/, '')}/`} class="topic-card" data-type="agent">
+        <a href={`/topics/${topic.id.replace(/\/readme$/, '')}/`} class="topic-card" data-type="agent">
           <div class="card-header">
             <span class="topic-id">{topic.id}</span>
             <span class="difficulty-badge" data-level={topic.data.difficulty}>
