@@ -5,6 +5,7 @@ category: agent-infrastructure
 difficulty: advanced
 date: 2026-02-07
 status: completed
+sort: 2026.01
 ---
 
 # MCP Deep Dive: 从协议到实战

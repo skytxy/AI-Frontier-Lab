@@ -5,6 +5,7 @@ category: dev-tools
 difficulty: advanced
 date: 2026-02-07
 status: draft
+sort: 2026.03
 ---
 
 # LSP Enhancement

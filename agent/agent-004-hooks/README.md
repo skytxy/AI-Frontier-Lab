@@ -5,6 +5,7 @@ category: agent-infrastructure
 difficulty: intermediate
 date: 2026-02-08
 status: draft
+sort: 2026.04
 ---
 
 # Hooks: 拦截点模式——从第一性原理到 AI Agent 可观测性

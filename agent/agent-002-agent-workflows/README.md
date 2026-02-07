@@ -5,6 +5,7 @@ category: agent-infrastructure
 difficulty: intermediate
 date: 2026-02-07
 status: draft
+sort: 2026.02
 ---
 
 # Agent Workflows
