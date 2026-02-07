@@ -1,0 +1,19 @@
+{
+  "name": "mcp-protocol-inspector",
+  "version": "1.0.0",
+  "description": "JSON-RPC protocol interceptor for MCP - observe all messages between Host and Server",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/inspector.ts",
+    "build": "tsc",
+    "dev": "tsx --watch src/inspector.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

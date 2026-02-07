@@ -1,0 +1,101 @@
+---
+import { getCollection } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import ExperimentHeader from '../../../components/ExperimentHeader.astro';
+
+// Generate all possible experiment paths
+export const getStaticPaths: GetStaticPaths = async () => {
+  const experiments = await getCollection('experiments');
+  const paths = experiments.map((experiment) => {
+    // Extract topic ID and experiment ID from the path
+    // Path format: topics/001-mcp-deep-dive/experiments/01-protocol-inspector/README.md
+    const pathParts = experiment.id.split('/');
+    const topicId = pathParts[0]; // e.g., "001-mcp-deep-dive"
+    const expId = pathParts[2];   // e.g., "01-protocol-inspector"
+
+    return {
+      params: {
+        id: topicId,
+        expId: expId,
+      },
+      props: { experiment },
+    };
+  });
+
+  return paths;
+};
+
+const { experiment } = Astro.props;
+const { Content } = await experiment.render();
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{experiment.data.title} - AI Frontier Lab</title>
+</head>
+<body>
+  <nav class="breadcrumb">
+    <a href="/">Home</a>
+    <span> / </span>
+    <a href="/topics">Topics</a>
+    <span> / </span>
+    <a href={`/topics/${experiment.slug.split('/')[0]}`}>{experiment.data.parent}</a>
+    <span> / </span>
+    <span class="current">Exp-{experiment.data.experiment.toString().padStart(2, '0')}</span>
+  </nav>
+
+  <main>
+    <ExperimentHeader experiment={experiment} />
+    <div class="content">
+      <Content />
+    </div>
+  </main>
+
+  <style>
+    .breadcrumb {
+      padding: 1rem 2rem;
+      background: #f5f5f5;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .breadcrumb a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .breadcrumb .current {
+      color: #333;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .content {
+      line-height: 1.6;
+    }
+
+    .content pre {
+      background: #f5f5f5;
+      padding: 1rem;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+
+    .content code {
+      background: #f5f5f5;
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+    }
+  </style>
+</body>
+</html>

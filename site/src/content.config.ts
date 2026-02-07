@@ -9,8 +9,20 @@ const topics = defineCollection({
     category: z.string(),
     difficulty: z.enum(['beginner', 'intermediate', 'advanced']),
     date: z.coerce.date(),
-    status: z.enum(['draft', 'in-progress', 'published']),
+    status: z.enum(['draft', 'in-progress', 'published', 'completed']),
   }),
 });
 
-export const collections = { topics };
+const experiments = defineCollection({
+  loader: glob({ pattern: '**/experiments/*/README.md', base: '../topics' }),
+  schema: z.object({
+    title: z.string(),
+    experiment: z.coerce.number(),
+    parent: z.string(),
+    tags: z.array(z.string()).optional(),
+    difficulty: z.enum(['beginner', 'intermediate', 'advanced']).optional(),
+    prerequisites: z.array(z.string()).optional(),
+  }),
+});
+
+export const collections = { topics, experiments };

@@ -1,0 +1,17 @@
+{
+  "name": "mcp-client-demo",
+  "version": "1.0.0",
+  "description": "Minimal MCP Client implemented from scratch without SDK",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/demo.ts",
+    "build": "tsc",
+    "dev": "tsx --watch src/demo.ts"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

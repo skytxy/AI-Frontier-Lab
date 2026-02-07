@@ -1,0 +1,126 @@
+---
+interface Props {
+  experiment: any;
+}
+
+const { experiment } = Astro.props;
+
+// Extract experiment number from the path
+const pathParts = experiment.id.split('/');
+const expNumber = experiment.data.experiment;
+const expId = pathParts[2]; // e.g., "01-protocol-inspector"
+const parentTopic = experiment.data.parent;
+---
+
+<header class="experiment-header">
+  <div class="meta">
+    <span class="experiment-badge">Exp-{expNumber.toString().padStart(2, '0')}</span>
+    {experiment.data.difficulty && (
+      <span class={`difficulty-badge difficulty-${experiment.data.difficulty}`}>
+        {experiment.data.difficulty}
+      </span>
+    )}
+  </div>
+
+  <h1>{experiment.data.title}</h1>
+
+  {experiment.data.tags && experiment.data.tags.length > 0 && (
+    <div class="tags">
+      {experiment.data.tags.map((tag: string) => (
+        <span class="tag" key={tag}>{tag}</span>
+      ))}
+    </div>
+  )}
+
+  {experiment.data.prerequisites && experiment.data.prerequisites.length > 0 && (
+    <div class="prerequisites">
+      <strong>Prerequisites:</strong>
+      <ul>
+        {experiment.data.prerequisites.map((prereq: string) => (
+          <li key={prereq}>{prereq}</li>
+        ))}
+      </ul>
+    </div>
+  )}
+</header>
+
+<style>
+  .experiment-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e0e0e0;
+  }
+
+  .meta {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .experiment-badge {
+    background: #0066cc;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+
+  .difficulty-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  .difficulty-beginner {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  .difficulty-intermediate {
+    background: #fff3cd;
+    color: #856404;
+  }
+
+  .difficulty-advanced {
+    background: #f8d7da;
+    color: #721c24;
+  }
+
+  h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2rem;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .tag {
+    background: #f0f0f0;
+    color: #333;
+    padding: 0.25rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.85rem;
+  }
+
+  .prerequisites {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 4px;
+  }
+
+  .prerequisites ul {
+    margin: 0.5rem 0 0 0;
+    padding-left: 1.5rem;
+  }
+
+  .prerequisites li {
+    margin-bottom: 0.25rem;
+  }
+</style>
