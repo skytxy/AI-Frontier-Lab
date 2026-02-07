@@ -25,7 +25,7 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${BLUE}  构建质量验证 v1.0${NC}"
+echo -e "${BLUE}  构建质量验证 v1.1${NC}"
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
 
@@ -45,6 +45,7 @@ TOTAL_HTML=0
 HAS_CHARSET=0
 NO_CHARSET=0
 HAS_GARBAGE=0
+HAS_DOUBLEBYTE=0
 TOTAL_ISSUES=0
 
 # 临时文件存储问题
@@ -71,23 +72,55 @@ while IFS= read -r -d '' html_file; do
         ((TOTAL_ISSUES++))
     fi
 
-    # 检查 2: 乱码字符
-    if grep -q '' "$html_file"; then
+    # 检查 2 & 3: 使用 Python 进行可靠的编码检查
+    check_result=$(python3 -c "
+import sys
+filepath = sys.argv[1]
+
+# Read as bytes for accurate detection
+with open(filepath, 'rb') as f:
+    content_bytes = f.read()
+
+issues = []
+
+# Check for Unicode replacement character U+FFFD (0xEF 0xBF 0xBD)
+replacement_bytes = b'\xef\xbf\xbd'
+count = content_bytes.count(replacement_bytes)
+if count > 0:
+    issues.append(f'Unicode_replacement_char:{count}')
+
+# Check for common double-byte encoding corruption patterns
+# These appear when UTF-8 is decoded as Latin-1
+corruption_patterns = [
+    b'\xc3\x82',  # Â
+    b'\xc3\x83',  # Ã
+    b'\xc2\xae',  # ®
+    b'\xc2\xac',  # ¬
+    b'\xc2\xa6',  # ¦
+    b'\xe2\x80\xcb',  # ‹
+]
+for pattern in corruption_patterns:
+    if pattern in content_bytes:
+        issues.append(f'double_byte_corruption')
+        break
+
+if issues:
+    print(','.join(issues))
+    sys.exit(1)
+else:
+    print('OK')
+    sys.exit(0)
+" "$html_file" 2>/dev/null || echo "ERROR")
+
+    if [[ "$check_result" == *"Unicode_replacement_char"* ]]; then
         ((HAS_GARBAGE++))
         echo -e "${RED}✗${NC} $rel_path - ${RED}发现乱码字符 ${NC}"
         echo "$rel_path: 包含 Unicode 替换字符" >> "$ISSUES_FILE"
         ((TOTAL_ISSUES++))
     fi
 
-    # 检查 3: 损坏的中文字符（双字节乱码）
-    if python3 -c "
-import sys
-with open('$html_file', 'r', encoding='utf-8') as f:
-    content = f.read()
-    # 检查常见的双字节乱码
-    if any(c in content for c in ['Â', 'Ã', 'â', '¬', '¦']):
-        sys.exit(1)
-" 2>/dev/null; then
+    if [[ "$check_result" == *"double_byte_corruption"* ]]; then
+        ((HAS_DOUBLEBYTE++))
         echo -e "${RED}✗${NC} $rel_path - ${RED}发现双字节乱码${NC}"
         echo "$rel_path: 包含双字节乱码字符" >> "$ISSUES_FILE"
         ((TOTAL_ISSUES++))
@@ -112,6 +145,7 @@ echo -e "总 HTML 文件:     ${TOTAL_HTML}"
 echo -e "${GREEN}有 charset:      ${HAS_CHARSET}${NC}"
 echo -e "${RED}无 charset:      ${NO_CHARSET}${NC}"
 echo -e "${RED}包含乱码:        ${HAS_GARBAGE}${NC}"
+echo -e "${RED}双字节乱码:      ${HAS_DOUBLEBYTE}${NC}"
 echo -e "${RED}总问题数:        ${TOTAL_ISSUES}${NC}"
 echo ""
 
@@ -132,10 +166,9 @@ if [[ $TOTAL_ISSUES -gt 0 ]]; then
     echo -e "${RED}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
     echo -e "${YELLOW}建议操作：${NC}"
-    echo "  1. 检查源文件编码: file --mime-encoding src/**/*.md"
-    echo "  2. 运行编码修复: npm run fix-encoding"
-    echo "  3. 重新构建: npm run build"
-    echo "  4. 验证修复: npm run check-encoding"
+    echo "  1. 检查源文件编码: file --mime-encoding topics/**/*.md"
+    echo "  2. 运行编码修复: pre-commit run --all-files"
+    echo "  3. 重新构建: cd site && npm run build"
     echo ""
 
     exit 1

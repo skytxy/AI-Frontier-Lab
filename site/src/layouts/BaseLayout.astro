@@ -13,6 +13,10 @@ const { title } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title} | AI-Frontier-Lab</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Noto Sans Mono CJK SC for proper ASCII art alignment with Chinese characters -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono+CJK+SC:wght@400;700&display=swap" rel="stylesheet" />
   </head>
   <body>
     <header>
@@ -43,9 +47,10 @@ const { title } = Astro.props;
     line-height: 1.6;
   }
 
-  /* Fix ASCII art alignment - force monospace for code blocks */
+  /* Fix ASCII art alignment - use Noto Sans Mono CJK SC for proper CJK/ASCII width ratio */
   :global(pre) {
-    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Droid Sans Mono', 'Source Code Pro', monospace;
+    /* Noto Sans Mono CJK SC is designed with 2:1 CJK-to-ASCII width ratio for perfect alignment */
+    font-family: 'Noto Sans Mono CJK SC', 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Droid Sans Mono', 'Source Code Pro', 'Menlo', 'Consolas', 'Courier New', monospace !important;
     font-size: 0.9em;
     line-height: 1.2;
     overflow-x: auto;
@@ -53,10 +58,14 @@ const { title } = Astro.props;
     -moz-tab-size: 4;
     -o-tab-size: 4;
     tab-size: 4;
+    font-variant-ligatures: none;
+    letter-spacing: 0;
+    /* Force correct character width for alignment */
+    font-feature-settings: 'tnum' 1, 'zero' 1;
   }
 
   :global(code) {
-    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Droid Sans Mono', 'Source Code Pro', monospace;
+    font-family: 'Noto Sans Mono CJK SC', 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Droid Sans Mono', 'Source Code Pro', monospace;
     font-size: 0.9em;
   }
 
