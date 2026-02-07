@@ -37,6 +37,26 @@ cp .env.example .env
 ./shared/scripts/new-topic.sh 004 "your-topic-name"
 ```
 
+### Start the Website
+
+```bash
+# 方式一：快捷启动（推荐）
+./start-web.sh            # 自动安装依赖并启动开发服务器
+
+# 方式二：手动启动
+cd site
+npm install              # 首次运行需要安装依赖
+npm run dev              # 启动开发服务器，默认 http://localhost:4321
+
+# 方式三：预览构建产物
+npm run build            # 构建静态网站
+npm run preview          # 预览构建后的网站
+```
+
+**网站入口**：
+- 开发模式：http://localhost:4321
+- 构建产物：`site/dist/` 目录（可部署到任何静态托管服务）
+
 ## Architecture
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the full architectural overview.
