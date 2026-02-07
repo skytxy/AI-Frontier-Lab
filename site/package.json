@@ -6,7 +6,10 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check-encoding": "bash ../scripts/check-encoding.sh",
+    "fix-encoding": "bash ../scripts/check-encoding.sh fix",
+    "encoding-report": "bash ../scripts/check-encoding.sh report"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",
