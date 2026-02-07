@@ -1,0 +1,176 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+
+// Generate all concept paths
+export const getStaticPaths: GetStaticPaths = async () => {
+  const concepts = await getCollection('concepts');
+  const paths = concepts.map((concept) => {
+    // Extract topic ID and concept filename from the path
+    // Path format: topics/001-mcp-deep-dive/concepts/mcp-basics.md
+    const pathParts = concept.id.split('/');
+    const topicId = pathParts[0]; // e.g., "001-mcp-deep-dive"
+    const conceptFile = pathParts[2]; // e.g., "mcp-basics.md"
+    const conceptId = conceptFile.replace('.md', ''); // e.g., "mcp-basics"
+
+    return {
+      params: {
+        id: topicId,
+        concept: conceptId,
+      },
+      props: { concept },
+    };
+  });
+
+  return paths;
+};
+
+const { concept } = Astro.props;
+const { Content } = await render(concept);
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{concept.data.title || 'Concept'} - AI Frontier Lab</title>
+</head>
+<body>
+  <nav class="breadcrumb">
+    <a href="/">Home</a>
+    <span> / </span>
+    <a href="/topics">Topics</a>
+    <span> / </span>
+    <a href={`/topics/${concept.id.split('/')[0]}`}>{concept.id.split('/')[0]}</a>
+    <span> / </span>
+    <span class="current">Concepts</span>
+  </nav>
+
+  <main class="concept-page">
+    <article class="concept-content">
+      <Content />
+    </article>
+
+    <nav class="concept-nav">
+      <h2>相关概念</h2>
+      <ul>
+        <li><a href="../../../../../concepts/">← 返回概念列表</a></li>
+      </ul>
+    </nav>
+  </main>
+
+  <style>
+    .breadcrumb {
+      padding: 1rem 2rem;
+      background: #f5f5f5;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .breadcrumb a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .breadcrumb .current {
+      color: #333;
+    }
+
+    main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .concept-content {
+      line-height: 1.8;
+    }
+
+    .concept-content pre {
+      background: #f5f5f5;
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
+    .concept-content code {
+      background: #f0f0ff;
+      color: #764ba2;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+
+    .concept-content pre code {
+      background: transparent;
+      padding: 0;
+    }
+
+    .concept-content h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #1a1a2e;
+    }
+
+    .concept-content h2 {
+      font-size: 1.5rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      color: #1a1a2e;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 0.5rem;
+    }
+
+    .concept-content h3 {
+      font-size: 1.25rem;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      color: #333;
+    }
+
+    .concept-content ul, .concept-content ol {
+      margin: 1rem 0;
+      padding-left: 2rem;
+    }
+
+    .concept-content li {
+      margin-bottom: 0.5rem;
+    }
+
+    .concept-nav {
+      margin-top: 3rem;
+      padding: 1.5rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .concept-nav h2 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .concept-nav ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .concept-nav li {
+      margin-bottom: 0.5rem;
+    }
+
+    .concept-nav a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+
+    .concept-nav a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</body>
+</html>

@@ -23,13 +23,13 @@ Model Context Protocol 深度解构——从协议拦截到安全攻防，4 个�
 | [Exp-03](experiments/03-mcp-client/) | 手写 Client（无 SDK） | 深入协议本质：编解码、分帧、配对 | ★★★★ | Exp-01, Exp-02 |
 | [Exp-04](experiments/04-security-lab/) | 安全攻防 | 理解 annotation 欺骗与 prompt injection | ★★★★ | Exp-01, Exp-02 |
 
-> **零基础？** 先阅读 [前置知识文档](concepts/)：
-> - [MCP 入门指南](concepts/mcp-basics.md)
-> - [JSON-RPC 基础](concepts/json-rpc.md)
-> - [stdio 传输原理](concepts/stdio-transport.md)
-> - [消息分帧](concepts/framing.md)
-> - [能力协商机制](concepts/capabilities.md)
-> - [安全模型](concepts/security-model.md)
+> **零基础？** 先阅读 [前置知识文档](/topics/001-mcp-deep-dive/concepts/)：
+> - [MCP 入门指南](/topics/001-mcp-deep-dive/concepts/mcp-basics)
+> - [JSON-RPC 基础](/topics/001-mcp-deep-dive/concepts/json-rpc)
+> - [stdio 传输原理](/topics/001-mcp-deep-dive/concepts/stdio-transport)
+> - [消息分帧](/topics/001-mcp-deep-dive/concepts/framing)
+> - [能力协商机制](/topics/001-mcp-deep-dive/concepts/capabilities)
+> - [安全模型](/topics/001-mcp-deep-dive/concepts/security-model)
 
 ## MCP 核心概念速查
 

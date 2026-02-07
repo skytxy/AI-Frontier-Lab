@@ -25,4 +25,11 @@ const experiments = defineCollection({
   }),
 });
 
-export const collections = { topics, experiments };
+const concepts = defineCollection({
+  loader: glob({ pattern: '**/concepts/*.md', base: '../topics' }),
+  schema: z.object({
+    title: z.string().optional(),
+  }),
+});
+
+export const collections = { topics, experiments, concepts };
