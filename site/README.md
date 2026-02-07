@@ -11,7 +11,7 @@
 
 ## 内容来源
 
-站点通过 `src/content/adapters/` 从 `topics/*/README.md` 拉取内容。
+站点通过 Astro Content Collections 从 `topics/*/README.md` 拉取内容。
 
 内容契约是 frontmatter：
 
@@ -28,10 +28,23 @@ status: draft | in-progress | published
 
 ## 技术栈
 
-> 待定。技术选型本身也可以作为一个 topic 来探索。
+- **Astro 5** — 内容驱动型静态站点框架
+- **React** — 交互组件（通过 @astrojs/react 集成）
+- **Content Collections** — 消费 topics/*/README.md 的 frontmatter + Markdown
+
+### 开发
+
+```bash
+cd site
+npm install
+npm run dev      # 本地开发 http://localhost:4321
+npm run build    # 静态构建到 dist/
+npm run preview  # 预览构建结果
+```
 
 ## 演进历史
 
 | 日期 | 变更 |
 |------|------|
 | 2026-02-07 | 初始架构设计，预留目录结构 |
+| 2026-02-07 | 技术栈确认：Astro + React，完成基础骨架搭建 |

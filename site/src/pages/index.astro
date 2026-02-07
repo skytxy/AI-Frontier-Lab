@@ -1,0 +1,148 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const topics = await getCollection('topics');
+topics.sort((a, b) => a.id.localeCompare(b.id));
+---
+
+<BaseLayout title="Home">
+  <section class="hero">
+    <h1>AI-Frontier-Lab</h1>
+    <p>A continuously evolving laboratory for exploring bleeding-edge AI technologies.</p>
+    <p class="subtitle">Keep up with AI speed.</p>
+  </section>
+
+  <section class="topics-grid">
+    <h2>Topics</h2>
+    <div class="grid">
+      {topics.map((topic) => (
+        <a href={`/topics/${topic.id.replace(/\/readme$/, '')}/`} class="card">
+          <div class="card-meta">
+            <span class="category">{topic.data.category}</span>
+            <span class="difficulty" data-level={topic.data.difficulty}>{topic.data.difficulty}</span>
+          </div>
+          <h3>{topic.data.title}</h3>
+          <div class="card-footer">
+            <span class="status" data-status={topic.data.status}>{topic.data.status}</span>
+            <time datetime={topic.data.date.toISOString()}>{topic.data.date.toLocaleDateString('zh-CN')}</time>
+          </div>
+          <div class="tags">
+            {topic.data.tags.map((tag: string) => <span class="tag">#{tag}</span>)}
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    text-align: center;
+    padding: 3rem 0 2rem;
+  }
+
+  .hero h1 {
+    font-size: 2.5rem;
+    color: #1a1a2e;
+  }
+
+  .hero p {
+    color: #555;
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+  }
+
+  .subtitle {
+    color: #e94560 !important;
+    font-weight: 600;
+  }
+
+  .topics-grid h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1.25rem;
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+
+  .card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .card-meta {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .category {
+    background: #1a1a2e;
+    color: #fff;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+  }
+
+  .difficulty {
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+
+  .difficulty[data-level="beginner"] { background: #d4edda; color: #155724; }
+  .difficulty[data-level="intermediate"] { background: #fff3cd; color: #856404; }
+  .difficulty[data-level="advanced"] { background: #f8d7da; color: #721c24; }
+
+  .card h3 {
+    font-size: 1.15rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .status {
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+  }
+
+  .status[data-status="draft"] { border-color: #aaa; color: #666; }
+  .status[data-status="in-progress"] { border-color: #ffc107; color: #856404; }
+  .status[data-status="published"] { border-color: #28a745; color: #155724; }
+
+  time {
+    color: #888;
+  }
+
+  .tags {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    color: #e94560;
+    font-size: 0.75rem;
+  }
+</style>

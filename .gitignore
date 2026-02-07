@@ -15,6 +15,7 @@ out/
 .next/
 .nuxt/
 .output/
+.astro/
 
 # IDE
 .vscode/
