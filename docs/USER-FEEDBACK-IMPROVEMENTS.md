@@ -5,7 +5,7 @@
 1. **404 链接问题**: "有很多指向本仓库的链接点进去是404 Not Found"
 2. **外部链接无效**: "有很多指向外部的链接（特别是github链接）点击进去发现是无效网址"
 3. **首页丑陋**: "首页有点丑陋"
-4. **文档错误**: "'JSON-RPC 2.0：一种轻量级的远程过程调用协议...核心概念：Request（请���）、Response（响应）、Notification（通知）、Notification（单向通知）'这里为什么两次提到Notification"
+4. **文档错误**: "'JSON-RPC 2.0：一种轻量级的远程过程调用协议...核心概念：Request（请）、Response（响应）、Notification（通知）、Notification（单向通知）'这里为什么两次提到Notification"
 
 ## ✅ 已实施的解决方案
 
