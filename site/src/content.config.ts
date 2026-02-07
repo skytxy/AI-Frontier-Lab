@@ -16,6 +16,7 @@ const agent = defineCollection({
 });
 
 // Algo Collection - for algorithm and model topics
+// Use negation pattern to exclude _template directory
 const algo = defineCollection({
   loader: glob({ pattern: '**/README.md', base: '../algo' }),
   schema: z.object({
