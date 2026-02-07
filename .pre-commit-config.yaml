@@ -51,3 +51,10 @@ repos:
         language: python
         types: [text]
         description: Ensure all text files are valid UTF-8 without corruption
+
+      - id: check-ascii-art-alignment
+        name: Check ASCII art alignment
+        entry: scripts/check-ascii-art.py
+        language: python
+        types: [markdown]
+        description: Detect CJK characters in ASCII art blocks that cause misalignment
