@@ -19,12 +19,8 @@ AI-Frontier-Lab/
 │   └── 004-hooks/
 │
 ├── algo/               # Algo 方向：深度学习、Transformer、RL
-│   ├── foundations/    # 通用基础知识
-│   ├── cnn/            # 卷积神经网络
-│   ├── transformer/    # Transformer 架构
-│   ├── rl/             # 强化学习
-│   ├── attention/      # 注意力机制
-│   └── diffusion/      # 扩散模型
+│   ├── _template/      # Algo 主题模板
+│   └── foundations/    # 通用基础知识（规划中）
 │
 ├── site/               # 展示站点（Astro）
 ├── docs/               # 文档与设计
@@ -112,11 +108,11 @@ cp docs/proposals/_template.md docs/proposals/PROPO-2026-001-title.md
 
 专注于核心算法与模型研究：
 - **Foundations** - 梯度下降、反向传播、优化
-- **CNN** - LeNet、AlexNet、VGG、ResNet
-- **Transformer** - 架构原理、编码器/解码器
-- **RL** - DQN、Policy Gradient、PPO
-- **Attention** - 注意力机制演进
-- **Diffusion** - 扩散模型
+- **CNN** - LeNet、AlexNet、VGG、ResNet（规划中）
+- **Transformer** - 架构原理、编码器/解码器（规划中）
+- **RL** - DQN、Policy Gradient、PPO（规划中）
+- **Attention** - 注意力机制演进（规划中）
+- **Diffusion** - 扩散模型（规划中）
 
 ## Architecture
 

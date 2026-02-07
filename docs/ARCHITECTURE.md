@@ -10,17 +10,19 @@
 
 | 目录 | 职责 | 稳定性 |
 |------|------|--------|
-| `topics/` | 核心内容区，每个 topic 是自治的子项目 | 结构稳定，内容持续增长 |
+| `agent/` | Agent 方向核心内容区，每个 topic 是自自治的子项目 | 结构稳定，内容持续增长 |
+| `algo/` | Algo 方向核心内容区，按领域子目录组织 | 规划中，结构待定 |
 | `site/` | 展示站点，汇集所有 topic 的内容 | 技术栈可演进，内容契约稳定 |
 | `.agents/` | 多 Agent 行为配置（无密钥） | 随工具生态变化而扩展 |
 | `shared/` | 跨主题共享的脚本和模板 | 按需增长 |
-| `docs/` | 仓库级文档（贡献指南、架构、设计） | 稳定 |
+| `docs/` | 仓库自自自文档（贡献指南、架构、设计） | 稳定 |
 
 ## 内容流转
 
 ```
-topics/*/README.md  ──→  site/  ──→  部署到线上
-   （内容源头）        （渲染引擎）     （对外展示）
+agent/[0-9]*/README.md  ──→  site/  ──→  部署到线上
+   （内容源头）          （渲染引擎）     （对外展示）
+algo/**/README.md       ──→  site/  ──→  （规划中）
 ```
 
 - Topic 的 README.md 是 **Single Source of Truth**
@@ -31,7 +33,7 @@ topics/*/README.md  ──→  site/  ──→  部署到线上
 
 ```
 .agents/claude/CLAUDE.md                    ← 仓库级基线
-topics/001-xxx/.agents/claude/CLAUDE.md     ← 主题级覆盖（可选）
+agent/001-xxx/.agents/claude/CLAUDE.md     ← 主题级覆盖（可选）
 ```
 
 ## 内容契约：Frontmatter
