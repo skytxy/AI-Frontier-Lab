@@ -16,7 +16,7 @@ fi
 NUMBER="$1"
 NAME="$2"
 PADDED=$(printf "%03d" "$NUMBER")
-TOPIC_DIR="$REPO_ROOT/agent/agent-${PADDED}-${NAME}"
+TOPIC_DIR="$REPO_ROOT/agent/${PADDED}-${NAME}"
 
 if [ -d "$TOPIC_DIR" ]; then
     echo "Error: $TOPIC_DIR already exists."

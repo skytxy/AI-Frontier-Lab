@@ -3,7 +3,7 @@ import { glob } from 'astro/loaders';
 
 // Agent Collection - for agent infrastructure topics
 const agent = defineCollection({
-  loader: glob({ pattern: 'agent-*/README.md', base: '../agent' }),
+  loader: glob({ pattern: '[0-9]*/README.md', base: '../agent' }),
   schema: z.object({
     title: z.string(),
     tags: z.array(z.string()),

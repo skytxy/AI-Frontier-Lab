@@ -13,10 +13,10 @@ As a senior C++ systems engineer following the **75/25 principle** (75% deepenin
 ```
 AI-Frontier-Lab/
 ├── agent/              # Agent 方向：MCP、Workflows、LSP、Hooks
-│   ├── agent-001-mcp-deep-dive/
-│   ├── agent-002-agent-workflows/
-│   ├── agent-003-lsp-enhancement/
-│   └── agent-004-hooks/
+│   ├── 001-mcp-deep-dive/
+│   ├── 002-agent-workflows/
+│   ├── 003-lsp-enhancement/
+│   └── 004-hooks/
 │
 ├── algo/               # Algo 方向：深度学习、Transformer、RL
 │   ├── foundations/    # 通用基础知识
@@ -123,7 +123,7 @@ cp docs/proposals/_template.md docs/proposals/PROPO-2026-001-title.md
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the full architectural overview.
 
 **Key ideas:**
-- **`agent/`** — Agent 方向主题，编号前缀 `agent-`
+- **`agent/`** — Agent 方向主题，编号前缀 (001-, 002-, ...)
 - **`algo/`** — Algo 方向主题，按领域子目录组织
 - **`site/`** — A plugin-based presentation layer that aggregates all topics into a rich, interactive showcase
 - **`.agents/`** — Multi-agent configuration (Claude, Gemini, Codex) with repo-level baseline + topic-level overrides
