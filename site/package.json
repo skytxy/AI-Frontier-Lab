@@ -4,14 +4,15 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && bash ../scripts/verify-build-quality.sh",
+    "build": "astro build && bash ../scripts/verify-build-quality.sh && npx tsx scripts/check-links.ts",
     "build:no-check": "astro build",
     "preview": "astro preview",
     "astro": "astro",
     "check-encoding": "bash ../scripts/check-encoding.sh",
     "fix-encoding": "bash ../scripts/check-encoding.sh fix",
     "encoding-report": "bash ../scripts/check-encoding.sh report",
-    "verify-build": "bash ../scripts/verify-build-quality.sh"
+    "verify-build": "bash ../scripts/verify-build-quality.sh",
+    "check-links": "npx tsx scripts/check-links.ts"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",
