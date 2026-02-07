@@ -12,7 +12,7 @@
 
 ```bash
 # Fork 并 clone 本仓库
-git clone https://github.com/<your-username>/AI-Frontier-Lab.git
+git clone https://github.com/skytxy/AI-Frontier-Lab.git
 cd AI-Frontier-Lab
 
 # 创建新 topic

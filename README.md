@@ -25,7 +25,7 @@ See [.agents/PREREQUISITES.md](.agents/PREREQUISITES.md) for required tools and 
 ### Setup
 
 ```bash
-git clone https://github.com/<your-username>/AI-Frontier-Lab.git
+git clone https://github.com/skytxy/AI-Frontier-Lab.git
 cd AI-Frontier-Lab
 cp .env.example .env
 # Edit .env with your API keys
