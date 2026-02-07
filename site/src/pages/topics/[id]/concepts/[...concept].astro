@@ -55,7 +55,7 @@ const { Content } = await render(concept);
     <nav class="concept-nav">
       <h2>相关概念</h2>
       <ul>
-        <li><a href="../../../../../concepts/">← 返回概念列表</a></li>
+        <li><a href={`/topics/${concept.id.split('/')[0]}`}>← 返回 {concept.id.split('/')[0]}</a></li>
       </ul>
     </nav>
   </main>
