@@ -12,7 +12,7 @@ status: completed
 Model Context Protocol 深度解构——从协议拦截到安全攻防，4 个递进式实验带你从零基础达到专家级理解。
 
 > **核心理念**：README 是导航地图，`experiments/` 里的可运行代码才是核心资产。
-> **学习路线**：概念速查 → 协议拦截 → Server 实现 → Client 手写 �� 安全攻防
+> **学习路线**：概念速查 → 协议拦截 → Server 实现 → Client 手写 → 安全攻防
 
 ## 快速导航
 

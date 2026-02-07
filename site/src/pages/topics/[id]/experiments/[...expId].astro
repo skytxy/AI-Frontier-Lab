@@ -1,7 +1,7 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
-import ExperimentHeader from '../../../components/ExperimentHeader.astro';
+import ExperimentHeader from '../../../../components/ExperimentHeader.astro';
 
 // Generate all possible experiment paths
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -26,7 +26,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 const { experiment } = Astro.props;
-const { Content } = await experiment.render();
+const { Content } = await render(experiment);
 ---
 
 <!DOCTYPE html>
@@ -42,7 +42,7 @@ const { Content } = await experiment.render();
     <span> / </span>
     <a href="/topics">Topics</a>
     <span> / </span>
-    <a href={`/topics/${experiment.slug.split('/')[0]}`}>{experiment.data.parent}</a>
+    <a href={`/topics/${experiment.id.split('/')[0]}`}>{experiment.data.parent}</a>
     <span> / </span>
     <span class="current">Exp-{experiment.data.experiment.toString().padStart(2, '0')}</span>
   </nav>
