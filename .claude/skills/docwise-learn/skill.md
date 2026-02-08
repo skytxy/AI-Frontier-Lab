@@ -51,12 +51,16 @@ When you discover a pattern, rule, or best practice during execution, learn it s
    - Level 3: Read .docwise/paradigm.md
    - Level 4: Read skill file(s) to be updated
 
-4. FOR LEVEL 4 ONLY: Apply skill-creator discipline
-   a) Check frontmatter: name, description (with "Use when"), command present?
-   b) Check progressive disclosure: SKILL.md <5k words, details in references/?
-   c) Check structure: imperative/infinitive form, not second person
-   d) Check paths: all relative to skill bundle, no absolute paths
-   e) If any check fails: Fix the issue as part of the update
+4. FOR LEVEL 4 ONLY: Load skill-creator FIRST
+   a) Use Skill tool to load skill-creator
+   b) Read skill-creator Step 4 (Edit the Skill) guidance
+   c) Apply skill-creator discipline checklist:
+      - Check frontmatter: name, description (with "Use when"), command present?
+      - Check progressive disclosure: SKILL.md <5k words, details in references/?
+      - Check structure: imperative/infinitive form, not second person
+      - Check paths: all relative to skill bundle, no absolute paths
+      - Check project-agnostic: NO project-specific content in skill
+   d) If any check fails: Fix the issue as part of the update
 
 5. UPDATE FILE
    - Apply lesson to appropriate section
@@ -69,6 +73,9 @@ When you discover a pattern, rule, or best practice during execution, learn it s
 7. ASK ABOUT AUTO-APPLY (for Level 3-4)
    - "This lesson affects future iterations. Auto-apply now? [y/n]"
 ```
+
+**CRITICAL**: For Level 4 updates, ALWAYS load skill-creator before making changes.
+Do NOT rely on memory - the skill-creator guidance is authoritative.
 
 ## Level Detection
 
