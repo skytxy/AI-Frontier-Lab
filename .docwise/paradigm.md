@@ -68,6 +68,20 @@ algo/attention/efficient
    - **Tables**: Borders and contrast must be sufficient in both themes
    - **Verification**: Build site and check rendering in both modes before publishing
 
+6. **Document Status Convention**: Chapters use a status field in frontmatter to indicate lifecycle stage.
+
+| Status | Meaning | Usage |
+|--------|---------|-------|
+| `draft` | Early stage, incomplete | Newly created, minimal content |
+| `in-progress` | Active development | Main sections have content |
+| `published` | Stable, public-ready | Can be displayed, minor iterations OK |
+| `completed` | Milestone frozen, archival | Version freeze, for reference |
+
+**Constraints for :check/:improve on completed documents**:
+- Show explicit warning before modifying `completed` status documents
+- `:improve`/`:check` purpose is to enhance existing docs, not generate entirely new ones
+- Exception: User explicitly requests "rewrite" type changes
+
 ## Web Verification Conventions
 
 When web verification is required:
@@ -315,5 +329,33 @@ Is this scenario OK? [Y/n/modify/adjust topics]
 
 The template uses Chinese headers for this project (`【】` convention).
 Projects targeting English audiences should localize accordingly.
+
+## Scenario vs Document Relationship
+
+**Core Principle**: Scenario is a validation method, not the document scope.
+
+```
+scenario = validation method (use this scenario to test if documentation is complete)
+         ≠ document scope (documentation should not only cover this scenario)
+
+document = general knowledge (covers the complete knowledge system of the technology)
+         + appropriate breadth and depth (adjusted by complexity)
+         ≠ single-scenario experiment log
+```
+
+**Scenario Design Principles**:
+- Start from documentation: Scenario should be supported by knowledge in the document
+- Cross-chapter validation: A good scenario involves multiple sections of the document
+- Actionable verification: Can the Learner complete the scenario following the documentation?
+
+**Document Design Principles**:
+- Scenario-agnostic: Document scope doesn't change based on a single scenario
+- Knowledge-driven: Organized by the technology's inherent structure
+- Reader-friendly: Not over-stuffed, maintain readability
+
+**Avoid**:
+- ❌ Adding edge content to fake "completeness"
+- ❌ Writing documentation around a single scenario (mentioning nothing else)
+- ❌ Becoming an experiment log or code repository README
 
 ---
