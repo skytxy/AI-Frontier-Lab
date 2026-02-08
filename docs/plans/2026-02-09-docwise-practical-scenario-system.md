@@ -428,7 +428,13 @@ Learner 执行后在 `sandbox/XXX/` 下生成用户友好的产物：
 agent/mcp-deep-dive/
   .docwise/
     sandbox/
-      001-exec-validate-progress/   # 带标识符的目录名
+      001-exec-validate-progress/
+      ├── .venv/              # Python 虚拟环境（如适用）
+      ├── node_modules/        # Node 依赖（如适用）
+      ├── README.md            # 产物总览
+      ├── learning-log.md      # 学习笔记
+      ├── code/                # 生成代码
+      └── validation/          # 验证结果
       002-improve-resource-support/
       ...
     cache/
@@ -439,13 +445,39 @@ agent/mcp-deep-dive/
 
 **概览缓存**：不需要单独缓存，概览信息应已存在于文档目录中（如 README.md 的概述部分）
 
-### 2. Learner 执行权限
+### 2. 沙箱环境隔离
+
+Learner 执行时应在隔离的沙箱环境中进行，避免污染用户开发环境：
+
+| 语言 | 沙箱机制 | 说明 |
+|------|---------|------|
+| **Python** | `uv venv` 或 `python -m venv` | 创建 `.venv/` 虚拟环境 |
+| **Node.js** | `npm`/`pnpm` local install | `node_modules/` 在 sandbox 内 |
+| **Rust** | `cargo` 自动隔离 | 每个项目有自己的 `target/` |
+| **Go** | `go mod` 自动隔离 | 每个项目有自己的依赖缓存 |
+| **Java** | Maven/Gradle | 默认隔离 |
+| **C++** | 无需隔离 | 编译型，直接生成可执行文件 |
+
+**环境创建逻辑**：
+```bash
+# Python
+cd .docwise/sandbox/001/
+uv venv .venv          # 或: python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt  # 如果需要
+
+# Node.js
+cd .docwise/sandbox/001/
+npm install            # 自动安装到本地 node_modules/
+```
+
+### 3. Learner 执行权限
 
 - Learner 在 `.docwise/sandbox/xxx/` 下有完整读写权限
 - 可以运行验证命令（如 `npm test`, `python script.py`）
 - 生成的代码不会被下次执行覆盖
 
-### 3. 学习产物
+### 4. 学习产物
 
 每次执行必须生成用户友好的产物，包含：
 - `README.md` - 产物总览（议题、场景、目标、工作流、发现、改进）
@@ -453,29 +485,17 @@ agent/mcp-deep-dive/
 - `code/` - 可运行的代码参考（如果有）
 - `validation/` - 验证结果记录
 
-### 4. Learner 验证场景的依据
+### 5. Learner 验证场景的依据
 
 - **优先级 1**：topic 本身场景设计（章节类型、核心议题）
 - **优先级 2**：用户指定的场景/复杂度
 - Learner 需要按照场景设计的核心议题来验证文档覆盖度
 
-### 2. Learner 执行权限
-
-- Learner 在 `.docwise/sandbox/xxx/` 下有完整读写权限
-- 可以运行验证命令（如 `npm test`, `python script.py`）
-- 生成的代码不会被下次执行覆盖
-
-### 3. 学习产物
-
-每次执行必须生成用户友好的产物，包含：
-- `README.md` - 产物总览（议题、场景、目标、工作流、发现、改进）
-- `learning-log.md` - Learner 的学习笔记
-- `code/` - 可运行的代码参考（如果有）
-- `validation/` - 验证结果记录
-
 ## 待决问题
 
-1. **验证命令**：Learner 执行时用什么命令验证？用户指定还是自动推断？
+1. **语言检测**：如何自动检测章节使用的主要语言？从 config 声明还是自动分析代码？
+2. **依赖安装**：沙箱环境需要哪些依赖？从章节文档推断还是需要用户指定？
+3. **验证命令**：Learner 执行时用什么命令验证？用户指定还是自动推断？
 
 ## 相关文档
 
