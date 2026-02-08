@@ -1,8 +1,8 @@
-# Chapter Content Validator - Full Rewrite Implementation Plan
+# Docwise - Full Rewrite Implementation Plan
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Rewrite the Chapter Content Validator Skill from scratch as an experience-driven collaboration engine supporting validate/generate/optimize modes, dynamic agent collaboration selection, and cross-platform execution.
+**Goal:** Rewrite the Docwise Skill from scratch as an experience-driven collaboration engine supporting validate/generate/optimize modes, dynamic agent collaboration selection, and cross-platform execution.
 
 **Architecture:** The Skill is a generic, project-agnostic collaboration engine with three layers: Paradigm (project methodology) -> Skill (engine) -> Config (project-specific). It reads project config to understand chapter structure, uses an experience store to recommend collaboration modes, and coordinates agents (Learner/Author/Reviewer) through a mode-aware executor. All state is persisted in YAML for human readability and git-friendliness.
 
@@ -17,13 +17,13 @@
 When a new project uses this Skill without configuration, guide the user to set up.
 
 **Files:**
-- Create: `.claude/skills/chapter-content-validator/lib/setup.ts`
-- Modify: `.claude/skills/chapter-content-validator/skill.md` (add --setup parameter)
+- Create: `.claude/skills/docwise/lib/setup.ts`
+- Modify: `.claude/skills/docwise/skill.md` (add --setup parameter)
 
 **Step 1: Write setup helper**
 
 ```typescript
-// .claude/skills/chapter-content-validator/lib/setup.ts
+// .claude/skills/docwise/lib/setup.ts
 
 import { existsSync } from 'fs';
 import { join } from 'path';
@@ -39,7 +39,7 @@ export interface SetupCheckResult {
  * Check if the project has been configured for chapter validation.
  */
 export function checkSetup(projectRoot: string): SetupCheckResult {
-  const configPath = join(projectRoot, '.chapter-validation', 'config.yaml');
+  const configPath = join(projectRoot, '.docwise', 'config.yaml');
   const hasConfig = existsSync(configPath);
   const templatePath = join(projectRoot, '.claude', 'skills', 'chapter-content-validator', 'templates', 'config-template.yaml');
 
@@ -56,7 +56,7 @@ export function checkSetup(projectRoot: string): SetupCheckResult {
  */
 export function getSetupMessage(check: SetupCheckResult): string {
   return `
-## Chapter Content Validator - First-Time Setup
+## Docwise - First-Time Setup
 
 Detected that this project has not been configured for chapter validation yet.
 
@@ -75,7 +75,7 @@ This will guide you through:
 1. Copy the template:
    cp ${check.templatePath} ${check.configPath}
 
-2. Edit .chapter-validation/config.yaml to match your project structure
+2. Edit .docwise/config.yaml to match your project structure
 
 ### Option C: Use Defaults
 Run validation without setup -- the Skill will use sensible defaults
@@ -91,7 +91,7 @@ and generate a suggested config after the first run.
 Add to parameters section:
 ```yaml
   setup:
-    description: "Run interactive setup to create .chapter-validation/config.yaml"
+    description: "Run interactive setup to create .docwise/config.yaml"
     type: boolean
     default: false
 ```
@@ -100,7 +100,7 @@ Add to skill body:
 ```markdown
 ## First-Time Setup
 
-If .chapter-validation/config.yaml does not exist, the Skill will:
+If .docwise/config.yaml does not exist, the Skill will:
 1. Detect the missing configuration
 2. Show setup instructions (copy template OR run --setup)
 3. Offer to run with defaults if user continues
@@ -131,7 +131,7 @@ When `--setup=true`, the Skill guides through configuration:
 **Step 3: Commit**
 
 ```bash
-git add .claude/skills/chapter-content-validator/lib/setup.ts .claude/skills/chapter-content-validator/skill.md
+git add .claude/skills/docwise/lib/setup.ts .claude/skills/docwise/skill.md
 git commit -m "feat(validator): add first-time setup detection and interactive guidance"
 ```
 
@@ -142,30 +142,30 @@ git commit -m "feat(validator): add first-time setup detection and interactive g
 ### Task 1: Remove old implementation and set up fresh structure
 
 **Files:**
-- Delete: `.claude/skills/chapter-content-validator/lib/learner.ts`
-- Delete: `.claude/skills/chapter-content-validator/lib/author.ts`
-- Delete: `.claude/skills/chapter-content-validator/lib/coordinator.ts`
-- Delete: `.claude/skills/chapter-content-validator/lib/feedback-processor.ts`
-- Delete: `.claude/skills/chapter-content-validator/lib/validator.py`
-- Delete: `.claude/skills/chapter-content-validator/lib/validator.sh`
-- Delete: `.claude/skills/chapter-content-validator/api.ts`
-- Delete: `.claude/skills/chapter-content-validator/index.ts`
-- Delete: `.claude/skills/chapter-content-validator/templates/chapter-config.yaml`
+- Delete: `.claude/skills/docwise/lib/learner.ts`
+- Delete: `.claude/skills/docwise/lib/author.ts`
+- Delete: `.claude/skills/docwise/lib/coordinator.ts`
+- Delete: `.claude/skills/docwise/lib/feedback-processor.ts`
+- Delete: `.claude/skills/docwise/lib/validator.py`
+- Delete: `.claude/skills/docwise/lib/validator.sh`
+- Delete: `.claude/skills/docwise/api.ts`
+- Delete: `.claude/skills/docwise/index.ts`
+- Delete: `.claude/skills/docwise/templates/chapter-config.yaml`
 
 **Step 1: Remove old files**
 
-Run: `rm -f .claude/skills/chapter-content-validator/lib/*.ts .claude/skills/chapter-content-validator/lib/*.py .claude/skills/chapter-content-validator/lib/*.sh .claude/skills/chapter-content-validator/api.ts .claude/skills/chapter-content-validator/index.ts .claude/skills/chapter-content-validator/templates/chapter-config.yaml`
+Run: `rm -f .claude/skills/docwise/lib/*.ts .claude/skills/docwise/lib/*.py .claude/skills/docwise/lib/*.sh .claude/skills/docwise/api.ts .claude/skills/docwise/index.ts .claude/skills/docwise/templates/chapter-config.yaml`
 Expected: Files removed, directory structure preserved.
 
 **Step 2: Create new directory structure**
 
-Run: `mkdir -p .claude/skills/chapter-content-validator/{lib,templates}`
-Expected: Directories exist. (NOTE: no `data/` dir - experience data lives at project level in `.chapter-validation/`)
+Run: `mkdir -p .claude/skills/docwise/{lib,templates}`
+Expected: Directories exist. (NOTE: no `data/` dir - experience data lives at project level in `.docwise/`)
 
 **Step 3: Commit**
 
 ```bash
-git add -A .claude/skills/chapter-content-validator/
+git add -A .claude/skills/docwise/
 git commit -m "chore: remove old chapter-content-validator implementation for full rewrite"
 ```
 
@@ -174,15 +174,15 @@ git commit -m "chore: remove old chapter-content-validator implementation for fu
 ### Task 2: Define core TypeScript types
 
 **Files:**
-- Create: `.claude/skills/chapter-content-validator/lib/types.ts`
+- Create: `.claude/skills/docwise/lib/types.ts`
 
 **Step 1: Write the types file**
 
 ```typescript
-// .claude/skills/chapter-content-validator/lib/types.ts
+// .claude/skills/docwise/lib/types.ts
 
 /**
- * Core types for the Chapter Content Validator Skill.
+ * Core types for the Docwise Skill.
  *
  * Design principle: Skill is generic and project-agnostic.
  * All project-specific knowledge comes from Config and Paradigm.
@@ -236,7 +236,7 @@ export interface ExperienceFeedback {
   notes: string;
 }
 
-// --- Config (project-specific, read from .chapter-validation/config.yaml) ---
+// --- Config (project-specific, read from .docwise/config.yaml) ---
 
 export interface ProjectConfig {
   version: string;
@@ -360,13 +360,13 @@ export interface FixResult {
 
 **Step 2: Verify TypeScript compiles**
 
-Run: `cd .claude/skills/chapter-content-validator && npx tsc lib/types.ts --noEmit --strict --moduleResolution node --module es2022 --target es2022`
+Run: `cd .claude/skills/docwise && npx tsc lib/types.ts --noEmit --strict --moduleResolution node --module es2022 --target es2022`
 Expected: No errors.
 
 **Step 3: Commit**
 
 ```bash
-git add .claude/skills/chapter-content-validator/lib/types.ts
+git add .claude/skills/docwise/lib/types.ts
 git commit -m "feat(validator): define core types for experience-driven collaboration engine"
 ```
 
@@ -379,23 +379,23 @@ git commit -m "feat(validator): define core types for experience-driven collabor
 The experience store is the heart of the "learning from experience" design. It persists patterns to YAML and provides matching/recommendation logic.
 
 **Files:**
-- Create: `.claude/skills/chapter-content-validator/lib/experience-store.ts`
+- Create: `.claude/skills/docwise/lib/experience-store.ts`
 
 NOTE: No seed data file in Skill directory. Seed patterns are defined in project config
-(`.chapter-validation/config.yaml` -> `seed_patterns`). Runtime experience data is stored
-at `.chapter-validation/experience.yaml` (project-level, grows over time).
+(`.docwise/config.yaml` -> `seed_patterns`). Runtime experience data is stored
+at `.docwise/experience.yaml` (project-level, grows over time).
 
 **Step 1: (Seed data moved to Task 11 - project config)**
 
-Seed patterns are now part of `.chapter-validation/config.yaml` under `seed_patterns:`.
-The ExperienceStore reads from project-level `.chapter-validation/experience.yaml`,
+Seed patterns are now part of `.docwise/config.yaml` under `seed_patterns:`.
+The ExperienceStore reads from project-level `.docwise/experience.yaml`,
 bootstrapping from seed_patterns on first run.
 ```
 
 **Step 2: Write experience store implementation**
 
 ```typescript
-// .claude/skills/chapter-content-validator/lib/experience-store.ts
+// .claude/skills/docwise/lib/experience-store.ts
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
@@ -423,7 +423,7 @@ export class ExperienceStore {
    * @param seedPatterns - initial patterns from project config (used on first run)
    */
   constructor(projectRoot: string, seedPatterns?: ExperiencePattern[]) {
-    this.filePath = join(projectRoot, '.chapter-validation', 'experience.yaml');
+    this.filePath = join(projectRoot, '.docwise', 'experience.yaml');
     this.load();
     // Bootstrap from seed patterns if experience file is empty/missing
     if (this.patterns.length === 0 && seedPatterns && seedPatterns.length > 0) {
@@ -710,7 +710,7 @@ export class ExperienceStore {
 
   private toYaml(): string {
     const lines: string[] = [
-      '# Experience store for the Chapter Content Validator.',
+      '# Experience store for the Docwise.',
       '# Auto-generated. Manual edits may be overwritten.',
       '',
       'version: "1.0"',
@@ -759,13 +759,13 @@ export class ExperienceStore {
 
 **Step 3: Verify TypeScript compiles**
 
-Run: `cd .claude/skills/chapter-content-validator && npx tsc lib/experience-store.ts lib/types.ts --noEmit --strict --moduleResolution node --module es2022 --target es2022 --skipLibCheck`
+Run: `cd .claude/skills/docwise && npx tsc lib/experience-store.ts lib/types.ts --noEmit --strict --moduleResolution node --module es2022 --target es2022 --skipLibCheck`
 Expected: No errors (or only minor FS-related type issues that are expected without full tsconfig).
 
 **Step 4: Commit**
 
 ```bash
-git add .claude/skills/chapter-content-validator/lib/experience-store.ts
+git add .claude/skills/docwise/lib/experience-store.ts
 git commit -m "feat(validator): add experience store with pattern matching and project-level persistence"
 ```
 
@@ -775,15 +775,15 @@ git commit -m "feat(validator): add experience store with pattern matching and p
 
 ### Task 4: Implement Config Loader
 
-Reads project config from `.chapter-validation/config.yaml` and paradigm from `docs/frameworks/chapter-validation-paradigm.md`. Provides defaults for missing fields.
+Reads project config from `.docwise/config.yaml` and paradigm from `docs/frameworks/docwise-paradigm.md`. Provides defaults for missing fields.
 
 **Files:**
-- Create: `.claude/skills/chapter-content-validator/lib/config-loader.ts`
+- Create: `.claude/skills/docwise/lib/config-loader.ts`
 
 **Step 1: Write the config loader**
 
 ```typescript
-// .claude/skills/chapter-content-validator/lib/config-loader.ts
+// .claude/skills/docwise/lib/config-loader.ts
 
 import { readFileSync, existsSync } from 'fs';
 import { join, resolve } from 'path';
@@ -801,8 +801,8 @@ import type {
  * Config Loader - reads project-specific configuration.
  *
  * Searches for config in this order:
- * 1. .chapter-validation/config.yaml (centralized, recommended)
- * 2. Individual chapter .chapter-validator.yaml (legacy, per-chapter)
+ * 1. .docwise/config.yaml (centralized, recommended)
+ * 2. Individual chapter .docwise.yaml (legacy, per-chapter)
  *
  * All fields have sensible defaults. Users only override what they need.
  */
@@ -817,7 +817,7 @@ export class ConfigLoader {
    * Load the full project config with defaults applied.
    */
   loadProjectConfig(): ProjectConfig {
-    const configPath = join(this.projectRoot, '.chapter-validation', 'config.yaml');
+    const configPath = join(this.projectRoot, '.docwise', 'config.yaml');
 
     if (existsSync(configPath)) {
       const raw = readFileSync(configPath, 'utf-8');
@@ -843,7 +843,7 @@ export class ConfigLoader {
     const centralConfig = project.chapters[chapterPath];
 
     // Check per-chapter config as fallback
-    const perChapterPath = join(this.projectRoot, chapterPath, '.chapter-validator.yaml');
+    const perChapterPath = join(this.projectRoot, chapterPath, '.docwise.yaml');
     let perChapterConfig: Partial<ChapterConfig> = {};
     if (existsSync(perChapterPath)) {
       const raw = readFileSync(perChapterPath, 'utf-8');
@@ -864,7 +864,7 @@ export class ConfigLoader {
    * Parse paradigm document for dependency graph and quality standards.
    */
   loadParadigm(): ParadigmConfig {
-    const paradigmPath = join(this.projectRoot, 'docs', 'frameworks', 'chapter-validation-paradigm.md');
+    const paradigmPath = join(this.projectRoot, 'docs', 'frameworks', 'docwise-paradigm.md');
 
     if (!existsSync(paradigmPath)) {
       return this.getDefaultParadigm();
@@ -1030,13 +1030,13 @@ export class ConfigLoader {
 
 **Step 2: Verify TypeScript compiles**
 
-Run: `cd .claude/skills/chapter-content-validator && npx tsc lib/config-loader.ts lib/types.ts --noEmit --strict --moduleResolution node --module es2022 --target es2022 --skipLibCheck`
+Run: `cd .claude/skills/docwise && npx tsc lib/config-loader.ts lib/types.ts --noEmit --strict --moduleResolution node --module es2022 --target es2022 --skipLibCheck`
 Expected: No errors.
 
 **Step 3: Commit**
 
 ```bash
-git add .claude/skills/chapter-content-validator/lib/config-loader.ts
+git add .claude/skills/docwise/lib/config-loader.ts
 git commit -m "feat(validator): add config loader with three-layer merge and paradigm parsing"
 ```
 
@@ -1049,12 +1049,12 @@ git commit -m "feat(validator): add config loader with three-layer merge and par
 Connects experience store + config to produce a collaboration mode recommendation.
 
 **Files:**
-- Create: `.claude/skills/chapter-content-validator/lib/mode-recommender.ts`
+- Create: `.claude/skills/docwise/lib/mode-recommender.ts`
 
 **Step 1: Write the mode recommender**
 
 ```typescript
-// .claude/skills/chapter-content-validator/lib/mode-recommender.ts
+// .claude/skills/docwise/lib/mode-recommender.ts
 
 import type {
   CollaborationMode,
@@ -1182,13 +1182,13 @@ export class ModeRecommender {
 
 **Step 2: Verify TypeScript compiles**
 
-Run: `cd .claude/skills/chapter-content-validator && npx tsc lib/mode-recommender.ts lib/experience-store.ts lib/types.ts --noEmit --strict --moduleResolution node --module es2022 --target es2022 --skipLibCheck`
+Run: `cd .claude/skills/docwise && npx tsc lib/mode-recommender.ts lib/experience-store.ts lib/types.ts --noEmit --strict --moduleResolution node --module es2022 --target es2022 --skipLibCheck`
 Expected: No errors.
 
 **Step 3: Commit**
 
 ```bash
-git add .claude/skills/chapter-content-validator/lib/mode-recommender.ts
+git add .claude/skills/docwise/lib/mode-recommender.ts
 git commit -m "feat(validator): add mode recommender with experience/config/heuristic fallback"
 ```
 
@@ -1201,12 +1201,12 @@ git commit -m "feat(validator): add mode recommender with experience/config/heur
 Handles the 4-level feedback classification and log generation.
 
 **Files:**
-- Create: `.claude/skills/chapter-content-validator/lib/feedback-processor.ts`
+- Create: `.claude/skills/docwise/lib/feedback-processor.ts`
 
 **Step 1: Write the feedback processor**
 
 ```typescript
-// .claude/skills/chapter-content-validator/lib/feedback-processor.ts
+// .claude/skills/docwise/lib/feedback-processor.ts
 
 import type { FeedbackEntry, FeedbackLevel, GapReport, Gap } from './types.js';
 
@@ -1267,7 +1267,7 @@ export class FeedbackProcessor {
     if (cat.includes('validation_criteria') || cat.includes('config')) {
       return {
         level: 2,
-        target: '.chapter-validation/config.yaml',
+        target: '.docwise/config.yaml',
         description: gap.description,
         category: gap.category,
         applied: false,
@@ -1279,7 +1279,7 @@ export class FeedbackProcessor {
     if (cat.includes('new_gap_type') || cat.includes('paradigm') || cat.includes('methodology')) {
       return {
         level: 3,
-        target: 'docs/frameworks/chapter-validation-paradigm.md',
+        target: 'docs/frameworks/docwise-paradigm.md',
         description: gap.description,
         category: gap.category,
         applied: false,
@@ -1291,7 +1291,7 @@ export class FeedbackProcessor {
     if (cat.includes('prompt') || cat.includes('skill_code') || cat.includes('agent_behavior')) {
       return {
         level: 4,
-        target: '.claude/skills/chapter-content-validator/',
+        target: '.claude/skills/docwise/',
         description: gap.description,
         category: gap.category,
         applied: false,
@@ -1395,13 +1395,13 @@ export class FeedbackProcessor {
 
 **Step 2: Verify TypeScript compiles**
 
-Run: `cd .claude/skills/chapter-content-validator && npx tsc lib/feedback-processor.ts lib/types.ts --noEmit --strict --moduleResolution node --module es2022 --target es2022 --skipLibCheck`
+Run: `cd .claude/skills/docwise && npx tsc lib/feedback-processor.ts lib/types.ts --noEmit --strict --moduleResolution node --module es2022 --target es2022 --skipLibCheck`
 Expected: No errors.
 
 **Step 3: Commit**
 
 ```bash
-git add .claude/skills/chapter-content-validator/lib/feedback-processor.ts
+git add .claude/skills/docwise/lib/feedback-processor.ts
 git commit -m "feat(validator): add feedback processor with 4-level classification"
 ```
 
@@ -1412,12 +1412,12 @@ git commit -m "feat(validator): add feedback processor with 4-level classificati
 Topological sort for chapter execution order. Used by batch/parallel execution.
 
 **Files:**
-- Create: `.claude/skills/chapter-content-validator/lib/dependency-resolver.ts`
+- Create: `.claude/skills/docwise/lib/dependency-resolver.ts`
 
 **Step 1: Write the dependency resolver**
 
 ```typescript
-// .claude/skills/chapter-content-validator/lib/dependency-resolver.ts
+// .claude/skills/docwise/lib/dependency-resolver.ts
 
 import type { DependencyGraph } from './types.js';
 
@@ -1528,13 +1528,13 @@ export class DependencyResolver {
 
 **Step 2: Verify TypeScript compiles**
 
-Run: `cd .claude/skills/chapter-content-validator && npx tsc lib/dependency-resolver.ts lib/types.ts --noEmit --strict --moduleResolution node --module es2022 --target es2022 --skipLibCheck`
+Run: `cd .claude/skills/docwise && npx tsc lib/dependency-resolver.ts lib/types.ts --noEmit --strict --moduleResolution node --module es2022 --target es2022 --skipLibCheck`
 Expected: No errors.
 
 **Step 3: Commit**
 
 ```bash
-git add .claude/skills/chapter-content-validator/lib/dependency-resolver.ts
+git add .claude/skills/docwise/lib/dependency-resolver.ts
 git commit -m "feat(validator): add dependency resolver with topological sort and batching"
 ```
 
@@ -1545,12 +1545,12 @@ git commit -m "feat(validator): add dependency resolver with topological sort an
 The main execution engine that coordinates agents based on the recommended collaboration mode.
 
 **Files:**
-- Create: `.claude/skills/chapter-content-validator/lib/executor.ts`
+- Create: `.claude/skills/docwise/lib/executor.ts`
 
 **Step 1: Write the executor**
 
 ```typescript
-// .claude/skills/chapter-content-validator/lib/executor.ts
+// .claude/skills/docwise/lib/executor.ts
 
 import { writeFileSync } from 'fs';
 import { join } from 'path';
@@ -1748,13 +1748,13 @@ export class Executor {
 
 **Step 2: Verify TypeScript compiles**
 
-Run: `cd .claude/skills/chapter-content-validator && npx tsc lib/executor.ts lib/feedback-processor.ts lib/types.ts --noEmit --strict --moduleResolution node --module es2022 --target es2022 --skipLibCheck`
+Run: `cd .claude/skills/docwise && npx tsc lib/executor.ts lib/feedback-processor.ts lib/types.ts --noEmit --strict --moduleResolution node --module es2022 --target es2022 --skipLibCheck`
 Expected: No errors.
 
 **Step 3: Commit**
 
 ```bash
-git add .claude/skills/chapter-content-validator/lib/executor.ts
+git add .claude/skills/docwise/lib/executor.ts
 git commit -m "feat(validator): add executor with mode-aware agent orchestration"
 ```
 
@@ -1767,16 +1767,16 @@ git commit -m "feat(validator): add executor with mode-aware agent orchestration
 Wire everything together into the public entry point.
 
 **Files:**
-- Create: `.claude/skills/chapter-content-validator/index.ts`
-- Create: `.claude/skills/chapter-content-validator/api.ts`
+- Create: `.claude/skills/docwise/index.ts`
+- Create: `.claude/skills/docwise/api.ts`
 
 **Step 1: Write index.ts**
 
 ```typescript
-// .claude/skills/chapter-content-validator/index.ts
+// .claude/skills/docwise/index.ts
 
 /**
- * Chapter Content Validator Skill
+ * Docwise Skill
  *
  * Experience-driven collaboration engine for validating,
  * generating, and optimizing educational content.
@@ -1810,10 +1810,10 @@ export type {
 **Step 2: Write api.ts**
 
 ```typescript
-// .claude/skills/chapter-content-validator/api.ts
+// .claude/skills/docwise/api.ts
 
 /**
- * Public API for the Chapter Content Validator Skill.
+ * Public API for the Docwise Skill.
  *
  * This is the programmatic entry point. The skill.md prompt
  * invokes this logic through Claude Code's skill execution.
@@ -1877,7 +1877,7 @@ export async function runValidator(params: ValidatorParams): Promise<ExecutionRe
         files_created: [],
         feedback: [{
           level: 3,
-          target: '.chapter-validation/config.yaml',
+          target: '.docwise/config.yaml',
           description: 'Run /chapter-content-validator --setup to configure',
           category: 'setup_required',
           applied: false,
@@ -1905,7 +1905,7 @@ export async function runValidator(params: ValidatorParams): Promise<ExecutionRe
   }
 
   // 3. Determine collaboration mode
-  // Experience store reads from project-level .chapter-validation/experience.yaml
+  // Experience store reads from project-level .docwise/experience.yaml
   // Seed patterns from project config bootstrap the store on first run
   const experienceStore = new ExperienceStore(projectRoot, projectConfig.seed_patterns);
   const recommender = new ModeRecommender(experienceStore);
@@ -1955,13 +1955,13 @@ export async function runValidator(params: ValidatorParams): Promise<ExecutionRe
 
 **Step 3: Verify TypeScript compiles**
 
-Run: `cd .claude/skills/chapter-content-validator && npx tsc index.ts api.ts lib/*.ts --noEmit --strict --moduleResolution node --module es2022 --target es2022 --skipLibCheck`
+Run: `cd .claude/skills/docwise && npx tsc index.ts api.ts lib/*.ts --noEmit --strict --moduleResolution node --module es2022 --target es2022 --skipLibCheck`
 Expected: No errors.
 
 **Step 4: Commit**
 
 ```bash
-git add .claude/skills/chapter-content-validator/index.ts .claude/skills/chapter-content-validator/api.ts
+git add .claude/skills/docwise/index.ts .claude/skills/docwise/api.ts
 git commit -m "feat(validator): add public API wiring experience store, config, recommender, executor"
 ```
 
@@ -1972,7 +1972,7 @@ git commit -m "feat(validator): add public API wiring experience store, config, 
 The skill.md is what Claude Code actually reads and executes. It must describe the full behavior including all three work modes and dynamic collaboration.
 
 **Files:**
-- Modify: `.claude/skills/chapter-content-validator/skill.md`
+- Modify: `.claude/skills/docwise/skill.md`
 
 **Step 1: Write the new skill.md**
 
@@ -2017,7 +2017,7 @@ parameters:
     default: 5
 ---
 
-# Chapter Content Validator
+# Docwise
 
 Experience-driven collaboration engine that validates, generates, and optimizes educational content through dynamic multi-agent collaboration.
 
@@ -2033,11 +2033,11 @@ This is NOT a static linter. It is an evolving engine that:
 ## Three-Layer Architecture
 
 ```
-Paradigm (docs/frameworks/chapter-validation-paradigm.md)
+Paradigm (docs/frameworks/docwise-paradigm.md)
   -> defines methodology, dependencies, quality standards
 Skill (this file + lib/)
   -> generic engine, experience store, mode selection
-Config (.chapter-validation/config.yaml)
+Config (.docwise/config.yaml)
   -> project-specific chapter types, sections, overrides
 ```
 
@@ -2045,8 +2045,8 @@ Config (.chapter-validation/config.yaml)
 
 ### Step 1: Load Context
 
-1. Read project config from `.chapter-validation/config.yaml`
-2. Read paradigm from `docs/frameworks/chapter-validation-paradigm.md`
+1. Read project config from `.docwise/config.yaml`
+2. Read paradigm from `docs/frameworks/docwise-paradigm.md`
 3. Load chapter-specific config (merged with defaults)
 4. Check chapter dependencies are met
 
@@ -2140,20 +2140,20 @@ For multiple chapters:
 
 ## Related Documentation
 
-- Design philosophy: `docs/frameworks/chapter-validator-design.md`
-- Project paradigm: `docs/frameworks/chapter-validation-paradigm.md`
-- Project config: `.chapter-validation/config.yaml`
+- Design philosophy: `docs/frameworks/docwise-design.md`
+- Project paradigm: `docs/frameworks/docwise-paradigm.md`
+- Project config: `.docwise/config.yaml`
 ```
 
 **Step 2: Verify the file has no encoding issues**
 
-Run: `python3 scripts/check-utf8.py .claude/skills/chapter-content-validator/skill.md`
+Run: `python3 scripts/check-utf8.py .claude/skills/docwise/skill.md`
 Expected: No errors.
 
 **Step 3: Commit**
 
 ```bash
-git add .claude/skills/chapter-content-validator/skill.md
+git add .claude/skills/docwise/skill.md
 git commit -m "feat(validator): rewrite skill.md with three work modes and experience-driven collaboration"
 ```
 
@@ -2164,12 +2164,12 @@ git commit -m "feat(validator): rewrite skill.md with three work modes and exper
 ### Task 11: Create centralized project config
 
 **Files:**
-- Create: `.chapter-validation/config.yaml`
+- Create: `.docwise/config.yaml`
 
 **Step 1: Write the config**
 
 ```yaml
-# Chapter Content Validator - Project Configuration
+# Docwise - Project Configuration
 #
 # Centralized config for all chapters.
 # Skill reads this to understand project structure.
@@ -2283,7 +2283,7 @@ chapters:
 **Step 2: Commit**
 
 ```bash
-git add .chapter-validation/config.yaml
+git add .docwise/config.yaml
 git commit -m "feat: add centralized chapter validation config"
 ```
 
@@ -2294,7 +2294,7 @@ git commit -m "feat: add centralized chapter validation config"
 Rewrite the paradigm to match the new three-layer design. It should define methodology and dependencies, NOT implementation details.
 
 **Files:**
-- Modify: `docs/frameworks/chapter-validation-paradigm.md`
+- Modify: `docs/frameworks/docwise-paradigm.md`
 
 **Step 1: Rewrite the paradigm**
 
@@ -2307,13 +2307,13 @@ Write via bash heredoc. Content defines:
 
 **Step 2: Verify encoding**
 
-Run: `python3 scripts/check-utf8.py docs/frameworks/chapter-validation-paradigm.md`
+Run: `python3 scripts/check-utf8.py docs/frameworks/docwise-paradigm.md`
 Expected: No errors.
 
 **Step 3: Commit**
 
 ```bash
-git add docs/frameworks/chapter-validation-paradigm.md
+git add docs/frameworks/docwise-paradigm.md
 git commit -m "docs: rewrite paradigm for three-layer architecture (methodology only, no implementation)"
 ```
 
@@ -2324,15 +2324,15 @@ git commit -m "docs: rewrite paradigm for three-layer architecture (methodology 
 ### Task 13: Create config template and clean up old files
 
 **Files:**
-- Create: `.claude/skills/chapter-content-validator/templates/config-template.yaml`
-- Delete: `agent/mcp-deep-dive/.chapter-validator.yaml` (if exists, migrated to centralized config)
+- Create: `.claude/skills/docwise/templates/config-template.yaml`
+- Delete: `agent/mcp-deep-dive/.docwise.yaml` (if exists, migrated to centralized config)
 
 **Step 1: Write config template**
 
 ```yaml
-# Chapter Content Validator - Project Configuration Template
+# Docwise - Project Configuration Template
 #
-# Copy this file to: <project-root>/.chapter-validation/config.yaml
+# Copy this file to: <project-root>/.docwise/config.yaml
 # All fields are optional. Skill provides sensible defaults.
 
 version: "1.0"
@@ -2368,14 +2368,14 @@ chapters:
 
 **Step 2: Remove old per-chapter config files**
 
-Run: `find . -name '.chapter-validator.yaml' -delete 2>/dev/null; echo "done"`
+Run: `find . -name '.docwise.yaml' -delete 2>/dev/null; echo "done"`
 
 **Step 3: Commit**
 
 ```bash
-git add .claude/skills/chapter-content-validator/templates/config-template.yaml
+git add .claude/skills/docwise/templates/config-template.yaml
 git add -A agent/ algo/
-git commit -m "chore: add config template, remove legacy per-chapter .chapter-validator.yaml files"
+git commit -m "chore: add config template, remove legacy per-chapter .docwise.yaml files"
 ```
 
 ---
@@ -2383,16 +2383,16 @@ git commit -m "chore: add config template, remove legacy per-chapter .chapter-va
 ### Task 14: Fix design document encoding issue
 
 **Files:**
-- Modify: `docs/frameworks/chapter-validator-design.md`
+- Modify: `docs/frameworks/docwise-design.md`
 
 **Step 1: Fix the corrupted character on line 17**
 
-The text `内容堆` should be `内容堆砌` (line 17 of chapter-validator-design.md).
+The text `内容堆` should be `内容堆砌` (line 17 of docwise-design.md).
 
 **Step 2: Commit**
 
 ```bash
-git add docs/frameworks/chapter-validator-design.md
+git add docs/frameworks/docwise-design.md
 git commit -m "fix: correct corrupted character in design document"
 ```
 
@@ -2404,36 +2404,36 @@ git commit -m "fix: correct corrupted character in design document"
 
 **Step 1: Verify all TypeScript files compile**
 
-Run: `cd .claude/skills/chapter-content-validator && npx tsc index.ts api.ts lib/*.ts --noEmit --strict --moduleResolution node --module es2022 --target es2022 --skipLibCheck`
+Run: `cd .claude/skills/docwise && npx tsc index.ts api.ts lib/*.ts --noEmit --strict --moduleResolution node --module es2022 --target es2022 --skipLibCheck`
 Expected: No errors.
 
 **Step 2: Verify no encoding issues**
 
-Run: `python3 scripts/check-utf8.py .claude/skills/chapter-content-validator/skill.md docs/frameworks/chapter-validator-design.md docs/frameworks/chapter-validation-paradigm.md .chapter-validation/config.yaml`
+Run: `python3 scripts/check-utf8.py .claude/skills/docwise/skill.md docs/frameworks/docwise-design.md docs/frameworks/docwise-paradigm.md .docwise/config.yaml`
 Expected: All files pass.
 
 **Step 3: Verify file structure**
 
-Run: `find .claude/skills/chapter-content-validator -type f -not -path '*/node_modules/*' | sort`
+Run: `find .claude/skills/docwise -type f -not -path '*/node_modules/*' | sort`
 
 Expected:
 ```
-.claude/skills/chapter-content-validator/api.ts
-.claude/skills/chapter-content-validator/index.ts
-.claude/skills/chapter-content-validator/lib/config-loader.ts
-.claude/skills/chapter-content-validator/lib/dependency-resolver.ts
-.claude/skills/chapter-content-validator/lib/executor.ts
-.claude/skills/chapter-content-validator/lib/experience-store.ts
-.claude/skills/chapter-content-validator/lib/feedback-processor.ts
-.claude/skills/chapter-content-validator/lib/mode-recommender.ts
-.claude/skills/chapter-content-validator/lib/types.ts
-.claude/skills/chapter-content-validator/skill.md
-.claude/skills/chapter-content-validator/templates/config-template.yaml
+.claude/skills/docwise/api.ts
+.claude/skills/docwise/index.ts
+.claude/skills/docwise/lib/config-loader.ts
+.claude/skills/docwise/lib/dependency-resolver.ts
+.claude/skills/docwise/lib/executor.ts
+.claude/skills/docwise/lib/experience-store.ts
+.claude/skills/docwise/lib/feedback-processor.ts
+.claude/skills/docwise/lib/mode-recommender.ts
+.claude/skills/docwise/lib/types.ts
+.claude/skills/docwise/skill.md
+.claude/skills/docwise/templates/config-template.yaml
 ```
 
 **Step 4: Verify no old files remain**
 
-Run: `ls .claude/skills/chapter-content-validator/lib/learner.ts .claude/skills/chapter-content-validator/lib/author.ts .claude/skills/chapter-content-validator/lib/coordinator.ts .claude/skills/chapter-content-validator/lib/validator.py .claude/skills/chapter-content-validator/lib/validator.sh 2>&1`
+Run: `ls .claude/skills/docwise/lib/learner.ts .claude/skills/docwise/lib/author.ts .claude/skills/docwise/lib/coordinator.ts .claude/skills/docwise/lib/validator.py .claude/skills/docwise/lib/validator.sh 2>&1`
 Expected: All "No such file or directory".
 
 **Step 5: Final commit**
@@ -2460,9 +2460,9 @@ git commit -m "feat: complete chapter-content-validator rewrite as experience-dr
 | `api.ts` | Public programmatic API |
 | `index.ts` | Module exports |
 | `skill.md` | Claude Code skill prompt (the "brain") |
-| `.chapter-validation/config.yaml:seed_patterns` | Seed experience patterns (project-level) |
-| `.chapter-validation/experience.yaml` | Runtime experience data (auto-generated, grows over time) |
+| `.docwise/config.yaml:seed_patterns` | Seed experience patterns (project-level) |
+| `.docwise/experience.yaml` | Runtime experience data (auto-generated, grows over time) |
 | `templates/config-template.yaml` | Config template for new projects |
-| `.chapter-validation/config.yaml` | This project's chapter config |
-| `docs/frameworks/chapter-validation-paradigm.md` | Updated paradigm (methodology only) |
-| `docs/frameworks/chapter-validator-design.md` | Fixed encoding |
+| `.docwise/config.yaml` | This project's chapter config |
+| `docs/frameworks/docwise-paradigm.md` | Updated paradigm (methodology only) |
+| `docs/frameworks/docwise-design.md` | Fixed encoding |
