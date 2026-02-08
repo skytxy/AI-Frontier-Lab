@@ -1,0 +1,109 @@
+# Chapter Content Validator - Project Configuration
+#
+# Centralized config for all chapters.
+# Skill reads this to understand project structure.
+# All fields are optional - Skill provides defaults.
+
+version: "1.0"
+
+defaults:
+  max_iterations: 5
+  collaboration_mode: dual-agent
+  sections: [concepts/, experiments/]
+
+# Seed patterns for the experience store.
+# These bootstrap the experience engine on first run.
+# As the Skill executes, runtime data accumulates in experience.yaml alongside this file.
+seed_patterns:
+  - id: technical-guide-low
+    signature:
+      content_type: technical_guide
+      complexity: low
+      keywords: [guide, tutorial, setup, quickstart]
+      work_mode: validate
+    recommended_mode: single-agent
+
+  - id: technical-guide-medium
+    signature:
+      content_type: technical_guide
+      complexity: medium
+      keywords: [integration, api, protocol, implementation]
+      work_mode: validate
+    recommended_mode: dual-agent
+
+  - id: academic-paper-high
+    signature:
+      content_type: academic_paper
+      complexity: high
+      keywords: [paper, math, formula, proof, derivation]
+      work_mode: validate
+    recommended_mode: triple-agent
+
+  - id: generate-from-paper
+    signature:
+      content_type: academic_paper
+      complexity: high
+      keywords: [generate, paper, tutorial, create]
+      work_mode: generate
+    recommended_mode: dual-agent
+
+  - id: optimize-existing
+    signature:
+      content_type: any
+      complexity: medium
+      keywords: [optimize, improve, update, refactor]
+      work_mode: optimize
+    recommended_mode: dual-agent
+
+chapters:
+  # --- Agent chapters ---
+  agent/mcp-deep-dive:
+    type: technical_guide
+    sections: [concepts/, experiments/]
+    scenarios:
+      basic-tool:
+        type: tool
+        description: "Build a basic MCP Server with stdio transport"
+        requirements: ["Server starts", "Responds to tools/list"]
+      api-integration:
+        type: integration
+        description: "Integrate MCP Server with external API"
+        requirements: ["Authenticates", "Handles errors"]
+
+  agent/skills:
+    type: technical_guide
+    sections: [platform-comparison/, experiments/]
+
+  agent/agent-workflows:
+    type: technical_guide
+    sections: [framework-survey/, experiments/]
+
+  agent/lsp-enhancement:
+    type: technical_guide
+    sections: [protocol-analysis/, prototypes/]
+
+  # --- Algo chapters ---
+  algo/foundations/gradient-descent:
+    type: technical_guide
+    sections: [concepts/, implementation/]
+
+  algo/foundations/backpropagation:
+    type: technical_guide
+    sections: [concepts/, implementation/]
+    prerequisites: [algo/foundations/gradient-descent]
+
+  algo/attention/self-attention:
+    type: academic_paper
+    sections: [paper-summary/, implementation/, experiments/]
+    prerequisites: [algo/foundations/backpropagation]
+    scenarios:
+      reproduction:
+        type: paper
+        description: "Reproduce self-attention mechanism"
+        verify: "Implementation matches paper formulas"
+
+  algo/attention/attention-is-all-you-need:
+    type: academic_paper
+    sections: [paper-summary/, implementation/, experiments/]
+    prerequisites: [algo/attention/self-attention]
+    collaboration_mode: triple-agent

@@ -1,0 +1,45 @@
+# Chapter Content Validator - Project Configuration Template
+#
+# Copy this file to: <project-root>/.chapter-validation/config.yaml
+# All fields are optional. Skill provides sensible defaults.
+
+version: "1.0"
+
+defaults:
+  max_iterations: 5
+  collaboration_mode: dual-agent     # single-agent | dual-agent | triple-agent | parallel-agents
+  sections: [concepts/, experiments/]
+
+# Seed patterns for the experience store (optional)
+# These bootstrap the experience engine on first run
+seed_patterns:
+  - id: technical-guide-low
+    signature:
+      content_type: technical_guide
+      complexity: low
+      keywords: [guide, tutorial, setup, quickstart]
+      work_mode: validate
+    recommended_mode: single-agent
+
+chapters:
+  # Example: technical guide chapter
+  # path/to/chapter:
+  #   type: technical_guide
+  #   sections: [concepts/, experiments/]
+  #   scenarios:
+  #     basic:
+  #       type: tool
+  #       description: "Build a basic tool"
+  #       requirements: ["Tool runs", "Output correct"]
+
+  # Example: academic paper chapter
+  # algo/attention/self-attention:
+  #   type: academic_paper
+  #   sections: [paper-summary/, implementation/, experiments/]
+  #   prerequisites: [algo/foundations/backpropagation]
+  #   collaboration_mode: triple-agent
+  #   scenarios:
+  #     reproduction:
+  #       type: paper
+  #       description: "Reproduce paper experiments"
+  #       verify: "Results match paper within 5%"
