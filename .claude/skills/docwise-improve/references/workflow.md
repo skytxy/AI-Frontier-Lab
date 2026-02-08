@@ -22,8 +22,13 @@ Complete execution flow for the `:improve` subcommand.
    - Generate scenario targeting identified gaps
    - Show scenario confirmation dialog
 
-4. CONFIRM SCENARIO
-   - User can accept or adjust scenario/focus areas
+4. CONFIRM SCENARIO (REQUIRED - must wait for user response)
+   - Use AskUserQuestion tool to present scenario confirmation
+   - Wait for user response before proceeding
+   - User can accept, adjust, or cancel
+
+**CRITICAL**: This step MUST use AskUserQuestion tool and wait for response.
+Do NOT proceed without user confirmation.
 
 5. SETUP SANDBOX
    - Detect chapter language

@@ -20,9 +20,14 @@ Complete execution flow for the `:check` subcommand.
    - Generate scenario + core topics
    - Show scenario confirmation dialog
 
-4. CONFIRM SCENARIO
-   - User can accept or adjust scenario/topics
-   - Generate sandbox directory name based on scenario
+4. CONFIRM SCENARIO (REQUIRED - must wait for user response)
+   - Use AskUserQuestion tool to present scenario confirmation
+   - Wait for user response before proceeding
+   - User can accept, adjust, or cancel
+   - Generate sandbox directory name based on confirmed scenario
+
+**CRITICAL**: This step MUST use AskUserQuestion tool and wait for response.
+Do NOT proceed without user confirmation.
 
 5. SETUP SANDBOX
    - Detect chapter language (python/node/rust/go/java/cpp/none)

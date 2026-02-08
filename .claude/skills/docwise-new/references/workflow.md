@@ -22,9 +22,14 @@ Complete execution flow for the `:new` subcommand.
    - Generate scenario + topics + goals
    - Show scenario confirmation dialog
 
-4. CONFIRM SCENARIO
-   - User can adjust scenario/topics
-   - Skip if auto_confirm=true
+4. CONFIRM SCENARIO (REQUIRED - must wait for user response)
+   - Use AskUserQuestion tool to present scenario confirmation
+   - Wait for user response before proceeding
+   - User can accept, adjust, or cancel
+   - Skip ONLY if auto_confirm=true in parameters
+
+**CRITICAL**: This step MUST use AskUserQuestion tool and wait for response.
+Do NOT proceed without user confirmation unless auto_confirm=true.
 
 5. SETUP SANDBOX
    - Detect chapter language (or ask user if unclear)
