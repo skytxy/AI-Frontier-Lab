@@ -5,9 +5,8 @@ parent: hooks
 tags: [hooks, notifications, cross-platform, automation]
 difficulty: beginner
 prerequisites:
-  - macOS: `jq` (via `brew install jq`)
-  - Linux: `jq` (via package manager)
-  - Windows: PowerShell 7+ (includes `ConvertFrom-Json`)
+  - jq for JSON parsing
+  - PowerShell 7+ on Windows
 ---
 
 # Exp-01: 任务完成通知 Hook
