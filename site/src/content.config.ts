@@ -2,8 +2,9 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 // Agent Collection - for agent infrastructure topics
+// Match only top-level README.md files (one level deep, not in experiments/concepts subdirs)
 const agent = defineCollection({
-  loader: glob({ pattern: '[0-9]*/README.md', base: '../agent' }),
+  loader: glob({ pattern: '*/README.md', base: '../agent' }),
   schema: z.object({
     title: z.string(),
     tags: z.array(z.string()),

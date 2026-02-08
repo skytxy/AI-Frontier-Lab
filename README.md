@@ -13,10 +13,10 @@ As a senior C++ systems engineer following the **75/25 principle** (75% deepenin
 ```
 AI-Frontier-Lab/
 ├── agent/              # Agent 方向：MCP、Workflows、LSP、Hooks
-│   ├── 001-mcp-deep-dive/
-│   ├── 002-agent-workflows/
-│   ├── 003-lsp-enhancement/
-│   └── 004-hooks/
+│   ├── mcp-deep-dive/
+│   ├── agent-workflows/
+│   ├── lsp-enhancement/
+│   └── hooks/
 │
 ├── algo/               # Algo 方向：深度学习、Transformer、RL
 │   ├── _template/      # Algo 主题模板

@@ -1,7 +1,7 @@
 ---
 title: "从零实现 MCP Server"
 experiment: 2
-parent: 001-mcp-deep-dive
+parent: mcp-deep-dive
 tags: [server, tools, resources, prompts, sdk]
 difficulty: intermediate
 ---
@@ -18,8 +18,8 @@ difficulty: intermediate
 - **传输层**：stdio（标准输入/输出）和 Streamable HTTP 两种传输方式
 
 > **零基础？** 推荐先阅读：
-> - [MCP 入门指南](/topics/001-mcp-deep-dive/concepts/mcp-basics.md)
-> - [能力协商机制](/topics/001-mcp-deep-dive/concepts/capabilities.md)
+> - [MCP 入门指南](/topics/mcp-deep-dive/concepts/mcp-basics.md)
+> - [能力协商机制](/topics/mcp-deep-dive/concepts/capabilities.md)
 
 ## 🎯 学习目标
 
@@ -97,7 +97,7 @@ difficulty: intermediate
 #### Step 1: 创建项目结构
 
 ```bash
-cd topics/001-mcp-deep-dive/experiments/02-mcp-server
+cd topics/mcp-deep-dive/experiments/02-mcp-server
 npm install
 ```
 
@@ -459,8 +459,8 @@ await server.sendNotification('notifications/progress', {
 
 - [MCP Server 规范](https://spec.modelcontextprotocol.io/specification/2024-11-05/basic/server/)
 - [SDK 文档](https://github.com/modelcontextprotocol/typescript-sdk)
-- [实验 01：协议拦截器](/topics/001-mcp-deep-dive/experiments/01-protocol-inspector/) — 用 Inspector 调试你的 Server
-- [实验 03：从零实现 MCP Client](/topics/001-mcp-deep-dive/experiments/03-mcp-client/) — 理解 Host 侧的视角
+- [实验 01：协议拦截器](/topics/mcp-deep-dive/experiments/01-protocol-inspector/) — 用 Inspector 调试你的 Server
+- [实验 03：从零实现 MCP Client](/topics/mcp-deep-dive/experiments/03-mcp-client/) — 理解 Host 侧的视角
 
 ## 🎓 下一步
 

@@ -69,7 +69,7 @@ AI-Frontier-Lab/
 │   │   ├── tools/                  # 产出的可复用工具
 │   │   ├── assets/                 # 图片、图表
 │   │   └── .agents/                # 主题级 agent 配置覆盖（可选）
-│   ├── 001-mcp-deep-dive/
+│   ├── mcp-deep-dive/
 │   ├── 002-agent-workflows/
 │   └── 003-lsp-enhancement/
 │

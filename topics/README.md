@@ -6,7 +6,7 @@
 
 | # | Topic | Category | Status | Description |
 |---|-------|----------|--------|-------------|
-| 001 | [MCP Deep Dive](001-mcp-deep-dive/) | agent-infrastructure | draft | Model Context Protocol 深度解构 |
+| 001 | [MCP Deep Dive](mcp-deep-dive/) | agent-infrastructure | draft | Model Context Protocol 深度解构 |
 | 002 | [Agent Workflows](002-agent-workflows/) | agent-infrastructure | draft | Multi-Agent 协作工作流探索 |
 | 003 | [LSP Enhancement](003-lsp-enhancement/) | dev-tools | draft | Language Server Protocol AI 增强 |
 

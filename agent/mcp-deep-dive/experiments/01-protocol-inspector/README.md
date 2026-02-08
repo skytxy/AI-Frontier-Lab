@@ -1,7 +1,7 @@
 ---
 title: "协议拦截器：透明观察 MCP 通信"
 experiment: 1
-parent: 001-mcp-deep-dive
+parent: mcp-deep-dive
 tags: [protocol, debugging, proxy, stdio]
 difficulty: beginner
 ---
@@ -18,9 +18,9 @@ difficulty: beginner
 - **Node.js Child Process**：Node.js 的 `spawn` API 可以启动子进程并控制其 stdin/stdout/stderr 流。
 
 > **零基础？** 推荐先阅读：
-> - [MCP 入门指南](/topics/001-mcp-deep-dive/concepts/mcp-basics.md)
-> - [JSON-RPC 基础](/topics/001-mcp-deep-dive/concepts/json-rpc.md)
-> - [stdio 传输原理](/topics/001-mcp-deep-dive/concepts/stdio-transport.md)
+> - [MCP 入门指南](/topics/mcp-deep-dive/concepts/mcp-basics.md)
+> - [JSON-RPC 基础](/topics/mcp-deep-dive/concepts/json-rpc.md)
+> - [stdio 传输原理](/topics/mcp-deep-dive/concepts/stdio-transport.md)
 
 ## 🎯 学习目标
 
@@ -90,7 +90,7 @@ Inspector 本身也是一个程序，但它不解析 MCP 语义，只做转发�
 #### Step 1: 创建 Inspector 项目结构
 
 ```bash
-cd topics/001-mcp-deep-dive/experiments/01-protocol-inspector
+cd topics/mcp-deep-dive/experiments/01-protocol-inspector
 npm install
 ```
 
@@ -320,7 +320,7 @@ if (msg.params) {
 - [JSON-RPC 2.0 规范](https://www.jsonrpc.org/specification)
 - [MCP 协议规范：Transport Layer](https://spec.modelcontextprotocol.io/specification/2024-11-05/basic/transport/)
 - [Node.js Child Process 文档](https://nodejs.org/api/child_process.html)
-- [实验 02：从零实现 MCP Server](/topics/001-mcp-deep-dive/experiments/02-mcp-server/) — 使用本 Inspector 来调试你写的 Server
+- [实验 02：从零实现 MCP Server](/topics/mcp-deep-dive/experiments/02-mcp-server/) — 使用本 Inspector 来调试你写的 Server
 
 ## 🎓 下一步
 

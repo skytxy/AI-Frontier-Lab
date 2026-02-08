@@ -194,7 +194,7 @@ git commit -m "feat: create agent/ and algo/ directory structure"
 ### Task 2: 迁移现有 topics 到 agent/
 
 **Files:**
-- Move: `topics/001-mcp-deep-dive/` -> `agent/agent-001-mcp-deep-dive/`
+- Move: `topics/mcp-deep-dive/` -> `agent/agent-mcp-deep-dive/`
 - Move: `topics/002-agent-workflows/` -> `agent/agent-002-agent-workflows/`
 - Move: `topics/003-lsp-enhancement/` -> `agent/agent-003-lsp-enhancement/`
 - Move: `topics/004-hooks/` -> `agent/agent-004-hooks/`
@@ -202,7 +202,7 @@ git commit -m "feat: create agent/ and algo/ directory structure"
 **Step 1: 迁移目录并重命名**
 
 ```bash
-mv topics/001-mcp-deep-dive agent/agent-001-mcp-deep-dive
+mv topics/mcp-deep-dive agent/agent-mcp-deep-dive
 mv topics/002-agent-workflows agent/agent-002-agent-workflows
 mv topics/003-lsp-enhancement agent/agent-003-lsp-enhancement
 mv topics/004-hooks agent/agent-004-hooks
@@ -211,7 +211,7 @@ mv topics/004-hooks agent/agent-004-hooks
 **Step 2: 验证迁移**
 
 Run: `ls agent/`
-Expected: `agent-001-mcp-deep-dive  agent-002-agent-workflows  agent-003-lsp-enhancement  agent-004-hooks  _template`
+Expected: `agent-mcp-deep-dive  agent-002-agent-workflows  agent-003-lsp-enhancement  agent-004-hooks  _template`
 
 **Step 3: 验证 topics 目录为空（除 README.md）**
 
@@ -230,14 +230,14 @@ git commit -m "refactor: migrate existing topics to agent/ directory"
 ### Task 3: 更新 frontmatter 添加 sort 字段
 
 **Files:**
-- Modify: `agent/agent-001-mcp-deep-dive/README.md`
+- Modify: `agent/agent-mcp-deep-dive/README.md`
 - Modify: `agent/agent-002-agent-workflows/README.md`
 - Modify: `agent/agent-003-lsp-enhancement/README.md`
 - Modify: `agent/agent-004-hooks/README.md`
 
 **Step 1: 读取 agent-001 frontmatter**
 
-Run: `head -10 agent/agent-001-mcp-deep-dive/README.md`
+Run: `head -10 agent/agent-mcp-deep-dive/README.md`
 
 **Step 2: 添加 sort 字段到每个 README**
 
@@ -247,7 +247,7 @@ Run: `head -10 agent/agent-001-mcp-deep-dive/README.md`
 # agent-001
 sed -i '' '/^status:/a\
 sort: 2026.01
-' agent/agent-001-mcp-deep-dive/README.md
+' agent/agent-mcp-deep-dive/README.md
 
 # agent-002
 sed -i '' '/^status:/a\
@@ -1498,7 +1498,7 @@ Run: `cat README.md`
 ```
 AI-Frontier-Lab/
 ├── agent/              # Agent 方向：MCP、Workflows、LSP、Hooks
-│   ├── agent-001-mcp-deep-dive/
+│   ├── agent-mcp-deep-dive/
 │   ├── agent-002-agent-workflows/
 │   ├── agent-003-lsp-enhancement/
 │   └── agent-004-hooks/

@@ -9,9 +9,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const experiments = await getCollection('experiments');
   const paths = experiments.map((experiment) => {
     // Extract topic ID and experiment ID from the path
-    // Path format: topics/001-mcp-deep-dive/experiments/01-protocol-inspector/README.md
+    // Path format: topics/mcp-deep-dive/experiments/01-protocol-inspector/README.md
     const pathParts = experiment.id.split('/');
-    const topicId = pathParts[0]; // e.g., "001-mcp-deep-dive"
+    const topicId = pathParts[0]; // e.g., "mcp-deep-dive"
     const expId = pathParts[2];   // e.g., "01-protocol-inspector"
 
     return {

@@ -1,7 +1,7 @@
 ---
 title: "从零实现 MCP Client"
 experiment: 3
-parent: 001-mcp-deep-dive
+parent: mcp-deep-dive
 tags: [client, protocol, json-rpc, stdio]
 difficulty: advanced
 ---
@@ -18,10 +18,10 @@ difficulty: advanced
 - **进程间通信**：stdin/stdout 管道、子进程 spawn
 
 > **零基础？** 推荐先阅读：
-> - [JSON-RPC 基础](/topics/001-mcp-deep-dive/concepts/json-rpc.md)
-> - [stdio 传输原理](/topics/001-mcp-deep-dive/concepts/stdio-transport.md)
-> - [消息分帧](/topics/001-mcp-deep-dive/concepts/framing.md)
-> - **必须先完成**：[Exp-01 协议拦截器](/topics/001-mcp-deep-dive/experiments/01-protocol-inspector/) 和 [Exp-02 MCP Server](/topics/001-mcp-deep-dive/experiments/02-mcp-server/)
+> - [JSON-RPC 基础](/topics/mcp-deep-dive/concepts/json-rpc.md)
+> - [stdio 传输原理](/topics/mcp-deep-dive/concepts/stdio-transport.md)
+> - [消息分帧](/topics/mcp-deep-dive/concepts/framing.md)
+> - **必须先完成**：[Exp-01 协议拦截器](/topics/mcp-deep-dive/experiments/01-protocol-inspector/) 和 [Exp-02 MCP Server](/topics/mcp-deep-dive/experiments/02-mcp-server/)
 
 ## 🎯 学习目标
 
@@ -503,9 +503,9 @@ const [tools, resources, prompts] = await Promise.all([
 
 - [JSON-RPC 2.0 规范](https://www.jsonrpc.org/specification)
 - [MCP 协议规范：Initialization](https://spec.modelcontextprotocol.io/specification/2024-11-05/basic/lifecycle/)
-- [实验 01：协议拦截器](/topics/001-mcp-deep-dive/experiments/01-protocol-inspector/) — 调试工具
-- [实验 02：MCP Server](/topics/001-mcp-deep-dive/experiments/02-mcp-server/) — 我们连接的 Server
-- [实验 04：安全攻防](/topics/001-mcp-deep-dive/experiments/04-security-lab/) — 安全边界测试
+- [实验 01：协议拦截器](/topics/mcp-deep-dive/experiments/01-protocol-inspector/) — 调试工具
+- [实验 02：MCP Server](/topics/mcp-deep-dive/experiments/02-mcp-server/) — 我们连接的 Server
+- [实验 04：安全攻防](/topics/mcp-deep-dive/experiments/04-security-lab/) — 安全边界测试
 
 ## 🎓 下一步
 

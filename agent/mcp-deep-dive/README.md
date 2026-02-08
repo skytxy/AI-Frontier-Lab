@@ -19,18 +19,18 @@ Model Context Protocol 深度解构——从协议拦截到安全攻防，4 个�
 
 | 实验 | 主题 | 关键收获 | 难度 | 前置 |
 |------|------|----------|------|------|
-| [Exp-01](/topics/001-mcp-deep-dive/experiments/01-protocol-inspector/) | 协议拦截器 | 亲眼看见 JSON-RPC 消息流，理解分帧 | ★★☆ | 无 |
-| [Exp-02](/topics/001-mcp-deep-dive/experiments/02-mcp-server/) | 从零实现 Server | 掌握 Tools/Resources/Prompts 三大原语 | ★★★ | Exp-01 |
-| [Exp-03](/topics/001-mcp-deep-dive/experiments/03-mcp-client/) | 手写 Client（无 SDK） | 深入协议本质：编解码、分帧、配对 | ★★★★ | Exp-01, Exp-02 |
-| [Exp-04](/topics/001-mcp-deep-dive/experiments/04-security-lab/) | 安全攻防 | 理解 annotation 欺骗与 prompt injection | ★★★★ | Exp-01, Exp-02 |
+| [Exp-01](/topics/mcp-deep-dive/experiments/01-protocol-inspector/) | 协议拦截器 | 亲眼看见 JSON-RPC 消息流，理解分帧 | ★★☆ | 无 |
+| [Exp-02](/topics/mcp-deep-dive/experiments/02-mcp-server/) | 从零实现 Server | 掌握 Tools/Resources/Prompts 三大原语 | ★★★ | Exp-01 |
+| [Exp-03](/topics/mcp-deep-dive/experiments/03-mcp-client/) | 手写 Client（无 SDK） | 深入协议本质：编解码、分帧、配对 | ★★★★ | Exp-01, Exp-02 |
+| [Exp-04](/topics/mcp-deep-dive/experiments/04-security-lab/) | 安全攻防 | 理解 annotation 欺骗与 prompt injection | ★★★★ | Exp-01, Exp-02 |
 
-> **零基础？** 先阅读 [MCP 入门指南](/topics/001-mcp-deep-dive/concepts/mcp-basics)，以及其他前置知识：
-> - [MCP 入门指南](/topics/001-mcp-deep-dive/concepts/mcp-basics)
-> - [JSON-RPC 基础](/topics/001-mcp-deep-dive/concepts/json-rpc)
-> - [stdio 传输原理](/topics/001-mcp-deep-dive/concepts/stdio-transport)
-> - [消息分帧](/topics/001-mcp-deep-dive/concepts/framing)
-> - [能力协商机制](/topics/001-mcp-deep-dive/concepts/capabilities)
-> - [安全模型](/topics/001-mcp-deep-dive/concepts/security-model)
+> **零基础？** 先阅读 [MCP 入门指南](/topics/mcp-deep-dive/concepts/mcp-basics)，以及其他前置知识：
+> - [MCP 入门指南](/topics/mcp-deep-dive/concepts/mcp-basics)
+> - [JSON-RPC 基础](/topics/mcp-deep-dive/concepts/json-rpc)
+> - [stdio 传输原理](/topics/mcp-deep-dive/concepts/stdio-transport)
+> - [消息分帧](/topics/mcp-deep-dive/concepts/framing)
+> - [能力协商机制](/topics/mcp-deep-dive/concepts/capabilities)
+> - [安全模型](/topics/mcp-deep-dive/concepts/security-model)
 
 ## MCP 核心概念速查
 
@@ -111,7 +111,7 @@ Client                          Server
 - Inspector 自身的日志也必须走 stderr，否则会污染 Host 看到的 stdout 消息流
 - 子进程退出时需要正确传播退出码，否则 Host 会报连接异常
 
-→ [进入实验](/topics/001-mcp-deep-dive/experiments/01-protocol-inspector/)
+→ [进入实验](/topics/mcp-deep-dive/experiments/01-protocol-inspector/)
 
 ### Exp-02: 从零实现 MCP Server — 掌握三大原语
 
@@ -128,7 +128,7 @@ Client                          Server
 - stdio 模式下 `console.log` 会破坏协议——所有日志必须用 `console.error` 或 SDK 的 logging 通知
 - Resource URI 必须是合法 URI 格式（`file:///` 三斜杠），否则客户端会拒绝
 
-→ [进入实验](/topics/001-mcp-deep-dive/experiments/02-mcp-server/)
+→ [进入实验](/topics/mcp-deep-dive/experiments/02-mcp-server/)
 
 ### Exp-03: 手写 MCP Client（无 SDK）— 深入协议本质
 
@@ -147,7 +147,7 @@ Client                          Server
 - 半包处理：一条消息可能被拆成两次 `data` 事件，必须缓冲直到遇到 `\n`
 - 子进程 spawn 时 `stdio` 选项必须是 `['pipe', 'pipe', 'inherit']`，否则消息无法通过
 
-→ [进入实验](/topics/001-mcp-deep-dive/experiments/03-mcp-client/)
+→ [进入实验](/topics/mcp-deep-dive/experiments/03-mcp-client/)
 
 ### Exp-04: 安全攻防 — 理解真实威胁
 
@@ -169,7 +169,7 @@ Client                          Server
 - ✅ 防御需要多层：内容过滤（正则匹配可疑模式）+ 行为审计（annotation vs 实际行为对比）+ 沙箱隔离
 - ✅ Host 是最终安全网关——这既是灵活性也是责任
 
-→ [进入实验](/topics/001-mcp-deep-dive/experiments/04-security-lab/)
+→ [进入实验](/topics/mcp-deep-dive/experiments/04-security-lab/)
 
 ---
 
@@ -212,25 +212,25 @@ npx @modelcontextprotocol/inspector
 ### 路径 A：快速上手（有基础）
 
 如果你已经了解 JSON-RPC 和 IPC：
-1. 跳读 [concepts](/topics/001-mcp-deep-dive/concepts/mcp-basics) 文档，查漏补缺
-2. 直接从 [Exp-02](/topics/001-mcp-deep-dive/experiments/02-mcp-server/) 开始
-3. 需要调试时回到 [Exp-01](/topics/001-mcp-deep-dive/experiments/01-protocol-inspector/)
+1. 跳读 [concepts](/topics/mcp-deep-dive/concepts/mcp-basics) 文档，查漏补缺
+2. 直接从 [Exp-02](/topics/mcp-deep-dive/experiments/02-mcp-server/) 开始
+3. 需要调试时回到 [Exp-01](/topics/mcp-deep-dive/experiments/01-protocol-inspector/)
 
 ### 路径 B：系统学习（零基础）
 
 如果你是第一次接触 MCP：
-1. 阅读 [concepts/mcp-basics](/topics/001-mcp-deep-dive/concepts/mcp-basics)
-2. 完成 [Exp-01](/topics/001-mcp-deep-dive/experiments/01-protocol-inspector/)（理解消息流）
-3. 完成 [Exp-02](/topics/001-mcp-deep-dive/experiments/02-mcp-server/)（实现 Server）
-4. 完成 [Exp-03](/topics/001-mcp-deep-dive/experiments/03-mcp-client/)（手写 Client）
-5. 完成 [Exp-04](/topics/001-mcp-deep-dive/experiments/04-security-lab/)（安全攻防）
+1. 阅读 [concepts/mcp-basics](/topics/mcp-deep-dive/concepts/mcp-basics)
+2. 完成 [Exp-01](/topics/mcp-deep-dive/experiments/01-protocol-inspector/)（理解消息流）
+3. 完成 [Exp-02](/topics/mcp-deep-dive/experiments/02-mcp-server/)（实现 Server）
+4. 完成 [Exp-03](/topics/mcp-deep-dive/experiments/03-mcp-client/)（手写 Client）
+5. 完成 [Exp-04](/topics/mcp-deep-dive/experiments/04-security-lab/)（安全攻防）
 
 ### 路径 C：安全研究（重点关注）
 
 如果你关心 MCP 安全：
-1. 快速浏览 [Exp-01](/topics/001-mcp-deep-dive/experiments/01-protocol-inspector/) 和 [Exp-02](/topics/001-mcp-deep-dive/experiments/02-mcp-server/)
-2. 深入 [Exp-04](/topics/001-mcp-deep-dive/experiments/04-security-lab/)
-3. 阅读 [concepts/security-model](/topics/001-mcp-deep-dive/concepts/security-model)
+1. 快速浏览 [Exp-01](/topics/mcp-deep-dive/experiments/01-protocol-inspector/) 和 [Exp-02](/topics/mcp-deep-dive/experiments/02-mcp-server/)
+2. 深入 [Exp-04](/topics/mcp-deep-dive/experiments/04-security-lab/)
+3. 阅读 [concepts/security-model](/topics/mcp-deep-dive/concepts/security-model)
 
 ## 常见问题
 

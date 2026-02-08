@@ -12,13 +12,13 @@
 - ✅ 创建概念页面路由: `site/src/pages/topics/[id]/concepts/[...concept].astro`
 - ✅ 更新主 README 使用网站路由（绝对路径）
   - 从: `[MCP 入门指南](concepts/mcp-basics.md)`
-  - 到: `[MCP 入门指南](/topics/001-mcp-deep-dive/concepts/mcp-basics)`
+  - 到: `[MCP 入门指南](/topics/mcp-deep-dive/concepts/mcp-basics)`
 
 **验证**:
 ```bash
 # 现在这些链接都工作了：
-/topics/001-mcp-deep-dive/concepts/mcp-basics ✅
-/topics/001-mcp-deep-dive/concepts/json-rpc ✅
+/topics/mcp-deep-dive/concepts/mcp-basics ✅
+/topics/mcp-deep-dive/concepts/json-rpc ✅
 /topics/001-mcp-deepive/concepts/stdio-transport ✅
 /topics/001-mcp-deepive/concepts/framing ✅
 /topics/001-mcp-deepive/concepts/capabilities ✅
@@ -112,7 +112,7 @@ locale
 1. **查看修复后的概念页面**:
    ```bash
    cd site && npm run dev
-   # 访问: http://localhost:4321/topics/001-mcp-deep-dive/concepts/mcp-basics
+   # 访问: http://localhost:4321/topics/mcp-deep-dive/concepts/mcp-basics
    ```
 
 2. **查看 ASCII 对齐效果**:

@@ -25,7 +25,7 @@
 AI-Frontier-Lab/
 ├── agent/                    # Agent 方向（现有项目本体）
 │   ├── _template/            # Agent Topic 模板
-│   ├── agent-001-mcp-deep-dive/
+│   ├── agent-mcp-deep-dive/
 │   ├── agent-002-agent-workflows/
 │   ├── agent-003-lsp-enhancement/
 │   └── agent-004-hooks/

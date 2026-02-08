@@ -3,7 +3,7 @@ title: "Topic Title"
 tags: []
 category: uncategorized
 difficulty: beginner
-date: YYYY-MM-DD
+date: 2026-01-01
 status: draft
 ---
 

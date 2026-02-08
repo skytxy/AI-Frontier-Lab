@@ -177,11 +177,11 @@ npm run dev
 ```
 
 Visit:
-- Topic: `http://localhost:4321/topics/001-mcp-deep-dive`
-- Exp-01: `http://localhost:4321/topics/001-mcp-deep-dive/experiments/01-protocol-inspector`
-- Exp-02: `http://localhost:4321/topics/001-mcp-deep-dive/experiments/02-mcp-server`
-- Exp-03: `http://localhost:4321/topics/001-mcp-deep-dive/experiments/03-mcp-client`
-- Exp-04: `http://localhost:4321/topics/001-mcp-deep-dive/experiments/04-security-lab`
+- Topic: `http://localhost:4321/topics/mcp-deep-dive`
+- Exp-01: `http://localhost:4321/topics/mcp-deep-dive/experiments/01-protocol-inspector`
+- Exp-02: `http://localhost:4321/topics/mcp-deep-dive/experiments/02-mcp-server`
+- Exp-03: `http://localhost:4321/topics/mcp-deep-dive/experiments/03-mcp-client`
+- Exp-04: `http://localhost:4321/topics/mcp-deep-dive/experiments/04-security-lab`
 
 ## ✨ Highlights
 
