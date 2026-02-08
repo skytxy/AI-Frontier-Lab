@@ -1,6 +1,20 @@
 # Chapter Content Validation Paradigm
 
-> **通用方法论文档** - 本文定义了一套可复用的章节内容验证范式，不仅限于 MCP 章节，也可应用于 Agent Teams、LSP、Skills 等所有章节。
+> **通用方法论文档** - 本文定义了一套可复用的章节内容验证范式，适用于 `agent/` 下的所有子章节（MCP、Skills、Agent Workflows、LSP 等），以及 `algo/` 下的论文解读章节。
+
+## Project Structure
+
+```
+AI-Frontier-Lab/
+├── agent/                      # Agent 技术大类
+│   ├── mcp-deep-dive/         # 子类：协议 (MCP)
+│   ├── skills/                # 子类：技能系统
+│   ├── agent-workflows/       # 子类：多 Agent 协作
+│   └── lsp-enhancement/        # 子类：开发工具
+│
+└── algo/                       # 算法大类（与 agent 平级）
+    └── <paper-topics>/        # 论文解读章节
+```
 
 ## Relationship with Skill Implementation
 
@@ -9,7 +23,7 @@
 |                    Paradigm (通用方法论)                         |
 |    docs/frameworks/chapter-validation-paradigm.md                |
 |                                                                   |
-|  可复用的设计思想、最佳实践、迁移指南                              |
+|  适用于 agent/ 和 algo/ 下所有章节的验证范式                          |
 +-------------------------------------------------------------------+
                            |
                            v
@@ -24,6 +38,7 @@
 +-------------------------------------------------------------------+
 |               Chapter Config (章节配置)                          |
 |    agent/<chapter>/.chapter-validator.yaml                        |
+|    algo/<chapter>/.chapter-validator.yaml                         |
 |                                                                   |
 |  场景定义、验证标准、知识检查点                                    |
 +-------------------------------------------------------------------+
@@ -70,7 +85,7 @@ The core innovation is a **layer-level feedback system** that automatically rout
 
 | Level | Target | Impact Scope | Action | Examples |
 |-------|--------|-------------|--------|----------|
-| **1** | Chapter content (concepts/, experiments/) | Single chapter | Apply directly | Missing concept, unclear step |
+| **1** | Chapter content (concepts/, experiments/, paper-summary/, etc.) | Single chapter | Apply directly | Missing concept, unclear step, formula derivation |
 | **2** | Chapter config (.chapter-validator.yaml) | Single chapter | Apply directly | Validation criteria wrong |
 | **3** | Paradigm document (this file) | Cross-chapter | Record suggestions | New gap type needed |
 | **4** | Skill code (lib/*.ts, skill.md) | Global | Record suggestions | Prompt clarity issues |
@@ -117,6 +132,8 @@ for iteration in 1..max_iterations:
 | `step_unclear` | Step instructions vague | Add detail/examples | 1 |
 | `code_error` | Code has bugs | Fix syntax/logic | 1 |
 | `context_missing` | Why/when unclear | Add motivation | 1 |
+| `formula_unclear` | Math derivation missing | Add explanation to paper-summary/ | 1 (algo) |
+| `implementation_gap` | Paper to code mapping unclear | Add bridge explanation | 1 (algo) |
 | `validation_criteria` | Success criteria wrong | Update .chapter-validator.yaml | 2 |
 | `new_gap_type` | New category needed | Add to paradigm.md | 3 |
 | `prompt_issue` | Prompt not clear | Update skill.md | 4 |
@@ -164,9 +181,11 @@ Each chapter can define a `.chapter-validator.yaml`:
 
 ```yaml
 validation:
-  experiments:
-    - experiments/01-basics
-    - experiments/02-advanced
+  # List of content sections to validate
+  sections:
+    - concepts/
+    - experiments/
+    - paper-summary/
 
   prerequisites:
     - "Language: TypeScript"
@@ -190,16 +209,70 @@ validation:
         - "Handles API errors"
 ```
 
-## Adapting for Other Chapters
+## Adapting for Different Chapter Types
+
+### Agent Chapters (agent/**)
+
+The paradigm works directly for all agent sub-categories:
+
+| Chapter | Typical Structure | Example Scenario |
+|---------|------------------|------------------|
+| **mcp-deep-dive** | concepts/, experiments/ | Implement MCP Server |
+| **skills** | platform comparison, experiments/ | Develop custom Skill |
+| **agent-workflows** | framework调研, experiments/ | Build multi-agent system |
+| **lsp-enhancement** | protocol analysis, prototypes/ | Build AI LSP prototype |
+
+No adaptation needed — use the same `.chapter-validator.yaml` format.
+
+### Algo Chapters (algo/**)
+
+Paper-based chapters require slight adaptation:
+
+```yaml
+# algo/<paper-topic>/.chapter-validator.yaml
+validation:
+  sections:
+    - paper-summary/      # 论文解读
+    - implementation/     # 算法实现
+    - experiments/        # 实验验证
+
+  prerequisites:
+    - "Math background: XXX"
+    - "Framework: PyTorch / JAX"
+
+  scenarios:
+    reproduction:
+      type: paper
+      description: "复现论文中的核心实验"
+      verify: "能实现算法并获得与论文相近的结果"
+
+    application:
+      type: apply
+      description: "将算法应用到实际问题"
+      verify: "能修改代码解决自己的任务"
+```
+
+### Key Differences
+
+| Aspect | Agent Chapters | Algo Chapters |
+|--------|---------------|---------------|
+| **Content Source** | Technical docs, APIs | Research papers |
+| **Learner's Task** | Build/integrate tools | Reproduce/apply algorithms |
+| **Common Gaps** | Protocol details, API usage | Formula derivation, math implementation |
+| **Output** | Working tool/server | Reproducible experiment |
 
 ### Step 1: Create `.chapter-validator.yaml`
 
-Define experiments, prerequisites, and scenarios specific to your chapter.
+Define sections, prerequisites, and scenarios specific to your chapter.
 
 ### Step 2: Run Validation
 
 ```bash
-/chapter-content-validator --chapter=your/chapter
+# For agent chapters
+/chapter-content-validator --chapter=agent/mcp-deep-dive
+
+# For algo chapters
+/chapter-content-validator --chapter=algo/attention-is-all-you-need
 ```
 
 ### Step 3: Review Results
@@ -209,7 +282,9 @@ The validator produces:
 - Applied updates (Level 1-2) - Directly modified
 - Suggestions (Level 3-4) - Recorded for review
 
-## Case Study: MCP Deep Dive
+## Case Studies
+
+### Case 1: MCP Deep Dive (Agent)
 
 ### Initial Issues Found
 
@@ -231,6 +306,18 @@ The validator produces:
 - validation-log.md shows complete iteration history
 - One Level 3 suggestion recorded for paradigm improvement
 
+### Case 2: Attention Is All You Need (Algo)
+
+### Typical Gaps
+
+1. **Gap**: Formula derivation from 1 to N attention unclear
+   - **Fix**: Add bridge section in paper-summary/
+   - **Level**: 1
+
+2. **Gap**: Matrix dimensions in code don't match paper notation
+   - **Fix**: Add notation-to-code mapping in implementation/
+   - **Level**: 1
+
 ## Extending the Framework
 
 ### Adding New Gap Types
@@ -238,16 +325,22 @@ The validator produces:
 When a new gap category emerges during validation:
 
 1. Recognize it as a Level 3 feedback (paradigm update)
-2. Add to `common_gaps` section in this document
+2. Add to `Gap Categories` section in this document
 3. Document fix strategy
 
-### Custom Learner Behaviors
+### Chapter-Specific Adaptations
 
-For chapter-specific learning patterns, extend `lib/learner.ts`:
+For chapter-specific learning patterns, the Learner behavior can be extended in `lib/learner.ts` without modifying the core Skill:
 
 ```typescript
-async attemptScenario(scenario: Scenario): Promise<AttemptResult> {
-  // Your custom attempt logic
+// For algo chapters: paper-aware learning
+async attemptPaperScenario(scenario: PaperScenario): Promise<AttemptResult> {
+  // Paper-specific logic
+}
+
+// For agent chapters: tool-based learning
+async attemptToolScenario(scenario: ToolScenario): Promise<AttemptResult> {
+  // Tool-specific logic
 }
 ```
 
@@ -255,9 +348,10 @@ async attemptScenario(scenario: Scenario): Promise<AttemptResult> {
 
 - [Skill Implementation](/.claude/skills/chapter-content-validator/) - The actual Skill code
 - [Capability Building Mandate](/.claude/rules/capability-building.md) - Project quality standards
-- [MCP Deep Dive Chapter](/agent/mcp-deep-dive/) - Example chapter with validator config
+- [MCP Deep Dive Example](/agent/mcp-deep-dive/) - Agent chapter with validator config
+- [Skills Chapter](/agent/skills/) - Agent Skills comparison and implementation
 
 ---
 
-**Version**: 2.0.0 (Layered Feedback)
+**Version**: 2.1.0 (Multi-Category Support)
 **Last Updated**: 2026-02-08
