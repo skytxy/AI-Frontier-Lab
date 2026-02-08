@@ -15,7 +15,7 @@
  */
 
 import { z } from 'zod';
-import { promises as fs } from 'fs';
+import { promises as fs, Dirent } from 'fs';
 import { join, relative } from 'path';
 
 // #region Schema Definition
@@ -84,7 +84,7 @@ export class FileSearchTool {
     input: FileSearchInput,
     results: FileSearchResult[]
   ): Promise<void> {
-    let entries: fs.Dirent[];
+    let entries: Dirent[];
 
     try {
       entries = await fs.readdir(dirPath, { withFileTypes: true });
