@@ -229,3 +229,4 @@ export interface GapPriority {
 export { ScenarioLoader } from './scenario-loader.js';
 export { SandboxManager } from './sandbox-manager.js';
 export { GapPrioritizer } from './gap-prioritizer.js';
+export { ArtifactGenerator } from './artifact-generator.js';
