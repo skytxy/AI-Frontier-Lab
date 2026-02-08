@@ -199,6 +199,10 @@ When issues are discovered **in Docwise itself** (the skill system, not chapter 
 - MUST NOT use external knowledge or internet
 - CAN ONLY read files within the chapter directory (and declared prerequisites)
 - Reports: completion status, knowledge gaps with exact locations, blockers
+- MUST preserve runnable artifacts in `.docwise/sandbox/[id]/`:
+  - `learning-notes.md` - Incremental learning record (problems, confusions, dead ends)
+  - `validation-log.md` - Final verification summary (completion status, gaps, results)
+  - `artifacts/` - Runnable evidence (scripts, test outputs, execution logs, screenshots)
 
 ### Author Agent
 

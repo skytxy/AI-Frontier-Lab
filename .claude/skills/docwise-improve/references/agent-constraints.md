@@ -16,6 +16,19 @@ Behavioral rules for agents in the `:improve` workflow.
 - MUST NOT read files outside chapter + prerequisites
 - MUST report gaps using standardized categories
 - MUST prioritize critical > important > minor
+- MUST save runnable artifacts to sandbox directory
+
+### Artifact Requirements
+
+Learner Agent MUST preserve evidence of execution in `.docwise/sandbox/[id]/`:
+
+| Artifact | Purpose | Content |
+|----------|---------|---------|
+| `learning-notes.md` | Incremental learning record | Problems encountered, confusions, dead ends |
+| `validation-log.md` | Final verification summary | Completion status, all gaps found, blockers |
+| `artifacts/` | Runnable evidence | Scripts created, test outputs, execution logs |
+
+**Artifact retention**: These files are NOT committed to git but must exist for review.
 
 ### Output Format
 

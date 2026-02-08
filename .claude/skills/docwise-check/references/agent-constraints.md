@@ -16,6 +16,19 @@ Behavioral rules for agents in the `:check` workflow.
 - MUST NOT read files outside chapter + prerequisites
 - MUST actually execute documented steps (not just "check" visually)
 - MUST report exact locations of issues
+- MUST save runnable artifacts to sandbox directory
+
+### Artifact Requirements
+
+Learner Agent MUST preserve evidence of execution in `.docwise/sandbox/[id]/`:
+
+| Artifact | Purpose | Content |
+|----------|---------|---------|
+| `learning-notes.md` | Incremental learning record | Problems encountered, confusions, dead ends |
+| `validation-log.md` | Final verification summary | Completion status, all issues found, verification results |
+| `artifacts/` | Runnable evidence | Scripts created, test outputs, screenshots, logs |
+
+**Artifact retention**: These files are NOT committed to git but must exist for review.
 
 ### Output Format
 

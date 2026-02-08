@@ -39,6 +39,19 @@ Summary: Brief description of what was created
 - MUST NOT use WebSearch
 - MUST NOT read files outside chapter + prerequisites
 - MUST report completion status honestly
+- MUST save runnable artifacts to sandbox directory
+
+### Artifact Requirements
+
+Learner Agent MUST preserve evidence of execution in `.docwise/sandbox/[id]/`:
+
+| Artifact | Purpose | Content |
+|----------|---------|---------|
+| `learning-notes.md` | Incremental learning record | Problems encountered, confusions, dead ends |
+| `validation-log.md` | Final verification summary | Completion status, all gaps found, verification results |
+| `artifacts/` | Runnable evidence | Scripts created, test outputs, execution logs, screenshots |
+
+**Artifact retention**: These files are NOT committed to git but must exist for review.
 
 ### Output Format
 ```
