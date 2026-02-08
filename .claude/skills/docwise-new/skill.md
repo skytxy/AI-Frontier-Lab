@@ -22,11 +22,6 @@ parameters:
     type: string
     enum: [single, dual, triple]
     required: false
-  auto_confirm:
-    description: "Skip scenario confirmation"
-    type: boolean
-    default: false
-    required: false
 ---
 
 # Docwise: New
@@ -44,17 +39,28 @@ Use this subcommand when:
 
 ## How It Works
 
-```
-User Scenario -> WebSearch Overview -> Generate Topics -> Confirm -> Author Creates -> Learner Validates -> (Loop) -> Artifacts
-```
+Engage in collaborative dialogue to design and validate new content:
 
-1. **Parse** scenario and detect complexity
-2. **Search** web for topic overview and use cases
-3. **Generate** scenario with topics and goals
-4. **Confirm** scenario with user (skip with `auto_confirm`)
-5. **Setup** sandbox with language isolation
-6. **Execute** iterative Author -> Learner loop
-7. **Generate** learner artifacts (README, learning-log)
+**Understanding the Topic:**
+- WebSearch for topic overview and practical use cases
+- Ask questions to understand what aspects matter most
+- Identify core topics that should be covered
+
+**Collaborative Scenario Design:**
+- Propose what the content will enable readers to do
+- Present the scope conversationally: "Here's what I'm planning to cover..."
+- Iterate on topics and goals until aligned
+- Describe what validation will look like
+
+**Content Creation and Validation:**
+- Setup sandbox and run the dual-agent loop
+- Author creates content following chapter structure
+- Learner validates as zero-knowledge reader
+- Present findings incrementally, discuss adjustments
+
+**Key Difference from Linear Workflows:**
+This is a continuous dialogue where the content scope evolves
+as understanding deepens through the creation process.
 
 ## Collaboration Modes
 

@@ -45,17 +45,28 @@ This validates documentation quality through practical testing.
 
 ## How It Works
 
-```
-User Requirements -> Current Status -> Generate Focused Scenario -> Confirm -> Learner Analyzes -> Author Fixes -> (Loop) -> Artifacts
-```
+Engage in collaborative dialogue to refine and validate improvements:
 
-1. **Parse** requirements and detect complexity
-2. **Show** current document status (draft/in-progress/published/completed)
-3. **Generate** scenario targeting identified gaps
-4. **Confirm** scenario with user
-5. **Setup** sandbox with language isolation
-6. **Execute** iterative Learner -> Author -> Learner loop
-7. **Generate** learner artifacts
+**Understanding the Requirement:**
+- Clarify what the user wants to build or achieve
+- Ask questions one at a time to understand the scope
+- Focus on practical validation scenarios (not abstract "improvements")
+
+**Collaborative Scenario Design:**
+- Propose a validation scenario based on user need
+- Present options conversationally: "Here's what I'm thinking..."
+- Iterate on the scenario until aligned
+- Example: "Learner tries to implement task completion notifications using only the doc"
+
+**Execution and Validation:**
+- Setup sandbox and run the dual-agent loop
+- Learner validates content against the scenario
+- Author fixes gaps discovered
+- Present findings incrementally, discuss next steps
+
+**Key Difference from Linear Workflows:**
+This is a continuous dialogue, not a confirm-and-execute flow.
+The conversation evolves as findings emerge from validation.
 
 ## Collaboration Modes
 

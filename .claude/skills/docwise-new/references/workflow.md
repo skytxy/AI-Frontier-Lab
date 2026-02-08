@@ -1,73 +1,35 @@
 # Docwise: New - Workflow
 
-Complete execution flow for the `:new` subcommand.
+Collaborative dialogue workflow for the `:new` subcommand.
 
-## Execution Flow
+## The Process
 
-```
-1. PARSE INPUT
-   - Extract scenario description from <args>
-   - Detect complexity from keywords
-   - Detect content_type from chapter path (agent/algo)
+**Understanding the Topic:**
+- WebSearch for topic overview: What is this technology?
+- WebSearch for practical use cases
+- Ask questions one at a time to understand scope
+- Identify what aspects matter most to the user
 
-2. SHOW OVERVIEW FROM WEBSEARCH
-   - WebSearch: What is this technology?
-   - WebSearch: What are the use cases?
-   - Display: What is it / What is it for
+**Collaborative Scope Design:**
+- Propose core topics to be covered
+- Present conversationally: "Here's what I'm planning to cover..."
+- Describe what readers should be able to do after reading
+- Iterate on topics and goals until aligned
 
-3. GENERATE SCENARIO FROM SEARCH
-   - Analyze chapter type (Agent/Algo)
-   - WebSearch for practical examples
-   - Extract core topics from search results
-   - Generate scenario + topics + goals
-   - Show scenario confirmation dialog
+**Example Scope Design:**
+- "I'm planning to cover MCP tool creation, resource access, and stdio transport. After reading, users should be able to build a basic server. Does this scope match what you need?"
 
-4. CONFIRM SCENARIO (REQUIRED - must wait for user response)
-   - Use AskUserQuestion tool to present scenario confirmation
-   - Wait for user response before proceeding
-   - User can accept, adjust, or cancel
-   - Skip ONLY if auto_confirm=true in parameters
+**Setting Up and Running Creation:**
+- Once scope is aligned, create sandbox directory
+- Detect chapter language and setup isolation
+- Run the dual-agent loop: Author creates, Learner validates
+- Present findings incrementally as they emerge
 
-**CRITICAL**: This step MUST use AskUserQuestion tool and wait for response.
-Do NOT proceed without user confirmation unless auto_confirm=true.
-
-5. SETUP SANDBOX
-   - Detect chapter language (or ask user if unclear)
-   - Create sandbox directory
-   - Setup language isolation
-
-6. EXECUTE WITH TASK TOOL (ITERATIVE LOOP)
-   Loop (max_iterations from config, default 5):
-
-   a) Spawn Author Agent (subagent_type=general-purpose)
-      * Creates new content files (first iteration) or modifies existing (subsequent)
-      * Follows chapter structure from config
-      * Reports: files created/changed
-
-   b) Spawn Learner Agent (subagent_type=general-purpose)
-      * Reads only new/modified content (zero-knowledge validation)
-      * Executes practical tasks in sandbox to verify content
-      * Reports: completion status, gaps, blockers
-
-   c) Check Learner's completion status
-      * If COMPLETE: Generate artifacts (README, learning-log)
-      * If gaps found: increment counter, loop back to (a)
-
-7. (triple-agent only) Spawn Reviewer Agent
-   * Verifies technical accuracy
-   * If issues found: spawn Author to fix, then Learner to re-validate
-
-8. GENERATE LEARNER ARTIFACTS
-   - Create README.md in sandbox
-   - Create learning-log.md
-```
-
-**Critical**: The loop is **Author -> Learner -> Author -> Learner -> ...** until Learner confirms COMPLETE.
-
-## Scenario Confirmation
-
-The scenario confirmation dialog format is defined in the project paradigm.
-See `.docwise/paradigm.md` for the project-specific template format.
+**Post-Creation Discussion:**
+- Share what Learner discovered (gaps, confusions, successes)
+- Discuss whether content covered the right scope
+- Ask if user wants to expand or adjust specific areas
+- Generate final artifacts (README, learning-log)
 
 ## Iteration Behavior
 
@@ -91,5 +53,5 @@ Default: 5 (configurable in `.docwise/config.yaml`)
 
 Exceeding max iterations with remaining gaps indicates:
 - Content may need restructuring
-- Scenario may be too complex for single session
+- Scope may be too complex for single session
 - Consider splitting into smaller scenarios

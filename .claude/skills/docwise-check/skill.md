@@ -42,17 +42,30 @@ Use this subcommand when:
 
 ## How It Works
 
-```
-Parse Input -> Show Overview -> Generate Scenario -> Setup Sandbox -> Learner Validates -> (Optional) Author Fixes -> Artifacts
-```
+Engage in collaborative dialogue to validate chapter quality:
 
-1. **Parse** chapter and focus (links/logic/content/all)
-2. **Show** document overview with status
-3. **Generate** validation scenario
-4. **Confirm** scenario with user
-5. **Setup** sandbox with language isolation
-6. **Execute** Learner validation (and optional Author fixes)
-7. **Generate** validation report
+**Understanding What to Check:**
+- Read chapter overview and current status
+- Ask questions to understand validation focus
+- Discuss which areas matter most: links, logic, or content
+
+**Collaborative Validation Design:**
+- Propose a validation scenario based on chapter type
+- Present conversationally: "Here's what I'm planning to test..."
+- Describe what the Learner will attempt to do
+- Iterate on scope until aligned
+
+**Running Validation:**
+- Setup sandbox and run the validation loop
+- Learner executes documented steps (not just visual check)
+- Author fixes issues if `fix=true`
+- Present findings incrementally as they emerge
+
+**Post-Validation Discussion:**
+- Share what Learner discovered (issues, blockers, successes)
+- Discuss which issues need fixing vs. can be deferred
+- Ask if user wants to re-validate specific areas
+- Generate final artifacts (README, learning-log)
 
 ## Focus Areas
 

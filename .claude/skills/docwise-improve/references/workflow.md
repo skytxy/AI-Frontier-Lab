@@ -1,94 +1,75 @@
 # Docwise: Improve - Workflow
 
-Complete execution flow for the `:improve` subcommand.
+Collaborative dialogue workflow for the `:improve` subcommand.
 
-## Execution Flow
+## The Process
+
+**Understanding the Requirement:**
+- Read the chapter to understand current state
+- Ask questions one at a time to clarify what user wants
+- Focus on practical outcomes: "What do you want to build or do?"
+- Avoid abstract "improvements" - anchor in concrete use cases
+
+**Designing the Validation Scenario:**
+- Propose a scenario where Learner tries to achieve user's goal using only the doc
+- Present conversationally: "Here's what I'm thinking for validation..."
+- Describe what the Learner will attempt to do
+- Iterate based on user feedback until aligned
+
+**Example Scenario Design:**
+- User: "I want to add task completion notifications"
+- You: "Let me design a validation scenario. The Learner will read the hooks documentation and try to implement a simple notification that triggers when a tool completes. Does this match what you need?"
+
+**Setting Up and Running Validation:**
+- Once scenario is aligned, create sandbox directory
+- Detect chapter language and setup isolation
+- Run the dual-agent loop: Learner validates, Author fixes
+- Present findings incrementally as they emerge
+
+**Post-Validation Discussion:**
+- Share what Learner discovered (gaps, blockers, successes)
+- Discuss whether the validation covered the right scope
+- Ask if user wants to iterate on specific areas
+- Generate final artifacts (README, learning-log)
+
+## Completed Document Warning
+
+When a document with status="completed" is targeted:
 
 ```
-1. PARSE INPUT
-   - Extract: chapter (from args or infer from context)
-   - Extract: scenario/requirements from <args>
-   - Detect: complexity (simple/medium/complex/advanced)
+This document has status "completed" (milestone frozen).
+Running improve will change document status and content.
 
-2. SHOW OVERVIEW WITH CURRENT STATUS
-   - Check document status (draft/in-progress/published/completed)
-   - Display: What is it / What is it for
-   - Display: Current coverage / gaps from doc summary
-   - If status=completed: show warning, require confirmation
-
-3. GENERATE SCENARIO FOCUSED ON USER NEED
-   - Analyze user's actual requirement (not generic "improvement")
-   - Generate practical validation scenario based on user need
-   - Example: User says "I want to build X" -> Scenario: "Learner tries to build X using only the doc"
-   - Show scenario confirmation dialog
-
-**IMPORTANT**: The scenario must be a practical validation task, not a content generation request.
-- ❌ Wrong: "Add more experiments and advanced patterns"
-- ✅ Right: "Learner reads doc and tries to implement task completion notifications"
-
-4. CONFIRM SCENARIO (REQUIRED - must wait for user response)
-   - Use AskUserQuestion tool to present scenario confirmation
-   - Wait for user response before proceeding
-   - Options should be:
-     * "Execute" - Run the validation scenario
-     * "Adjust" - Modify the validation focus
-     * "Cancel" - Cancel the improvement
-
-**CRITICAL**: This step MUST use AskUserQuestion tool and wait for response.
-Do NOT proceed without user confirmation.
-
-**AskUserQuestion options format**:
-```yaml
-questions:
-  - question: "Confirm scenario: [scenario description]"
-    header: "Scenario Confirmation"
-    options:
-      - label: "Execute"
-        description: "[brief description of what will happen]"
-      - label: "Adjust"
-        description: "Modify validation focus or scope"
-      - label: "Cancel"
-        description: "Cancel this improvement"
-    multiSelect: false
+Continue anyway?
 ```
 
-5. SETUP SANDBOX
-   - Detect chapter language
-   - Create sandbox directory
-   - Setup language isolation
+Wait for user response before proceeding.
 
-6. EXECUTE WITH TASK TOOL (ITERATIVE LOOP)
-   Loop (max_iterations from config, default 5):
+## Iteration Behavior
 
-   a) Spawn Learner Agent (subagent_type=general-purpose)
-      * Reads existing chapter content (first iteration) or modified files (subsequent)
-      * Executes practical tasks to test documentation
-      * Reports: completion status, gaps, blockers
+| Iteration | Learner Action | Author Action |
+|-----------|---------------|---------------|
+| 1 | Read all content, identify all gaps | Fix critical + important gaps |
+| 2+ | Re-validate only changed files | Fix remaining gaps |
 
-   b) Check Learner's completion status
-      * If COMPLETE: Generate artifacts (README, learning-log)
-      * If gaps found: Continue
+## Gap-Driven Improvement
 
-   c) Spawn Author Agent (subagent_type=general-purpose)
-      * Reads Learner's gap report
-      * Prioritizes: critical > important > minor
-      * Shows change summary for confirmation
-      * Creates/modifies content files to fill gaps
-      * Reports: files changed
+The workflow is gap-driven:
+1. Learner identifies ALL gaps in first pass
+2. Author fixes gaps in priority order
+3. Learner validates fixes
+4. Loop until no gaps remain
 
-   d) Increment iteration counter, loop back to (a)
+This is different from `:new` which creates from scratch.
 
-7. (triple-agent only) Spawn Reviewer Agent
-   * Verifies technical accuracy of fixes
-   * If issues found: spawn Author to fix, then Learner to re-validate
+## Quality Issue Consolidation
 
-8. GENERATE LEARNER ARTIFACTS
-   - Create README.md in sandbox
-   - Create learning-log.md
-   - Preserve code/ and validation/ directories
-```
+When quality issues are found (bloat, redundancy), Author should:
+- **Consolidate** similar explanations
+- **Prune** excessive examples
+- **Restructure** rather than expand
 
-**Critical**: The loop is **Learner -> Author -> Learner -> Author -> ...** until Learner confirms COMPLETE.
+See `.docwise/paradigm.md` for quality issue thresholds.
 
 ## Completed Document Warning
 

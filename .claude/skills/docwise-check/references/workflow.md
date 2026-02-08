@@ -1,71 +1,33 @@
 # Docwise: Check - Workflow
 
-Complete execution flow for the `:check` subcommand.
+Collaborative dialogue workflow for the `:check` subcommand.
 
-## Execution Flow
+## The Process
 
-```
-1. PARSE INPUT
-   - Extract: chapter, focus (links/logic/content/all)
-   - Detect: complexity
+**Understanding the Chapter:**
+- Read chapter to understand current state
+- Check document status (draft/in-progress/published/completed)
+- Ask questions to clarify validation focus
+- Discuss which areas matter most: links, logic, or content
 
-2. SHOW OVERVIEW
-   - Check document status (draft/in-progress/published/completed)
-   - Display: What is it / What is it for
-   - If status=completed: show warning, require confirmation
+**Collaborative Validation Design:**
+- Propose a validation scenario based on chapter type
+- Present conversationally: "Here's what I'm planning to test..."
+- Describe what the Learner will attempt to do
+- Example: "Learner will try to build a basic MCP server following the doc"
+- Iterate on scope until aligned
 
-3. GENERATE SCENARIO
-   - Analyze chapter type (Agent/Algo)
-   - WebSearch for practical examples
-   - Generate scenario + core topics
-   - Show scenario confirmation dialog
+**Setting Up and Running Validation:**
+- Once scope is aligned, create sandbox directory
+- Detect chapter language and setup isolation
+- Run the validation loop: Learner validates, (optional) Author fixes
+- Present findings incrementally as they emerge
 
-4. CONFIRM SCENARIO (REQUIRED - must wait for user response)
-   - Use AskUserQuestion tool to present scenario confirmation
-   - Wait for user response before proceeding
-   - User can accept, adjust, or cancel
-   - Generate sandbox directory name based on confirmed scenario
-
-**CRITICAL**: This step MUST use AskUserQuestion tool and wait for response.
-Do NOT proceed without user confirmation.
-
-5. SETUP SANDBOX
-   - Detect chapter language (python/node/rust/go/java/cpp/none)
-   - Create sandbox directory (.docwise/sandbox/XXX-description/)
-   - Setup language isolation (.venv, node_modules, etc.)
-
-6. EXECUTE WITH TASK TOOL (ITERATIVE LOOP)
-   Loop (max_iterations from config, default 5):
-
-   a) Spawn Learner Agent (subagent_type=general-purpose)
-      * Reads chapter content (zero-knowledge)
-      * Executes practical task according to documentation (not just checks!)
-      * Records: which steps clear, which blockers encountered
-      * Reports: completion status, issues, findings
-
-   b) Check Learner's completion status
-      * If COMPLETE: Generate artifacts (README, learning-log)
-      * If issues found: Continue
-
-   c) Spawn Author Agent (if --fix is true and issues not critical)
-      * Prioritizes: critical > important > minor
-      * Shows change summary for confirmation
-      * Fixes reported issues
-      * Reports: files changed
-
-   d) Increment iteration counter, loop back to (a)
-
-7. (triple-agent only) Spawn Reviewer Agent
-   * Verifies technical accuracy of fixes
-   * If issues found: spawn Author to fix, then Learner to re-validate
-
-8. GENERATE LEARNER ARTIFACTS
-   - Create README.md in sandbox (topics, findings, gaps)
-   - Create learning-log.md (execution process, learnings)
-   - Preserve code/ and validation/ directories
-```
-
-**Critical**: The loop is **Learner -> Author -> Learner -> Author -> ...** until Learner confirms COMPLETE (no issues).
+**Post-Validation Discussion:**
+- Share what Learner discovered (issues, blockers, successes)
+- Discuss which issues need fixing vs. can be deferred
+- Ask if user wants to re-validate specific areas
+- Generate final artifacts (README, learning-log)
 
 ## Key Difference from :improve
 
@@ -77,12 +39,16 @@ In `:improve`, the Learner analyzes gaps against new requirements.
 
 ## Completed Document Warning
 
+When a document with status="completed" is targeted:
+
 ```
-WARNING: This document has status "completed" (milestone frozen).
+This document has status "completed" (milestone frozen).
 Running check will not change content unless --fix is enabled.
 
-Confirm continue? [Y/n]
+Continue anyway?
 ```
+
+Wait for user response before proceeding.
 
 ## Fix Behavior
 
