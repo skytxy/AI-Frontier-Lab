@@ -114,7 +114,7 @@ The core innovation is a **layer-level feedback system** that automatically rout
 
 | Level | Target | Impact Scope | Action | Examples |
 |-------|--------|-------------|--------|----------|
-| **1** | Chapter content (concepts/, experiments/, paper-summary/, etc.) | Single chapter | Apply directly | Missing concept, unclear step, formula derivation |
+| **1** | Chapter content files (defined in .chapter-validator.yaml) | Single chapter | Apply directly | Missing concept, unclear step, formula derivation |
 | **2** | Chapter config (.chapter-validator.yaml) | Single chapter | Apply directly | Validation criteria wrong |
 | **3** | Paradigm document (this file) | Cross-chapter | Record suggestions | New gap type needed |
 | **4** | Skill code (lib/*.ts, skill.md) | Global | Record suggestions | Prompt clarity issues |
@@ -155,17 +155,19 @@ for iteration in 1..max_iterations:
 
 ## Gap Categories
 
-| Category | Description | Example Fix | Level |
-|----------|-------------|-------------|-------|
-| `concept_missing` | Concept not explained | Add to concepts/*.md | 1 |
-| `step_unclear` | Step instructions vague | Add detail/examples | 1 |
-| `code_error` | Code has bugs | Fix syntax/logic | 1 |
-| `context_missing` | Why/when unclear | Add motivation | 1 |
-| `formula_unclear` | Math derivation missing | Add explanation to paper-summary/ | 1 (algo) |
-| `implementation_gap` | Paper to code mapping unclear | Add bridge explanation | 1 (algo) |
-| `validation_criteria` | Success criteria wrong | Update .chapter-validator.yaml | 2 |
-| `new_gap_type` | New category needed | Add to paradigm.md | 3 |
-| `prompt_issue` | Prompt not clear | Update skill.md | 4 |
+| Category | Description | Level |
+|----------|-------------|-------|
+| `concept_missing` | Concept not explained | 1 |
+| `step_unclear` | Step instructions vague | 1 |
+| `code_error` | Code has bugs | 1 |
+| `context_missing` | Why/when unclear | 1 |
+| `formula_unclear` | Math derivation missing | 1 |
+| `implementation_gap` | Paper to code mapping unclear | 1 |
+| `validation_criteria` | Success criteria wrong | 2 |
+| `new_gap_type` | New category needed | 3 |
+| `prompt_issue` | Prompt not clear | 4 |
+
+**Note**: The specific target files for Level 1 fixes depend on the chapter structure, defined in each chapter's `.chapter-validator.yaml`.
 
 ## Scenario Modes
 
@@ -240,22 +242,44 @@ validation:
 
 ## Adapting for Different Chapter Types
 
+The paradigm works for all chapters under `agent/` and `algo/`. Each chapter defines its structure and scenarios in its `.chapter-validator.yaml`.
+
 ### Agent Chapters (agent/**)
 
-The paradigm works directly for all agent sub-categories:
+| Chapter | Example Config |
+|---------|----------------|
+| **mcp-deep-dive** | `sections: [concepts/, experiments/]` |
+| **skills** | `sections: [platform-comparison/, experiments/]` |
+| **agent-workflows** | `sections: [framework-survey/, experiments/]` |
+| **lsp-enhancement** | `sections: [protocol-analysis/, prototypes/]` |
 
-| Chapter | Typical Structure | Example Scenario |
-|---------|------------------|------------------|
-| **mcp-deep-dive** | concepts/, experiments/ | Implement MCP Server |
-| **skills** | platform comparison, experiments/ | Develop custom Skill |
-| **agent-workflows** | framework调研, experiments/ | Build multi-agent system |
-| **lsp-enhancement** | protocol analysis, prototypes/ | Build AI LSP prototype |
-
-No adaptation needed — use the same `.chapter-validator.yaml` format.
+```yaml
+# agent/mcp-deep-dive/.chapter-validator.yaml
+validation:
+  sections:
+    - concepts/
+    - experiments/
+  scenarios:
+    basic-tool:
+      type: tool
+      description: "Implement MCP Server"
+```
 
 ### Algo Chapters (algo/**)
 
-Algo chapters are organized by domain (cnn, transformer, rl, attention, diffusion, etc.) and specific technique within that domain:
+Algo chapters are organized by domain (cnn, transformer, rl, attention, diffusion) with specific techniques inside each domain.
+
+**Naming Convention**:
+- General concepts: Use shorthand (`self-attention`, `resnet`)
+- Milestone papers: Use full paper name (`attention-is-all-you-need`)
+- Common abbreviations: Use abbreviation (`lenet`, `vgg`, `ddpm`)
+
+| Domain | Example Chapters |
+|--------|-----------------|
+| **cnn** | `lenet/`, `alexnet/`, `resnet/` |
+| **transformer** | `original/`, `encoder/` |
+| **attention** | `bahdanau/`, `self-attention/`, `attention-is-all-you-need/` |
+| **diffusion** | `ddpm/`, `stable-diffusion/` |
 
 ```yaml
 # algo/attention/self-attention/.chapter-validator.yaml
@@ -280,11 +304,6 @@ validation:
       type: apply
       description: "将算法应用到实际问题"
       verify: "能修改代码解决自己的任务"
-
-    visualization:
-      type: demo
-      description: "可视化 Attention 权重"
-      verify: "能生成注意力热力图"
 ```
 
 ### Key Differences
@@ -308,9 +327,7 @@ Define sections, prerequisites, and scenarios specific to your chapter.
 
 # For algo chapters (domain/technique format)
 /chapter-content-validator --chapter=algo/attention/self-attention
-
-# Or for foundations
-/chapter-content-validator --chapter=algo/foundations/backprop
+chapter-content-validator --chapter=algo/attention/attention-is-all-you-need
 ```
 
 ### Step 3: Review Results
