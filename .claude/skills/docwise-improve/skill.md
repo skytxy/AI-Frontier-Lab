@@ -36,36 +36,54 @@ Optimize existing content for new requirements via dual-agent collaboration.
    - Extract: scenario/requirements from <args>
    - Detect: complexity (simple/medium/complex/advanced)
 
-2. MATCH PATTERN (.docwise/config.yaml -> seed_patterns)
-   - Find seed_pattern matching optimize + complexity + keywords
-   - Get recommended_mode (usually dual-agent for optimize)
+2. SHOW OVERVIEW WITH CURRENT STATUS (NEW)
+   - Check document status
+   - Display: 【是什么】【有什么用】
+   - Display: 【当前概况】已覆盖/缺口 (from doc summary)
+   - If status=completed: show warning, require confirmation
 
-3. CONFIRM MODE
-   - Show matched pattern and recommended mode
-   - User can accept or override
+3. GENERATE SCENARIO FOCUSED ON GAPS (NEW)
+   - Analyze current coverage from doc summary
+   - WebSearch for best practices on missing topics
+   - Generate scenario targeting identified gaps
+   - Show scenario confirmation dialog
 
-4. EXECUTE WITH TASK TOOL (ITERATIVE LOOP)
+4. CONFIRM SCENARIO (NEW)
+   - User can accept or adjust scenario/focus areas
+
+5. SETUP SANDBOX (NEW)
+   - Detect chapter language
+   - Create sandbox directory
+   - Setup language isolation
+
+6. EXECUTE WITH TASK TOOL (ITERATIVE LOOP)
    Loop (max_iterations from config, default 5):
 
-   a) Spawn NEW Learner Agent (subagent_type=general-purpose)
+   a) Spawn Learner Agent (subagent_type=general-purpose)
       * Reads existing chapter content (first iteration) or modified files (subsequent)
-      * Identifies gaps relative to new requirements
-      * Reports: completion status, gaps with locations and categories
+      * Executes practical tasks to test documentation
+      * Reports: completion status, gaps, blockers
 
    b) Check Learner's completion status
-      * If COMPLETE: END iteration
+      * If COMPLETE: Generate artifacts (README, learning-log)
       * If gaps found: Continue
 
    c) Spawn Author Agent (subagent_type=general-purpose)
       * Reads Learner's gap report
+      * Prioritizes: critical > important > minor
+      * Shows change summary for confirmation
       * Creates/modifies content files to fill gaps
       * Reports: files changed
 
-   d) Increment iteration counter, loop back to (a) with NEW Learner instance
+   d) Increment iteration counter, loop back to (a)
 
-5. (triple-agent only) Spawn Reviewer Agent
+7. (triple-agent only) Spawn Reviewer Agent
    * Verifies technical accuracy
    * If issues found: spawn Author to fix, then Learner to re-validate
+
+8. GENERATE LEARNER ARTIFACTS (NEW)
+   - Create README.md in sandbox
+   - Create learning-log.md
 ```
 
 **Critical**: The loop is **Learner → Author → Learner → Author → ...** until Learner confirms COMPLETE.
