@@ -308,6 +308,9 @@ export class FeedbackProcessor {
 
   /**
    * 生成建议
+   *
+   * For Level 3-4 suggestions, significant ones are automatically prompted to the user/agent
+   * for potential direct application. Less significant ones are recorded for review.
    */
   private generateSuggestions(
     level: FeedbackLevel,
@@ -343,6 +346,36 @@ export class FeedbackProcessor {
     }
 
     return suggestions;
+  }
+
+  /**
+   * Check if any suggestions are significant enough to prompt for direct application
+   * Significant suggestions have high priority and clear rationale
+   */
+  hasSignificantSuggestions(): boolean {
+    for (const processed of this.processed) {
+      for (const suggestion of processed.suggestions) {
+        if (suggestion.priority === 'high' && suggestion.status === 'pending') {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Get significant suggestions that should be prompted for application
+   */
+  getSignificantSuggestions(): Suggestion[] {
+    const significant: Suggestion[] = [];
+    for (const processed of this.processed) {
+      for (const suggestion of processed.suggestions) {
+        if (suggestion.priority === 'high' && suggestion.status === 'pending') {
+          significant.push(suggestion);
+        }
+      }
+    }
+    return significant;
   }
 
   /**

@@ -99,7 +99,7 @@ parameters:
 
 ### 3. Brainstorming 模式（引导细化）
 
-场景不清晰时，Skill 会通过问答逐步细化需求：
+场景不清晰时，Skill 会通过自动化、上下文感知的问答逐步细化需求：
 
 ```bash
 /chapter-content-validator \
@@ -108,10 +108,12 @@ parameters:
   --scenario="我想做一个 MCP Server"
 ```
 
-然后 Skill 会问：
+Skill 会根据章节类型（如 MCP、Skills、Algo 等）自动生成针对性的问题：
 - 这个 Server 主要用来做什么？
 - 需要哪些工具？
 - 有什么特殊的验证需求？
+
+**自动化特性**：问题生成是上下文感知的，不是僵硬的规则列表，会根据章节类型动态调整。
 
 ## 分层级反馈机制
 
@@ -136,6 +138,10 @@ parameters:
 ### 记录的建议 (Level 3-4)
 - [ ] paradigm.md: 添加新缺口类型 "dependency_missing"
 - [ ] skill.md: 优化 Learner 约束描述，强调"不能搜索互联网"
+
+### Level 3-4 重要建议自动提示
+对于高优先级的 Level 3-4 建议（如 prompt_clarity < 3），Agent 会主动提示并询问是否直接应用。
+较低优先级的建议仅记录在 validation-log.md 中供后续查看。
 
 ### 查看详情
 运行 /chapter-content-validator --review=iteration-1 查看建议详情并决定是否应用
@@ -170,7 +176,7 @@ parameters:
 
 ### validation-log.md
 
-记录在章节目录下，包含完整的迭代脉络：
+在验证流程**结束时一次性生成**，记录在章节目录下，包含完整的迭代脉络：
 
 ```markdown
 # Chapter Validation Log

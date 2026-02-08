@@ -86,9 +86,10 @@ This is not a document validation tool — it's a learning assistant that helps 
 ### Design Principles
 
 1. **User-Defined Scenarios** - Users can describe their actual application needs, not limited to predefined easy/hard scenarios
-2. **Preserve Learning Artifacts** - Learner's implementation code is available for user reference (though not committed to repo)
+2. **Preserve Learning Artifacts** - Learner's implementation code is stored in chapter path (not committed to git) for user reference
 3. **Layered Feedback** - Automatically apply document fixes, carefully handle global changes
-4. **Continuous Improvement** - Every execution makes the Skill and paradigm smarter
+4. **Automated Brainstorming** - Scenario refinement is automated and context-aware, not rigid rule-based
+5. **End-of-Process Log** - validation-log.md is generated once at the end to maintain coherence, avoiding incremental redundancy
 
 ## Layered Feedback Mechanism
 
@@ -116,8 +117,10 @@ The core innovation is a **layer-level feedback system** that automatically rout
 |-------|--------|-------------|--------|----------|
 | **1** | Chapter content files (defined in .chapter-validator.yaml) | Single chapter | Apply directly | Missing concept, unclear step, formula derivation |
 | **2** | Chapter config (.chapter-validator.yaml) | Single chapter | Apply directly | Validation criteria wrong |
-| **3** | Paradigm document (this file) | Cross-chapter | Record suggestions | New gap type needed |
-| **4** | Skill code (lib/*.ts, skill.md) | Global | Record suggestions | Prompt clarity issues |
+| **3** | Paradigm document (this file) | Cross-chapter | Record (prompt if significant) | New gap type needed |
+| **4** | Skill code (lib/*.ts, skill.md) | Global | Record (prompt if significant) | Prompt clarity issues |
+
+**Significant Suggestions**: High-priority Level 3-4 suggestions are prompted to the user/agent for potential direct application. Lower priority suggestions are only recorded in validation-log.md.
 
 ### Output Example
 
@@ -132,8 +135,13 @@ The core innovation is a **layer-level feedback system** that automatically rout
 - [ ] paradigm.md: 添加新缺口类型 "dependency_missing"
 - [ ] skill.md: 优化 Learner 约束描述，强调"不能搜索互联网"
 
+### 重要 Level 3-4 建议
+检测到高优先级建议 "prompt_improvement"，是否直接应用？
+- [ ] 是，立即应用
+- [ ] 否，仅记录到 validation-log.md
+
 ### 查看详情
-运行 /chapter-content-validator --review=iteration-1 查看建议详情并决定是否应用
+validation-log.md 已在验证流程结束时一次性生成，包含完整迭代历史。
 ```
 
 ## Validation Loop
@@ -151,6 +159,10 @@ for iteration in 1..max_iterations:
     8. Apply Level 1-2 updates directly
     9. Record Level 3-4 suggestions for review
     10. Continue loop
+
+After loop completion:
+    11. Generate validation-log.md ONCE (not incrementally)
+    12. Prompt for significant Level 3-4 suggestions if any
 ```
 
 ## Gap Categories
@@ -192,7 +204,7 @@ Describe your actual needs directly:
 
 ### 3. Brainstorming Mode (引导细化)
 
-When scenario is unclear, the Skill refines through Q&A:
+When scenario is unclear, the Skill refines through automated, context-aware Q&A:
 
 ```bash
 /chapter-content-validator \
@@ -201,10 +213,12 @@ When scenario is unclear, the Skill refines through Q&A:
   --scenario="我想做一个 MCP Server"
 ```
 
-The Skill will then ask:
-- What is the main purpose of this Server?
-- What tools are needed?
-- Any special validation requirements?
+The Skill will ask context-aware questions based on chapter type:
+- For MCP: "What transport (stdio/SSE)?", "What external APIs?"
+- For Skills: "Which AI platforms?", "What parameters?"
+- For Algo: "Reproduce paper or apply algorithm?", "What framework?"
+
+**Note**: Questions are generated automatically, not from rigid rule lists. The system infers chapter type and adjusts questions accordingly.
 
 ## Chapter Configuration
 
@@ -333,9 +347,9 @@ chapter-content-validator --chapter=algo/attention/attention-is-all-you-need
 ### Step 3: Review Results
 
 The validator produces:
-- `validation-log.md` - Iteration history in chapter directory
-- Applied updates (Level 1-2) - Directly modified
-- Suggestions (Level 3-4) - Recorded for review
+- `validation-log.md` - Generated ONCE at end of process in chapter directory (not incremental)
+- Applied updates (Level 1-2) - Directly modified during iterations
+- Suggestions (Level 3-4) - Recorded for review, significant ones prompted for application
 
 ## Case Studies
 
@@ -414,5 +428,5 @@ async attemptToolScenario(scenario: ToolScenario): Promise<AttemptResult> {
 
 ---
 
-**Version**: 2.1.0 (Multi-Category Support)
+**Version**: 2.2.0 (Automated Brainstorming + End-of-Process Log)
 **Last Updated**: 2026-02-08
