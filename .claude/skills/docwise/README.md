@@ -1,55 +1,118 @@
 # Docwise
 
-Experience-driven collaboration engine for validating, generating, and optimizing educational content.
+Experience-driven collaboration engine for validating, generating, and optimizing educational content via multi-agent workflows.
 
 ## Overview
 
-Docwise is a generic, project-agnostic skill that learns from every execution. It coordinates multi-agent collaboration (Learner, Author, Reviewer) to ensure educational content is complete, accurate, and learner-friendly.
+Docwise is a generic, project-agnostic skill that coordinates multi-agent collaboration (Learner, Author, Reviewer) to ensure educational content is complete, accurate, and learner-friendly.
 
-**Core Philosophy**: "Let Skill grow smarter with every execution."
+**Core Philosophy**: Learn from every execution through scenario-based validation.
 
 ## Features
 
-- **Three Work Modes**: validate (check existing), generate (create from scratch), optimize (improve existing)
-- **Dynamic Agent Collaboration**: Auto-selects single/dual/triple/parallel modes based on experience
-- **Experience Store**: Learns which collaboration patterns work best for each scenario type
-- **Four-Level Feedback**: Routes fixes to content (L1), config (L2), paradigm (L3), or skill code (L4)
+- **Scenario-Based Validation**: Learner agents execute real tasks to verify documentation
+- **Overview Display**: Shows "what is it" and "use cases" before execution
+- **Sandbox Isolation**: Language-specific environments (python-uv, node-local, cargo)
+- **Learner Artifacts**: Generates README.md and learning-log.md in sandbox
+- **Gap Priority Filtering**: Categorizes gaps as critical/important/minor
+- **Multi-Agent Collaboration**: Single/dual/triple agent modes based on complexity
 
 ## Quick Start
 
 ```bash
-# Validate existing content
-/docwise:new "implement a file batch rename Server"
+# Generate new content from scenario
+/docwise:new "implement a GitHub API MCP Server"
 
-# Optimize existing content
-/docwise:improve "add link verification to all experiments"
+# Improve existing content with new requirements
+/docwise:improve "add error handling to all examples"
 
-# Check for issues
+# Check content quality
 /docwise:check --focus=links
 
-# Learn a lesson
+# Learn and internalize patterns
 /docwise:learn "internal links should not have .md extension"
 ```
+
+## New Capabilities
+
+### Overview Display
+
+Before execution, Docwise shows:
+- What is this technology?
+- What are its use cases?
+- Current document status (draft/in-progress/published/completed)
+
+### Scenario Generation
+
+- For `:new`: WebSearch for topic overview and practical examples
+- For `:check`: Generate validation scenario focused on coverage
+- For `:improve`: Generate scenario targeting identified gaps
+
+### Sandbox Environment
+
+Each execution creates an isolated sandbox:
+```
+.docwise/sandbox/
+  └── [id]-[description]/
+      ├── README.md           # Validation summary
+      ├── learning-log.md     # Execution process
+      ├── code/              # Working code
+      └── validation/        # Test outputs
+```
+
+### Language Isolation
+
+| Language | Isolation Type |
+|----------|---------------|
+| Python | python-uv (or python-venv) |
+| Node.js | node-local |
+| Rust | cargo |
+| Go | go-mod |
+| Java | maven |
+| C++ | none |
+
+### Gap Prioritization
+
+Gaps are categorized by severity:
+- **Critical**: `concept_missing_critical`, `code_error_critical`, `dependency_undeclared`
+- **Important**: `concept_missing`, `step_unclear`, `code_error`
+- **Minor**: `typo`, `formatting_issue`
 
 ## File Structure
 
 ```
 .claude/skills/docwise/
-├── skill.md                 # Main skill definition (for Claude Code)
-├── index.ts                 # Module exports
-├── api.ts                   # Public API
+├── skill.md                 # Main skill definition
+├── README.md                # This file
 ├── package.json             # NPM configuration
 ├── lib/
 │   ├── types.ts             # Core TypeScript interfaces
-│   ├── experience-store.ts  # Pattern matching + YAML persistence
-│   ├── config-loader.ts     # Three-layer config merge
-│   ├── mode-recommender.ts  # Experience/config/heuristic selection
+│   ├── config-loader.ts     # Config loading, language detection
+│   ├── scenario-loader.ts   # Scenario generation from search
+│   ├── sandbox-manager.ts   # Sandbox directory management
+│   ├── overview-display.ts  # Overview display utilities
+│   ├── gap-prioritizer.ts   # Gap priority filtering
+│   ├── artifact-generator.ts # Learner artifact generation
+│   ├── experience-store.ts  # Pattern matching + persistence
+│   ├── mode-recommender.ts  # Collaboration mode selection
 │   ├── feedback-processor.ts # 4-level feedback classification
 │   ├── dependency-resolver.ts # Topological sort for chapters
 │   └── executor.ts          # Core orchestration engine
-└── templates/
-    └── config-template.yaml # Config template for new projects
+└── references/
+    ├── execution-flows.md   # Detailed workflows
+    ├── agent-constraints.md # Agent behavioral rules
+    ├── pattern-matching.md  # Experience store patterns
+    └── quality-categories.md # Gap categories
 ```
+
+## Subcommands
+
+| Command | Purpose | Agent Flow |
+|---------|---------|-----------|
+| `:new` | Create new content from scenario | Author -> Learner |
+| `:improve` | Enhance existing content | Learner -> Author -> Learner |
+| `:check` | Validate content quality | Learner -> (optional) Author |
+| `:learn` | Internalize lessons | Single agent |
 
 ## Project Configuration
 
@@ -63,25 +126,30 @@ defaults:
   collaboration_mode: dual-agent
   sections: [concepts/, experiments/]
 
-# Seed patterns bootstrap the experience store
-seed_patterns:
-  - id: technical-guide-medium
-    signature:
-      content_type: technical_guide
-      complexity: medium
-      keywords: [integration, api, protocol]
-      work_mode: validate
-    recommended_mode: dual-agent
-
 chapters:
   agent/mcp-deep-dive:
     type: technical_guide
+    language: node        # Primary language for sandbox
     sections: [concepts/, experiments/]
     scenarios:
       basic-tool:
         type: tool
-        description: "Build a basic MCP Server with stdio transport"
+        description: "Build a basic MCP Server"
 ```
+
+## Language Field
+
+The `language` field specifies the primary programming language for sandbox isolation:
+
+- `python`: Uses python-uv (or python-venv) for isolation
+- `node`: Uses node-local (isolated node_modules)
+- `rust`: Uses cargo
+- `go`: Uses go-mod
+- `java`: Uses maven
+- `cpp`: No automatic isolation
+- `none`: No isolation
+
+If not specified, Docwise auto-detects from project files (package.json, pyproject.toml, etc.)
 
 ## Three-Layer Architecture
 
