@@ -31,10 +31,15 @@ Optimize existing content for new requirements via multi-agent collaboration.
 ## When to Use
 
 Use this subcommand when:
+- User has a practical need that chapter content should support
+- Verifying if existing documentation is sufficient for real tasks
 - Adding new features to existing content
 - Enhancing coverage of specific topics
 - Clarifying unclear sections
-- Adapting content for new use cases
+
+**Key Principle**: When user says "I want to build X" and X relates to a chapter,
+generate a validation scenario where Learner tries to build X using only the doc.
+This validates documentation quality through practical testing.
 
 ## How It Works
 

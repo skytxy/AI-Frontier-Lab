@@ -16,19 +16,41 @@ Complete execution flow for the `:improve` subcommand.
    - Display: Current coverage / gaps from doc summary
    - If status=completed: show warning, require confirmation
 
-3. GENERATE SCENARIO FOCUSED ON GAPS
-   - Analyze current coverage from doc summary
-   - WebSearch for best practices on missing topics
-   - Generate scenario targeting identified gaps
+3. GENERATE SCENARIO FOCUSED ON USER NEED
+   - Analyze user's actual requirement (not generic "improvement")
+   - Generate practical validation scenario based on user need
+   - Example: User says "I want to build X" -> Scenario: "Learner tries to build X using only the doc"
    - Show scenario confirmation dialog
+
+**IMPORTANT**: The scenario must be a practical validation task, not a content generation request.
+- ❌ Wrong: "Add more experiments and advanced patterns"
+- ✅ Right: "Learner reads doc and tries to implement task completion notifications"
 
 4. CONFIRM SCENARIO (REQUIRED - must wait for user response)
    - Use AskUserQuestion tool to present scenario confirmation
    - Wait for user response before proceeding
-   - User can accept, adjust, or cancel
+   - Options should be:
+     * "执行验证" - Execute the validation scenario
+     * "调整重点" - Modify the validation focus
+     * "取消" - Cancel the improvement
 
 **CRITICAL**: This step MUST use AskUserQuestion tool and wait for response.
 Do NOT proceed without user confirmation.
+
+**AskUserQuestion options format**:
+```yaml
+questions:
+  - question: "确认场景：[scenario description]"
+    header: "场景确认"
+    options:
+      - label: "执行验证"
+        description: "[brief description of what will happen]"
+      - label: "调整重点"
+        description: "修改验证方向或范围"
+      - label: "取消"
+        description: "放弃本次改进"
+    multiSelect: false
+```
 
 5. SETUP SANDBOX
    - Detect chapter language
