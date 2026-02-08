@@ -27,8 +27,8 @@ Docwise is a generic, project-agnostic skill that learns from every execution. I
 # Check for issues
 /docwise:check --focus=links
 
-# Record a lesson learned
-/docwise:record "internal links should not have .md extension"
+# Learn a lesson
+/docwise:learn "internal links should not have .md extension"
 ```
 
 ## File Structure
@@ -86,7 +86,7 @@ chapters:
 ## Three-Layer Architecture
 
 ```
-Paradigm (docs/frameworks/docwise-paradigm.md)
+Paradigm (.docwise/paradigm.md)
   -> defines methodology, dependencies, quality standards
 Skill (this directory)
   -> generic engine, experience store, mode selection
@@ -111,8 +111,7 @@ console.log(result.success ? 'PASSED' : 'FAILED');
 
 ## Related Documentation
 
-- [Workflow Paradigm](docs/frameworks/docwise-paradigm.md) - Project methodology
-- [Design Philosophy](docs/frameworks/docwise-design.md) - Architecture decisions
+- [Paradigm](.docwise/paradigm.md) - Project methodology
 - [Project Config](.docwise/config.yaml) - This project's chapters
 
 ## License

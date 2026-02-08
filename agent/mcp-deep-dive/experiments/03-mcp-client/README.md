@@ -4,6 +4,7 @@ experiment: 3
 parent: mcp-deep-dive
 tags: [client, protocol, json-rpc, stdio]
 difficulty: advanced
+prerequisites: ['01-protocol-inspector', '02-mcp-server']
 ---
 
 # Exp-03: 从零实现 MCP Client
@@ -18,10 +19,10 @@ difficulty: advanced
 - **进程间通信**：stdin/stdout 管道、子进程 spawn
 
 > **零基础？** 推荐先阅读：
-> - [JSON-RPC 基础](/topics/mcp-deep-dive/concepts/json-rpc)
-> - [stdio 传输原理](/topics/mcp-deep-dive/concepts/stdio-transport)
-> - [消息分帧](/topics/mcp-deep-dive/concepts/framing)
-> - **必须先完成**：[Exp-01 协议拦截器](/topics/mcp-deep-dive/experiments/01-protocol-inspector/) 和 [Exp-02 MCP Server](/topics/mcp-deep-dive/experiments/02-mcp-server/)
+> - [JSON-RPC 基础](/agent/mcp-deep-dive/concepts/json-rpc)
+> - [stdio 传输原理](/agent/mcp-deep-dive/concepts/stdio-transport)
+> - [消息分帧](/agent/mcp-deep-dive/concepts/framing)
+> - **必须先完成**：[Exp-01 协议拦截器](/agent/mcp-deep-dive/experiments/01-protocol-inspector/) 和 [Exp-02 MCP Server](/agent/mcp-deep-dive/experiments/02-mcp-server/)
 
 ## 🎯 学习目标
 
@@ -94,9 +95,7 @@ Server → Client: Response(id=1, [...])
 
 ### 实现步骤
 
-#### Step 1: 实现编解码器
-
-**代码**：`src/protocol/jsonrpc.ts`
+#### Step 1: 实现编解码器 (`src/protocol/jsonrpc.ts`)
 
 **功能**：
 - `encodeRequest(id, method, params)` → JSON 字符串
@@ -104,92 +103,51 @@ Server → Client: Response(id=1, [...])
 - `decodeMessage(line)` → JSON 对象或 null
 - 类型守卫：`isRequest()`, `isResponse()`, `isNotification()`
 
-**关键点**：
-```typescript
-// Request 和 Notification 的区别
-interface JsonRpcRequest {
-  id: string | number;  // 有 id
-  method: string;
-}
+**关键点**：Request 有 `id` 字段，Notification 没有。
 
-interface JsonRpcNotification {
-  // 没有 id
-  method: string;
-}
-```
+#### Step 2: 实现 stdio 传输层 (`src/transport/stdio.ts`)
 
-#### Step 2: 实现 stdio 传输层
+**核心挑战**：
+1. **消息分帧**：处理粘包/半包（累积 buffer + 分行解析）
+2. **请求-响应匹配**：通过 `Map<id, Promise>` 匹配异步响应
 
-**代码**：`src/transport/stdio.ts`
-
-**核心方法**：
-- `start()`：启动 Server 进程
-- `request(method, params)`：发送请求并等待响应
-- `notify(method, params)`：发送通知（不等待响应）
-- `stop()`：关闭连接
-
-**关键实现**：消息分帧
-
+**消息分帧模式**：
 ```typescript
 private buffer = '';
 
 private handleData(data: Buffer): void {
   this.buffer += data.toString();
-
-  const lines = this.buffer.split('\n');
+  const lines = this.buffer.split('
+');
   this.buffer = lines.pop() || '';  // 保留不完整的最后一行
 
   for (const line of lines) {
     const message = decodeMessage(line);
-    if (message) {
-      this.handleMessage(message);
-    }
+    if (message) handleMessage(message);
   }
 }
 ```
 
-**关键实现**：请求-响应匹配
-
+**请求-响应匹配模式**：
 ```typescript
 private pendingRequests = new Map();
 
 async request(method: string, params?: unknown): Promise<unknown> {
   const id = ++this.requestId;
-
   return new Promise((resolve, reject) => {
     const timeout = setTimeout(() => {
       this.pendingRequests.delete(id);
       reject(new Error('Timeout'));
     }, 30000);
-
     this.pendingRequests.set(id, { resolve, reject, timeout });
     this.writeLine(encodeRequest(id, method, params));
   });
 }
-
-private handleMessage(message): void {
-  if ('id' in message) {
-    const pending = this.pendingRequests.get(message.id);
-    if (pending) {
-      clearTimeout(pending.timeout);
-      this.pendingRequests.delete(message.id);
-
-      if (message.error) {
-        pending.reject(new Error(message.error.message));
-      } else {
-        pending.resolve(message.result);
-      }
-    }
-  }
-}
 ```
 
-#### Step 3: 实现生命周期管理
+#### Step 3: 实现生命周期管理 (`src/protocol/lifecycle.ts`)
 
-**代码**：`src/protocol/lifecycle.ts`
-
-**功能**：封装初始化握手
-
+**初始化握手**：
 ```typescript
 async initialize(clientInfo): Promise<ServerInfo> {
   // 1. 发送 initialize 请求
@@ -206,78 +164,25 @@ async initialize(clientInfo): Promise<ServerInfo> {
 }
 ```
 
-#### Step 4: 实现高级 Client API
+#### Step 4: 实现高级 Client API (`src/client.ts`)
 
-**代码**：`src/client.ts`
-
-**设计**：提供简洁的方法，隐藏底层协议细节
+**设计**：提供简洁方法，隐藏协议细节
 
 ```typescript
 class McpClient {
-  async connect(): Promise<void> { ... }
-  async listTools(): Promise<Tool[]> { ... }
-  async callTool(name, args): Promise<any> { ... }
-  async listResources(): Promise<Resource[]> { ... }
-  async readResource(uri): Promise<any> { ... }
-  async listPrompts(): Promise<Prompt[]> { ... }
-  async getPrompt(name, args): Promise<any> { ... }
-  async disconnect(): Promise<void> { ... }
+  async connect(): Promise<void>
+  async listTools(): Promise<Tool[]>
+  async callTool(name, args): Promise<any>
+  async listResources(): Promise<Resource[]>
+  async readResource(uri): Promise<any>
+  async listPrompts(): Promise<Prompt[]>
+  async disconnect(): Promise<void>
 }
 ```
 
+**完整实现**：参见 `src/client.ts`（约 200 行）
+
 #### Step 5: 运行演示
-
-**前提**：先构建 Exp-02 Server
-
-```bash
-cd ../02-mcp-server
-npm run build
-
-cd ../03-mcp-client
-npm run build
-npm start /path/to/project
-```
-
-**预期输出**：
-```
-🚀 MCP Client Demo
-Connecting to server with project root: /path/to/project
-
-Step 1: Connecting to server...
-✓ Connected
-
-Step 2: Discovering tools...
-✓ Found 2 tools:
-  - file_search: Search for files matching a pattern (grep-style)
-  - code_stats: Analyze codebase statistics (LOC, language distribution)
-
-Step 3: Calling code_stats tool...
-✓ Code statistics:
-  Total files: 15
-  Total lines: 2341
-  Code lines: 1890
-  Languages:
-    - TypeScript: 12 files, 2100 lines
-    - JSON: 3 files, 241 lines
-
-Step 4: Discovering resources...
-✓ Found 1 resources:
-  - Project Files: List and read files in the project directory
-
-Step 5: Discovering prompts...
-✓ Found 1 prompts:
-  - code_review: Generate a code review prompt for a file
-
-Step 6: Getting code_review prompt...
-✓ Generated prompt (first 500 chars):
-# Code Review Request
-...
-
-Step 7: Disconnecting...
-✓ Disconnected
-
-✅ Demo completed successfully!
-```
 
 ## 🧪 验证
 
@@ -503,9 +408,9 @@ const [tools, resources, prompts] = await Promise.all([
 
 - [JSON-RPC 2.0 规范](https://www.jsonrpc.org/specification)
 - [MCP 协议规范：Initialization](https://modelcontextprotocol.io/docs/specification/)
-- [实验 01：协议拦截器](/topics/mcp-deep-dive/experiments/01-protocol-inspector/) — 调试工具
-- [实验 02：MCP Server](/topics/mcp-deep-dive/experiments/02-mcp-server/) — 我们连接的 Server
-- [实验 04：安全攻防](/topics/mcp-deep-dive/experiments/04-security-lab/) — 安全边界测试
+- [实验 01：协议拦截器](/agent/mcp-deep-dive/experiments/01-protocol-inspector/) — 调试工具
+- [实验 02：MCP Server](/agent/mcp-deep-dive/experiments/02-mcp-server/) — 我们连接的 Server
+- [实验 04：安全攻防](/agent/mcp-deep-dive/experiments/04-security-lab/) — 安全边界测试
 
 ## 🎓 下一步
 

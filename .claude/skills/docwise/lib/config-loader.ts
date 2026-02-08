@@ -79,7 +79,7 @@ export class ConfigLoader {
    * Parse paradigm document for dependency graph and quality standards.
    */
   loadParadigm(): ParadigmConfig {
-    const paradigmPath = join(this.projectRoot, 'docs', 'frameworks', 'docwise-paradigm.md');
+    const paradigmPath = join(this.projectRoot, '.docwise', 'paradigm.md');
 
     if (!existsSync(paradigmPath)) {
       return this.getDefaultParadigm();

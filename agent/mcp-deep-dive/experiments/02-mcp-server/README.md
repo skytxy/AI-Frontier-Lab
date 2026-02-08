@@ -4,6 +4,7 @@ experiment: 2
 parent: mcp-deep-dive
 tags: [server, tools, resources, prompts, sdk]
 difficulty: intermediate
+prerequisites: ['01-protocol-inspector']
 ---
 
 # Exp-02: 从零实现 MCP Server
@@ -18,8 +19,8 @@ difficulty: intermediate
 - **传输层**：stdio（标准输入/输出）和 Streamable HTTP 两种传输方式
 
 > **零基础？** 推荐先阅读：
-> - [MCP 入门指南](/topics/mcp-deep-dive/concepts/mcp-basics)
-> - [能力协商机制](/topics/mcp-deep-dive/concepts/capabilities)
+> - [MCP 入门指南](/agent/mcp-deep-dive/concepts/mcp-basics)
+> - [能力协商机制](/agent/mcp-deep-dive/concepts/capabilities)
 
 ## 🎯 学习目标
 
@@ -30,7 +31,8 @@ difficulty: intermediate
 - [ ] **Resources 实现**：暴露数据源、支持 URI 模板、处理读取请求
 - [ ] **Prompts 实现**：创建可复用的提示词模板、支持参数化
 - [ ] **错误处理**：如何优雅地处理错误并返回给 Host
-- [ ] **双传输支持**：理解 stdio 和 HTTP 的差异及实现要点
+- [ ] **传输层理解**：理解 stdio 和 HTTP (SSE) 的差异及实现要点
+- [ ] **HTTP 集成**：了解如何将 Server 暴露为 HTTP 服务
 
 ## 💡 为什么需要这个实验？
 
@@ -116,171 +118,115 @@ src/
 
 #### Step 2: 实现 Tools
 
-**File Search Tool** (`src/tools/file-search.ts`)
+**文件结构**：
+- `src/tools/file-search.ts` - 文件内容搜索（grep 风格）
+- `src/tools/code-stats.ts` - 代码统计（LOC、语言分布）
 
-核心逻辑：
-1. 定义 Zod schema（输入验证）
-2. 递归遍历目录
-3. 用正则匹配文件内容
-4. 返回匹配结果（带上下文）
+**核心概念**：
 
-**关键代码片段**：
+每个 Tool 需要：
+1. **Zod Schema** - 定义输入参数和验证规则
+2. **execute 方法** - 实现工具逻辑
+3. **返回格式** - `{ content: [{ type: 'text', text: '...' }] }`
+
+**Zod Schema 示例** (`src/tools/file-search.ts`):
 ```typescript
-// #region Zod Schema
 export const FileSearchInputSchema = z.object({
   path: z.string().describe('Root directory to search in'),
   pattern: z.string().describe('Search pattern (string or regex)'),
   regex: z.boolean().default(false),
-  filePattern: z.string().optional(),
   maxResults: z.number().default(50),
 });
-// #endregion
 ```
 
-> **`.describe()` 是什么？**
-> Zod 的 `.describe()` 方法为字段添加人类可读的描述，这会被转换为 JSON Schema 的 `description` 字段，让 Host（如 Claude Desktop）在 UI 中显示参数提示。
+> **`.describe()` 的作用**：为字段添加人类可读的描述，转换为 JSON Schema 后，Host（如 Claude Desktop）会在 UI 中显示参数提示。
 
-// 实现搜索逻辑
-async execute(input: FileSearchInput): Promise<FileSearchResult[]> {
-  const results: FileSearchResult[] = [];
-  const searchRegex = this.buildRegex(input.pattern, input.regex);
-  await this.searchDirectory(input.path, searchRegex, input, results);
-  return results.slice(0, input.maxResults);
-}
-```
-
-**Code Stats Tool** (`src/tools/code-stats.ts`)
-
-核心逻辑：
-1. 遍历目录，统计文件
-2. 根据扩展名识别编程语言
-3. 解析代码行、注释行、空白行
-4. 返回汇总统计
-
-**关键点**：
-- 不同语言的注释语法不同（`//` vs `#` vs `/* */`）
-- 需要正确处理多行注释（如 `/* ... */`）
+**完整实现**：参见 `src/tools/file-search.ts` 和 `src/tools/code-stats.ts`
 
 #### Step 3: 实现 Resources
 
-**Project Files Resource** (`src/resources/project-files.ts`)
+**文件**：`src/resources/project-files.ts`
 
-核心逻辑：
-1. `list` 操作：列出目录中的文件（支持递归）
-2. `read` 操作：读取文件内容并返回
+**核心概念**：
+- **list 操作**：列出可用资源（支持 URI 模板）
+- **read 操作**：读取资源内容
 
-**URI 格式**：
-```
-file:///absolute/path/to/file
-```
+**URI 格式**：`file:///absolute/path/to/file`
 
-**关键代码**：
+**关键模式**：
 ```typescript
-async read(input: { uri: string }): Promise<{ uri: string; content: string }> {
-  // 解析 URI
+async read(input: { uri: string }) {
   const match = input.uri.match(/^file:\/\/(.+)$/);
   const filePath = decodeURIComponent(match[1]);
-
-  // 读取文件
   const content = await fs.readFile(filePath, 'utf-8');
-
   return { uri: input.uri, content };
 }
 ```
 
-> **为什么需要 URI 模板？**
-> URI 模板（如 `file://{path}`）允许 Resources 接收**运行时参数**。Host 可以在调用时替换模板变量，让同一个 Resource 能访问不同的文件或数据源，类似于 REST API 的路径参数。
+> **URI 模板**：`file://{path}` 允许运行时参数替换，类似 REST API 的路径参数。
 
 #### Step 4: 实现 Prompts
 
-**Code Review Prompt** (`src/prompts/code-review.ts`)
+**文件**：`src/prompts/code-review.ts`
 
-核心逻辑：
-1. 接收参数（文件路径、关注领域、严重级别）
-2. 读取文件内容（可选）
-3. 生成结构化的代码审查提示词
+**核心概念**：
+- 接收参数（文件路径、关注领域、严重级别）
+- 生成结构化的提示词（`messages` 数组）
 
-**Prompt 模板示例**：
+**Prompt 输出示例**：
 ```text
 # Code Review Request
 
 ## File: /path/to/file.ts
 
-Please review this file with focus on:
-- correctness
-- maintainability
-
+Please review with focus on: correctness, maintainability
 **Minimum severity:** MEDIUM
 
 ## File Content
-\`\`\`
 [actual file content here]
-\`\`\`
 
 ## Review Guidelines
-[structured review request]
+[structured request]
 ```
-
-#### Step 4.5: SDK 导入说明
-
-**必需的导入**：
-```typescript
-// Server 和传输层
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-
-// 请求类型常量（用于 setRequestHandler）
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-  ListResourcesRequestSchema,
-  ReadResourceRequestSchema,
-  ListPromptsRequestSchema,
-  GetPromptRequestSchema,
-} from '@modelcontextprotocol/sdk/types.js';
-
-// Schema 验证
-import { z } from 'zod';
-```
-
-**完整可运行代码**：参见 `src/server.ts`（约 380 行，包含完整实现）
 
 #### Step 5: 组装 Server
 
-**主服务器** (`src/server.ts`)
+**文件**：`src/server.ts`（约 380 行完整实现）
 
-核心步骤：
-1. 创建 `Server` 实例，声明能力（tools, resources, prompts）
+**核心步骤**：
+1. 创建 `Server` 实例，声明能力
 2. 注册请求处理器（`setRequestHandler`）
-3. 连接传输层（stdio 或 HTTP）
-4. 保持进程运行
+3. 连接传输层（`StdioServerTransport`）
 
-**关键代码**：
+**初始化模式**：
 ```typescript
-// 创建 Server
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
+
 this.server = new Server(
   { name: 'mcp-server-demo', version: '1.0.0' },
   { capabilities: { tools: {}, resources: {}, prompts: {} } }
 );
 
-// 注册 Tool 处理器
-// CallToolRequestSchema 来自 @modelcontextprotocol/sdk/types.js
 this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
-
-  switch (name) {
-    case 'file_search':
-      const input = FileSearchInputSchema.parse(args);
-      const results = await this.fileSearchTool.execute(input);
-      return { content: [{ type: 'text', text: JSON.stringify(results) }] };
-    // ...
-  }
+  // 路由到具体工具...
 });
 
-// 启动 stdio 传输
 const transport = new StdioServerTransport();
 await this.server.connect(transport);
 ```
+
+#### Step 5.5: HTTP (SSE) 传输（参考）
+
+本实验实现 stdio 传输。HTTP (SSE) 适用于远程访问和 Web 集成，详见 [stdio 传输原理](/agent/mcp-deep-dive/concepts/stdio-transport/#与-http-sse-的对比)。
+
+**简要对比**：
+- **stdio**：本地部署、CLI 工具、快速原型
+- **HTTP (SSE)**：远程访问、Web 集成、多客户端
+
+> **注意**：本实验代码专注于 stdio。HTTP 实现需要 Express/Hono 服务器、会话管理、CORS 处理。
 
 #### Step 6: 运行和测试
 
@@ -476,23 +422,16 @@ await server.sendNotification('notifications/progress', {
 
 ### Q5: HTTP 传输和 stdio 有什么区别？
 
-**Answer**：
+**Answer**：详见 [stdio 传输原理](/agent/mcp-deep-dive/concepts/stdio-transport/#与-http-sse-的对比) 中的完整对比表。
 
-| 特性 | stdio | HTTP (SSE) |
-|------|-------|------------|
-| **连接模式** | 单向流（单连接） | 双向（Server-Sent Events） |
-| **会话管理** | 不需要（每个进程一个连接） | 需要（多路复用） |
-| **适用场景** | 本地开发、CLI | 远程调用、Web 集成 |
-| **复杂度** | 简单 | 复杂（需要会话 ID、CORS） |
-
-本实验只实现了 stdio，HTTP 需要额外实现会话管理。
+简要总结：stdio 适合本地开发和 CLI 工具，HTTP (SSE) 适合远程调用和 Web 集成。
 
 ## 📚 延伸阅读
 
 - [MCP Server 规范](https://modelcontextprotocol.io/docs/specification/)
 - [SDK 文档](https://github.com/modelcontextprotocol/typescript-sdk)
-- [实验 01：协议拦截器](/topics/mcp-deep-dive/experiments/01-protocol-inspector/) — 用 Inspector 调试你的 Server
-- [实验 03：从零实现 MCP Client](/topics/mcp-deep-dive/experiments/03-mcp-client/) — 理解 Host 侧的视角
+- [实验 01：协议拦截器](/agent/mcp-deep-dive/experiments/01-protocol-inspector/) — 用 Inspector 调试你的 Server
+- [实验 03：从零实现 MCP Client](/agent/mcp-deep-dive/experiments/03-mcp-client/) — 理解 Host 侧的视角
 
 ## 🎓 下一步
 

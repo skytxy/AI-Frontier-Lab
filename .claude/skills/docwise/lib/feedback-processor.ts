@@ -71,7 +71,7 @@ export class FeedbackProcessor {
     if (cat.includes('new_gap_type') || cat.includes('paradigm') || cat.includes('methodology')) {
       return {
         level: 3,
-        target: 'docs/frameworks/docwise-paradigm.md',
+        target: '.docwise/paradigm.md',
         description: gap.description,
         category: gap.category,
         applied: false,
