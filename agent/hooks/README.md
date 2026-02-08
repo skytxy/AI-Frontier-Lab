@@ -635,6 +635,28 @@ jobs:  # 这些是 Hook 处理函数
 
 ---
 
+## 实验指南
+
+### Exp-01: 任务完成通知 Hook
+
+学习如何配置 Claude Code Hooks 实现跨平台桌面通知，在任务完成时自动提醒你。
+
+**内容包括**：
+- Hook 事件流和生命周期
+- macOS/Linux/Windows 通知脚本
+- Hook 配置和测试方法
+- 高级配置（频率限制、条件通知）
+
+> [进入实验](/topics/hooks/experiments/01-notification-hook/)
+
+### 前置知识
+
+在开始实验前，建议先阅读：
+
+- [Claude Code Hooks 入门](/topics/hooks/concepts/hooks-basics) - Hooks 基础概念和配置
+
+---
+
 ## 参考资料
 
 ### 经典阅读
@@ -644,7 +666,7 @@ jobs:  # 这些是 Hook 处理函数
 
 ### AI Agent 相关
 - [LangChain Callbacks](https://python.langchain.com/docs/modules/callbacks/) - LangChain 的 Hook 系统
-- [Claude Code Hooks](https://docs.anthropic.com/claude-code/hooks)
+- [Claude Code Hooks](https://code.claude.com/docs/en/hooks-guide) - Claude Code Hooks 官方文档
 
 ### 设计模式
 - [Middleware Pattern](https://middlewarepattern.com/) - 中间件模式深度解析

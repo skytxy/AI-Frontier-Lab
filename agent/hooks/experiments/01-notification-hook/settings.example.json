@@ -1,0 +1,29 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/notify-macos.sh",
+            "_comment_linux": "Use ~/.claude/notify-linux.sh on Linux",
+            "_comment_windows": "Use pwsh -File ~/.claude/notify-windows.ps1 on Windows",
+            "_comment_python": "Or use python3 ~/.claude/notify.py for cross-platform"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "osascript -e 'display notification \"Claude Code finished responding\" with title \"Task Complete\" sound name \"Glass\"'",
+            "_comment": "macOS only - notify when Claude finishes a response"
+          }
+        ]
+      }
+    ]
+  }
+}
