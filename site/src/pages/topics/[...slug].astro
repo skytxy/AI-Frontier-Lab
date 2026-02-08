@@ -5,7 +5,9 @@ import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
   const agentTopics = await getCollection('agent');
-  return agentTopics.map((topic) => {
+  // Filter out _template directory
+  const filteredTopics = agentTopics.filter(topic => !topic.id.startsWith('_template/'));
+  return filteredTopics.map((topic) => {
     const slug = topic.id.replace(/\/readme$/, '');
     return {
       params: { slug },

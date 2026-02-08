@@ -5,6 +5,9 @@ import { getCollection } from 'astro:content';
 const allAgentTopics = await getCollection('agent');
 const allAlgoTopics = await getCollection('algo');
 
+// Filter out _template directory from agent topics
+const filteredAgentTopics = allAgentTopics.filter(topic => !topic.id.startsWith('_template/'));
+
 // Sort by sort field, then by date
 const sortBySort = (items) =>
   items.sort((a, b) => {
@@ -13,7 +16,7 @@ const sortBySort = (items) =>
     return aSort - bSort;
   });
 
-const agentTopics = sortBySort(allAgentTopics);
+const agentTopics = sortBySort(filteredAgentTopics);
 const algoTopics = sortBySort(allAlgoTopics);
 ---
 
