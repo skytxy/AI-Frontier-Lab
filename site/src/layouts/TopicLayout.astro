@@ -29,7 +29,7 @@ const { title, category, difficulty, date, status, tags } = Astro.props;
 
 <style>
   .topic-header {
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
     padding-bottom: 1.5rem;
     border-bottom: 1px solid var(--border);
   }
@@ -38,58 +38,70 @@ const { title, category, difficulty, date, status, tags } = Astro.props;
     display: flex;
     gap: 0.75rem;
     align-items: center;
-    margin-bottom: 0.75rem;
-    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    font-size: 0.8rem;
+    font-weight: 500;
   }
 
   .category {
     background: var(--accent);
     color: #fff;
-    padding: 0.15rem 0.5rem;
-    border-radius: 4px;
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    letter-spacing: 0.02em;
   }
 
   .difficulty {
-    padding: 0.15rem 0.5rem;
-    border-radius: 4px;
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--radius-sm);
     font-weight: 600;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
   }
 
-  .difficulty[data-level="beginner"] { background: #d4edda; color: #155724; }
-  .difficulty[data-level="intermediate"] { background: #fff3cd; color: #856404; }
-  .difficulty[data-level="advanced"] { background: #f8d7da; color: #721c24; }
-
-  /* Dark mode adjustments for difficulty badges */
-  :global([data-effective-theme="dark"]) .difficulty[data-level="beginner"] {
-    background: #1a4d1a;
-    color: #90ee90;
+  .difficulty[data-level="beginner"] {
+    background: var(--success);
+    color: #fff;
   }
-  :global([data-effective-theme="dark"]) .difficulty[data-level="intermediate"] {
-    background: #4d3d00;
-    color: #ffd700;
+  .difficulty[data-level="intermediate"] {
+    background: var(--warning);
+    color: #1a1a2e;
   }
-  :global([data-effective-theme="dark"]) .difficulty[data-level="advanced"] {
-    background: #4d1a1a;
-    color: #ff6b6b;
+  .difficulty[data-level="advanced"] {
+    background: var(--danger);
+    color: #fff;
   }
 
   .status {
-    padding: 0.15rem 0.5rem;
-    border-radius: 4px;
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--radius-sm);
     border: 1px solid var(--border);
+    font-weight: 500;
   }
 
-  .status[data-status="draft"] { border-color: var(--text-muted); color: var(--text-muted); }
-  .status[data-status="in-progress"] { border-color: var(--accent); color: var(--accent); }
-  .status[data-status="published"] { border-color: var(--accent); color: var(--accent); }
+  .status[data-status="draft"] {
+    border-color: var(--text-muted);
+    color: var(--text-muted);
+  }
+  .status[data-status="in-progress"] {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .status[data-status="published"], .status[data-status="completed"] {
+    border-color: var(--success);
+    color: var(--success);
+  }
 
   time {
     color: var(--text-muted);
+    font-size: 0.8rem;
   }
 
   h1 {
-    font-size: 2rem;
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
     margin-bottom: 0.5rem;
+    line-height: 1.2;
   }
 
   .tags {
@@ -100,67 +112,127 @@ const { title, category, difficulty, date, status, tags } = Astro.props;
 
   .tag {
     color: var(--accent);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 500;
   }
 
+  /* Content styling */
   .topic-content {
+    font-size: 1.05rem;
     line-height: 1.8;
   }
 
   .topic-content :global(h2) {
-    margin-top: 2rem;
-    margin-bottom: 0.75rem;
-    font-size: 1.5rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border);
   }
 
   .topic-content :global(h3) {
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .topic-content :global(h4) {
     margin-top: 1.5rem;
     margin-bottom: 0.5rem;
   }
 
   .topic-content :global(p) {
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
   }
 
   .topic-content :global(ul), .topic-content :global(ol) {
-    margin-bottom: 1rem;
-    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-left: 1.75rem;
+  }
+
+  .topic-content :global(li) {
+    margin-bottom: 0.5rem;
   }
 
   .topic-content :global(a) {
     color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: all 0.2s ease;
+  }
+
+  .topic-content :global(a:hover) {
+    border-bottom-color: var(--accent);
   }
 
   .topic-content :global(code) {
-    background: var(--code-bg);
-    padding: 0.1rem 0.3rem;
-    border-radius: 3px;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
     font-size: 0.9em;
   }
 
   .topic-content :global(pre) {
     background: var(--code-bg);
-    color: var(--text-primary);
-    padding: 1rem;
-    border-radius: 8px;
+    color: var(--code-text);
+    padding: 1.25rem;
+    border-radius: var(--radius-md);
     overflow-x: auto;
-    margin-bottom: 1rem;
+    margin: 1.5rem 0;
     border: 1px solid var(--border);
   }
 
   .topic-content :global(pre code) {
     background: none;
     padding: 0;
+    color: inherit;
   }
 
-  /* Force CJK-aware monospace font for all code blocks, including Shiki */
+  /* Special callout boxes */
+  .topic-content :global(blockquote) {
+    margin: 1.5rem 0;
+    padding: 1rem 1.25rem;
+    background: var(--blockquote-bg);
+    border-left: 4px solid var(--blockquote-border);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    color: var(--blockquote-text);
+  }
+
+  .topic-content :global(blockquote p:last-child) {
+    margin-bottom: 0;
+  }
+
+  /* Syntax highlighting fix */
   .topic-content :global(.astro-code) {
-    font-family: 'Noto Sans Mono CJK SC', 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Droid Sans Mono', 'Source Code Pro', 'Menlo', 'Consolas', 'Courier New', monospace !important;
+    font-family: 'IBM Plex Mono', 'Noto Sans Mono CJK SC', monospace !important;
     font-variant-ligatures: none;
     letter-spacing: 0;
   }
 
   .topic-content :global(.astro-code .line) {
-    font-family: 'Noto Sans Mono CJK SC', 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Droid Sans Mono', 'Source Code Pro', 'Menlo', 'Consolas', 'Courier New', monospace !important;
+    font-family: 'IBM Plex Mono', 'Noto Sans Mono CJK SC', monospace !important;
+  }
+
+  /* Tables */
+  .topic-content :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+  }
+
+  .topic-content :global(th), .topic-content :global(td) {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .topic-content :global(th) {
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--bg-tertiary);
+  }
+
+  .topic-content :global(tr:hover) {
+    background: var(--bg-tertiary);
   }
 </style>

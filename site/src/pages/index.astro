@@ -15,93 +15,96 @@ const sortBySort = (items) =>
 
 const agentTopics = sortBySort(allAgentTopics);
 const algoTopics = sortBySort(allAlgoTopics);
-
-// View state (client-side)
 ---
 
 <BaseLayout title="AI Frontier Lab - 探索AI前沿技术的实验室">
   <section class="hero">
+    <div class="hero-bg"></div>
     <div class="hero-content">
-      <div class="hero-badge">🚀 探索 AI 前沿</div>
+      <div class="hero-badge">
+        <span class="badge-icon">◈</span>
+        <span>AI Frontiers</span>
+      </div>
       <h1>AI Frontier Lab</h1>
       <p class="hero-description">
-        一个持续演进的 AI 前沿技术探索实验室，涵盖 Agent 基础设施与核心算法研究
+        持续演进的 AI 前沿技术探索实验室
       </p>
-      <p class="hero-subtitle">双向探索：Agent 工程与算法前沿</p>
+      <p class="hero-subtitle">Agent 基础设施 · 核心算法研究 · 深度实验</p>
       <div class="hero-stats">
         <div class="stat">
           <div class="stat-number">{agentTopics.length}</div>
-          <div class="stat-label">Agent 主题</div>
+          <div class="stat-label">Agent Topics</div>
         </div>
+        <div class="stat-divider"></div>
         <div class="stat">
           <div class="stat-number">{algoTopics.length}</div>
-          <div class="stat-label">Algo 主题</div>
+          <div class="stat-label">Algo Topics</div>
         </div>
+        <div class="stat-divider"></div>
         <div class="stat">
-          <div class="stat-number">Expert</div>
-          <div class="stat-label">难度等级</div>
+          <div class="stat-number">∞</div>
+          <div class="stat-label">Learning</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- View Toggle -->
-  <section class="view-toggle-section">
-    <div class="view-toggle">
-      <button id="view-all" class="view-btn active" data-view="all">全部</button>
-      <button id="view-agent" class="view-btn" data-view="agent">Agent</button>
-      <button id="view-algo" class="view-btn" data-view="algo">Algo</button>
-    </div>
-  </section>
-
   <!-- Agent Topics -->
-  <section id="agent-section" class="topics-section">
+  <section class="topics-section">
     <div class="section-header">
-      <h2>Agent 主题</h2>
-      <p class="section-description">Agent 基础设施：MCP、Workflows、LSP、Hooks</p>
+      <div class="section-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+          <line x1="12" y1="8" x2="12" y2="16"/>
+          <line x1="8" y1="12" x2="16" y2="12"/>
+        </svg>
+      </div>
+      <div>
+        <h2>Agent Topics</h2>
+        <p class="section-description">Agent 基础设施：MCP、Workflows、LSP、Hooks</p>
+      </div>
     </div>
 
-    <div class="topics-grid" id="agent-grid">
+    <div class="topics-grid">
       {agentTopics.map((topic) => (
         <a href={`/topics/${topic.id.replace(/\/readme$/, '')}/`} class="topic-card" data-type="agent">
+          <div class="card-accent"></div>
           <div class="card-header">
-            <span class="topic-id">{topic.id}</span>
+            <span class="topic-id">{topic.id.split('/')[0]}</span>
             <span class="difficulty-badge" data-level={topic.data.difficulty}>
-              {topic.data.difficulty === 'beginner' && '🟢 初级'}
-              {topic.data.difficulty === 'intermediate' && '🟡 中级'}
-              {topic.data.difficulty === 'advanced' && '🔴 高级'}
+              {topic.data.difficulty === 'beginner' && 'Beginner'}
+              {topic.data.difficulty === 'intermediate' && 'Intermediate'}
+              {topic.data.difficulty === 'advanced' && 'Advanced'}
             </span>
           </div>
 
           <h3 class="topic-title">{topic.data.title}</h3>
 
           <div class="topic-meta">
-            <span class="category-tag">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 002.828 0l-7-7A1.994 1.994 0 0012.01 3H7a4 4 0 110-8h2a2 2 0 012 2v12a2 2 0 01-2 2H7a4 4 0 01-4-4V7a4 4 0 014-4z"/>
-              </svg>
-              {topic.data.category}
+            <span class="category-badge">{topic.data.category}</span>
+            <span class="status-indicator" data-status={topic.data.status}>
+              <span class="status-dot"></span>
+              {topic.data.status === 'completed' && '完成'}
+              {topic.data.status === 'in-progress' && '进行中'}
+              {topic.data.status === 'published' && '已发布'}
+              {topic.data.status === 'draft' && '草稿'}
             </span>
-            <span class="status-badge" data-status={topic.data.status}>
-              {topic.data.status === 'completed' && '✓ 已完成'}
-              {topic.data.status === 'in-progress' && '🔄 进行中'}
-              {topic.data.status === 'published' && '📦 已发布'}
-            </span>
+          </div>
+
+          <div class="topic-tags">
+            {topic.data.tags.slice(0, 3).map((tag: string) => (
+              <span class="tag">#{tag}</span>
+            ))}
+            {topic.data.tags.length > 3 && (
+              <span class="tag-more">+{topic.data.tags.length - 3}</span>
+            )}
           </div>
 
           <div class="topic-footer">
             <time datetime={topic.data.date.toISOString()}>
               {topic.data.date.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })}
             </time>
-          </div>
-
-          <div class="topic-tags">
-            {topic.data.tags.slice(0, 4).map((tag: string) => (
-              <span class="tag">#{tag}</span>
-            ))}
-            {topic.data.tags.length > 4 && (
-              <span class="tag-more">+{topic.data.tags.length - 4}</span>
-            )}
+            <span class="card-arrow">→</span>
           </div>
         </a>
       ))}
@@ -109,22 +112,31 @@ const algoTopics = sortBySort(allAlgoTopics);
   </section>
 
   <!-- Algo Topics -->
-  <section id="algo-section" class="topics-section">
+  <section class="topics-section algo-section">
     <div class="section-header">
-      <h2>Algo 主题</h2>
-      <p class="section-description">核心算法：深度学习、Transformer、强化学习</p>
+      <div class="section-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M8 12h8m-4-4v8"/>
+        </svg>
+      </div>
+      <div>
+        <h2>Algo Topics</h2>
+        <p class="section-description">核心算法：深度学习、Transformer、强化学习</p>
+      </div>
     </div>
 
-    <div class="topics-grid" id="algo-grid">
+    <div class="topics-grid">
       {algoTopics.length > 0 ? (
         algoTopics.map((topic) => (
           <a href={`/algo/${topic.id.replace(/\/readme$/, '')}/`} class="topic-card" data-type="algo">
+            <div class="card-accent"></div>
             <div class="card-header">
-              <span class="topic-id">{topic.id}</span>
+              <span class="topic-id">{topic.id.split('/')[0]}</span>
               <span class="difficulty-badge" data-level={topic.data.difficulty}>
-                {topic.data.difficulty === 'beginner' && '🟢 初级'}
-                {topic.data.difficulty === 'intermediate' && '🟡 中级'}
-                {topic.data.difficulty === 'advanced' && '🔴 高级'}
+                {topic.data.difficulty === 'beginner' && 'Beginner'}
+                {topic.data.difficulty === 'intermediate' && 'Intermediate'}
+                {topic.data.difficulty === 'advanced' && 'Advanced'}
               </span>
             </div>
 
@@ -141,111 +153,371 @@ const algoTopics = sortBySort(allAlgoTopics);
             )}
 
             <div class="topic-meta">
-              <span class="category-tag">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 002.828 0l-7-7A1.994 1.994 0 0012.01 3H7a4 4 0 110-8h2a2 2 0 012 2v12a2 2 0 01-2 2H7a4 4 0 01-4-4V7a4 4 0 014-4z"/>
-                </svg>
-                {topic.data.category}
+              <span class="category-badge">{topic.data.category}</span>
+              <span class="status-indicator" data-status={topic.data.status}>
+                <span class="status-dot"></span>
+                {topic.data.status === 'completed' && '完成'}
+                {topic.data.status === 'in-progress' && '进行中'}
+                {topic.data.status === 'published' && '已发布'}
+                {topic.data.status === 'draft' && '草稿'}
               </span>
-              <span class="status-badge" data-status={topic.data.status}>
-                {topic.data.status === 'completed' && '✓ 已完成'}
-                {topic.data.status === 'in-progress' && '🔄 进行中'}
-                {topic.data.status === 'published' && '📦 已发布'}
-              </span>
+            </div>
+
+            <div class="topic-tags">
+              {topic.data.tags.slice(0, 3).map((tag: string) => (
+                <span class="tag">#{tag}</span>
+              ))}
+              {topic.data.tags.length > 3 && (
+                <span class="tag-more">+{topic.data.tags.length - 3}</span>
+              )}
             </div>
 
             <div class="topic-footer">
               <time datetime={topic.data.date.toISOString()}>
                 {topic.data.date.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })}
               </time>
-            </div>
-
-            <div class="topic-tags">
-              {topic.data.tags.slice(0, 4).map((tag: string) => (
-                <span class="tag">#{tag}</span>
-              ))}
-              {topic.data.tags.length > 4 && (
-                <span class="tag-more">+{topic.data.tags.length - 4}</span>
-              )}
+              <span class="card-arrow">→</span>
             </div>
           </a>
         ))
       ) : (
         <div class="empty-state">
-          <p>Algo 主题即将推出...</p>
+          <div class="empty-icon">🔬</div>
+          <p>Algo 主题即将推出</p>
           <p class="empty-hint">第一个 Algo 主题正在规划中</p>
         </div>
       )}
     </div>
   </section>
-
-  <section class="features">
-    <h2>为什么选择 AI Frontier Lab?</h2>
-    <div class="features-grid">
-      <div class="feature">
-        <div class="feature-icon">🤖</div>
-        <h3>Agent 基础设施</h3>
-        <p>MCP 协议、Agent Workflows、LSP 增强、Hooks 系统</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">🧮</div>
-        <h3>核心算法研究</h3>
-        <p>深度学习、Transformer、强化学习前沿论文与实现</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">🔬</div>
-        <h3>深度研究</h3>
-        <p>不满足于表面，深入协议内部与算法原理</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">⚡</div>
-        <h3>实战导向</h3>
-        <p>可运行的代码胜过千言万语，每个实验都是完整项目</p>
-      </div>
-    </div>
-  </section>
 </BaseLayout>
 
 <style>
-  /* View Toggle */
-  .view-toggle-section {
-    max-width: 1200px;
-    margin: -2rem auto 2rem;
-    padding: 0 1rem;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: var(--bg-primary);
+  /* Hero Section */
+  .hero {
+    position: relative;
+    text-align: center;
+    padding: 5rem 1rem 4rem;
+    overflow: hidden;
   }
 
-  .view-toggle {
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--accent) 0%, #764ba2 50%, #667eea 100%);
+    opacity: 0.1;
+    z-index: -1;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    opacity: 0.1;
+    animation: pulse 8s ease-in-out infinite;
+  }
+
+  .hero-content {
+    position: relative;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--accent-subtle);
+    color: var(--accent);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    border: 1px solid var(--accent-subtle);
+  }
+
+  .badge-icon {
+    font-size: 1rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 3.5rem);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    letter-spacing: -0.03em;
+  }
+
+  .hero-description {
+    font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-bottom: 2.5rem;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .hero-stats {
     display: flex;
     justify-content: center;
-    gap: 0.5rem;
-    padding: 0.5rem;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    font-family: 'IBM Plex Mono', monospace;
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .stat-divider {
+    width: 1px;
+    height: 2rem;
+    background: var(--border);
+  }
+
+  /* Topics Section */
+  .topics-section {
+    max-width: 1200px;
+    margin: 0 auto 4rem;
+    padding: 0 1rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .section-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
     background: var(--bg-secondary);
-    border-radius: 12px;
     border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--accent);
+    flex-shrink: 0;
   }
 
-  .view-btn {
-    padding: 0.5rem 1.5rem;
-    border: none;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--text-secondary);
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.2s;
+  .section-header h2 {
+    font-size: 1.75rem;
+    margin-bottom: 0.25rem;
   }
 
-  .view-btn:hover {
-    background: var(--bg-tertiary);
+  .section-description {
+    font-size: 0.9rem;
+    color: var(--text-muted);
   }
 
-  .view-btn.active {
+  .topics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .topic-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-accent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
     background: var(--accent);
-    color: white;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .topic-card:hover .card-accent {
+    transform: scaleX(1);
+  }
+
+  .topic-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .topic-card[data-type="algo"] .card-accent {
+    background: var(--warning);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .topic-id {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg-tertiary);
+    padding: 0.3rem 0.5rem;
+    border-radius: var(--radius-sm);
+    letter-spacing: 0.05em;
+  }
+
+  .difficulty-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.3rem 0.6rem;
+    border-radius: var(--radius-sm);
+    font-family: 'IBM Plex Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .difficulty-badge[data-level="beginner"] {
+    background: var(--success);
+    color: #fff;
+  }
+  .difficulty-badge[data-level="intermediate"] {
+    background: var(--warning);
+    color: #1a1a2e;
+  }
+  .difficulty-badge[data-level="advanced"] {
+    background: var(--danger);
+    color: #fff;
+  }
+
+  .topic-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    line-height: 1.4;
+  }
+
+  .topic-meta {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .category-badge {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    background: var(--bg-tertiary);
+    padding: 0.3rem 0.6rem;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+  }
+
+  .status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: var(--radius-sm);
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text-muted);
+  }
+
+  .status-indicator[data-status="completed"] .status-dot {
+    background: var(--success);
+  }
+  .status-indicator[data-status="in-progress"] .status-dot {
+    background: var(--warning);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  .status-indicator[data-status="published"] .status-dot {
+    background: var(--info);
+  }
+
+  .topic-tags {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-top: auto;
+    margin-bottom: 1rem;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    color: var(--accent);
+    background: var(--accent-subtle);
+    padding: 0.25rem 0.5rem;
+    border-radius: 50px;
+    font-weight: 500;
+  }
+
+  .tag-more {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .topic-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+  }
+
+  .topic-footer time {
+    font-size: 0.75rem;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--text-muted);
+  }
+
+  .card-arrow {
+    font-size: 1.25rem;
+    color: var(--accent);
+    transition: transform 0.2s ease;
+  }
+
+  .topic-card:hover .card-arrow {
+    transform: translateX(4px);
   }
 
   /* Paper Info */
@@ -253,8 +525,8 @@ const algoTopics = sortBySort(allAlgoTopics);
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-bottom: 0.75rem;
-    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
     color: var(--text-secondary);
   }
 
@@ -268,7 +540,7 @@ const algoTopics = sortBySort(allAlgoTopics);
 
   .paper-year {
     color: var(--text-muted);
-    font-size: 0.85rem;
+    font-size: 0.75rem;
   }
 
   /* Empty State */
@@ -277,8 +549,13 @@ const algoTopics = sortBySort(allAlgoTopics);
     text-align: center;
     padding: 4rem 2rem;
     background: var(--bg-secondary);
-    border-radius: 12px;
     border: 2px dashed var(--border);
+    border-radius: var(--radius-lg);
+  }
+
+  .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
   }
 
   .empty-state p {
@@ -291,341 +568,40 @@ const algoTopics = sortBySort(allAlgoTopics);
     font-size: 0.9rem;
   }
 
-  /* Hero Section */
-  .hero {
-    text-align: center;
-    padding: 4rem 1rem 3rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    margin-bottom: 3rem;
-  }
-
-  .hero-content {
-    max-width: 800px;
-    margin: 0 auto;
-  }
-
-  .hero-badge {
-    display: inline-block;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 0.5rem 1rem;
-    border-radius: 50px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-    backdrop-filter: blur(10px);
-  }
-
-  .hero h1 {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 800;
-    margin-bottom: 1rem;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  }
-
-  .hero-description {
-    font-size: clamp(1rem, 2vw, 1.25rem);
-    line-height: 1.6;
-    margin-bottom: 1rem;
-    opacity: 0.95;
-  }
-
-  .hero-subtitle {
-    font-size: 1rem;
-    font-weight: 500;
-    opacity: 0.9;
-    margin-bottom: 2rem;
-  }
-
-  .hero-stats {
-    display: flex;
-    justify-content: center;
-    gap: 3rem;
-    margin-top: 2rem;
-  }
-
-  .stat {
-    text-align: center;
-  }
-
-  .stat-number {
-    font-size: 2rem;
-    font-weight: 800;
-    margin-bottom: 0.25rem;
-  }
-
-  .stat-label {
-    font-size: 0.875rem;
-    opacity: 0.9;
-  }
-
-  /* Topics Section */
-  .topics-section {
-    max-width: 1200px;
-    margin: 0 auto 3rem;
-    padding: 0 1rem;
-  }
-
-  .section-header {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-
-  .section-header h2 {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-    color: var(--text-primary);
-  }
-
-  .section-description {
-    color: var(--text-secondary);
-    font-size: 1rem;
-  }
-
-  .topics-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .topic-card {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.5rem;
-    text-decoration: none;
-    color: inherit;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    flex-direction: column;
+  /* Algo Section */
+  .algo-section {
     position: relative;
-    overflow: hidden;
   }
 
-  .topic-card::before {
+  .algo-section::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: -2rem;
     left: 0;
     right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #667eea, #764ba2);
-    transform: scaleX(0);
-    transition: transform 0.3s ease;
-  }
-
-  .topic-card:hover::before {
-    transform: scaleX(1);
-  }
-
-  .topic-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px var(--shadow);
-    border-color: var(--accent);
-  }
-
-  .topic-card[data-type="algo"]::before {
-    background: linear-gradient(90deg, #f59e0b, #ef4444);
-  }
-
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-
-  .topic-id {
-    font-family: 'Courier New', monospace;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    background: var(--bg-tertiary);
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-  }
-
-  .difficulty-badge {
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-  }
-
-  .difficulty-badge[data-level="beginner"] { background: #d4edda; color: #155724; }
-  .difficulty-badge[data-level="intermediate"] { background: #fff3cd; color: #856404; }
-  .difficulty-badge[data-level="advanced"] { background: #f8d7da; color: #721c24; }
-
-  .topic-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-bottom: 0.75rem;
-    color: var(--text-primary);
-    line-height: 1.4;
-  }
-
-  .topic-meta {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .category-tag {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    background: var(--bg-tertiary);
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-  }
-
-  .category-tag svg {
-    flex-shrink: 0;
-  }
-
-  .status-badge {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-weight: 600;
-  }
-
-  .status-badge[data-status="completed"] { background: #d4edda; color: #155724; }
-  .status-badge[data-status="in-progress"] { background: #fff3cd; color: #856404; }
-  .status-badge[data-status="published"] { background: #d1e7dd; color: #0c5460; }
-
-  .topic-footer {
-    margin-top: auto;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border);
-  }
-
-  .topic-footer time {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-  }
-
-  .topic-tags {
-    display: flex;
-    gap: 0.4rem;
-    flex-wrap: wrap;
-    margin-top: 1rem;
-  }
-
-  .tag {
-    font-size: 0.75rem;
-    color: #764ba2;
-    background: #f0f0ff;
-    padding: 0.2rem 0.5rem;
-    border-radius: 12px;
-  }
-
-  :global([data-effective-theme="dark"]) .tag {
-    background: #2a2a4a;
-    color: #a090c0;
-  }
-
-  .tag-more {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    font-style: italic;
-  }
-
-  /* Features Section */
-  .features {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 3rem 1rem;
-    background: var(--bg-secondary);
-    border-radius: 12px;
-  }
-
-  .features h2 {
-    text-align: center;
-    font-size: 1.75rem;
-    margin-bottom: 2rem;
-    color: var(--text-primary);
-  }
-
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .feature {
-    text-align: center;
-    padding: 1.5rem;
-    background: var(--bg-tertiary);
-    border-radius: 8px;
-    transition: transform 0.2s;
-  }
-
-  .feature:hover {
-    transform: translateY(-2px);
-  }
-
-  .feature-icon {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .feature h3 {
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-    color: var(--text-primary);
-  }
-
-  .feature p {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-    line-height: 1.5;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
   }
 
   /* Responsive */
   @media (max-width: 768px) {
     .hero-stats {
-      flex-direction: column;
-      gap: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .stat-divider {
+      display: none;
     }
 
     .topics-grid {
       grid-template-columns: 1fr;
     }
 
-    .features-grid {
-      grid-template-columns: 1fr;
+    .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
     }
   }
 </style>
-
-<script>
-  // View toggle functionality
-  const viewBtns = document.querySelectorAll('.view-btn');
-  const agentSection = document.getElementById('agent-section');
-  const algoSection = document.getElementById('algo-section');
-
-  viewBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const view = btn.dataset.view;
-
-      // Update active state
-      viewBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      // Toggle sections
-      if (view === 'all') {
-        agentSection.style.display = 'block';
-        algoSection.style.display = 'block';
-      } else if (view === 'agent') {
-        agentSection.style.display = 'block';
-        algoSection.style.display = 'none';
-      } else if (view === 'algo') {
-        agentSection.style.display = 'none';
-        algoSection.style.display = 'block';
-      }
-    });
-  });
-</script>

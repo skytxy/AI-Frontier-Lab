@@ -7,171 +7,335 @@ import BaseLayout from '../../../../layouts/BaseLayout.astro';
 export const getStaticPaths: GetStaticPaths = async () => {
   const concepts = await getCollection('concepts');
   const paths = concepts.map((concept) => {
-    // Extract topic ID and concept filename from the path
-    // Path format: topics/001-mcp-deep-dive/concepts/mcp-basics.md
     const pathParts = concept.id.split('/');
-    const topicId = pathParts[0]; // e.g., "001-mcp-deep-dive"
-    const conceptFile = pathParts[2]; // e.g., "mcp-basics.md"
-    const conceptId = conceptFile.replace('.md', ''); // e.g., "mcp-basics"
+    const topicId = pathParts[0];
+    const conceptFile = pathParts[2];
+    const conceptId = conceptFile.replace('.md', '');
+    const conceptNumber = String(concepts.indexOf(concept) + 1).padStart(2, '0');
 
     return {
       params: {
         id: topicId,
         concept: conceptId,
       },
-      props: { concept },
+      props: { concept, conceptNumber },
     };
   });
 
   return paths;
 };
 
-const { concept } = Astro.props;
+const { concept, conceptNumber } = Astro.props;
 const { Content } = await render(concept);
 
-// Build breadcrumb
+// Build breadcrumb with proper hierarchy
 const pathParts = concept.id.split('/');
 const topicId = pathParts[0];
 const conceptTitle = concept.data.title || concept.id.split('/').pop()?.replace('.md', '') || 'Concept';
+const conceptFileName = pathParts[2].replace('.md', '');
+
+// Get all concepts for this topic to build navigation
+const allConcepts = await getCollection('concepts');
+const topicConcepts = allConcepts.filter(c => c.id.startsWith(topicId + '/concepts/'));
+const currentIndex = topicConcepts.findIndex(c => c.id === concept.id);
+const prevConcept = currentIndex > 0 ? topicConcepts[currentIndex - 1] : null;
+const nextConcept = currentIndex < topicConcepts.length - 1 ? topicConcepts[currentIndex + 1] : null;
 ---
 
 <BaseLayout title={`${conceptTitle} - Concept`}>
   <nav class="breadcrumb">
     <a href="/">Home</a>
-    <span> / </span>
+    <span class="sep">/</span>
     <a href="/topics">Topics</a>
-    <span> / </span>
+    <span class="sep">/</span>
     <a href={`/topics/${topicId}`}>{topicId}</a>
-    <span> / </span>
+    <span class="sep">/</span>
     <span class="current">Concepts</span>
   </nav>
 
-  <main class="concept-page">
-    <article class="concept-content">
+  <article class="concept-page">
+    <div class="concept-header">
+      <div class="concept-meta">
+        <span class="concept-number">Concept {conceptNumber}</span>
+      </div>
+      <h1>{conceptTitle}</h1>
+    </div>
+
+    <div class="concept-content">
       <Content />
-    </article>
+    </div>
 
     <nav class="concept-nav">
-      <h2>相关概念</h2>
-      <ul>
-        <li><a href={`/topics/${topicId}`}>← 返回 {topicId}</a></li>
-      </ul>
+      {prevConcept && (
+        <a href={`/topics/${topicId}/concepts/${prevConcept.id.split('/').pop()?.replace('.md', '')}`} class="nav-prev">
+          <span class="nav-arrow">←</span>
+          <span class="nav-label">Previous</span>
+          <span class="nav-title">{prevConcept.data.title || prevConcept.id.split('/').pop()}</span>
+        </a>
+      )}
+      <a href={`/topics/${topicId}`} class="nav-up">
+        <span class="nav-icon">◈</span>
+        <span class="nav-label">Back to {topicId}</span>
+      </a>
+      {nextConcept && (
+        <a href={`/topics/${topicId}/concepts/${nextConcept.id.split('/').pop()?.replace('.md', '')}`} class="nav-next">
+          <span class="nav-label">Next</span>
+          <span class="nav-title">{nextConcept.data.title || nextConcept.id.split('/').pop()}</span>
+          <span class="nav-arrow">→</span>
+        </a>
+      )}
     </nav>
-  </main>
+
+    <div class="all-concepts">
+      <h3>All Concepts in {topicId}</h3>
+      <div class="concepts-grid">
+        {topicConcepts.map((c, idx) => {
+          const cId = c.id.split('/').pop()?.replace('.md', '');
+          const isActive = c.id === concept.id;
+          return (
+            <a href={`/topics/${topicId}/concepts/${cId}`} class={`concept-card ${isActive ? 'active' : ''}`}>
+              <span class="concept-index">{String(idx + 1).padStart(2, '0')}</span>
+              <span class="concept-name">{c.data.title || cId}</span>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  </article>
 </BaseLayout>
 
 <style>
   .breadcrumb {
-    padding: 1rem 2rem;
-    background: var(--bg-tertiary);
-    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    align-items: center;
+    font-size: 0.85rem;
   }
 
   .breadcrumb a {
-    color: var(--accent);
+    color: var(--text-secondary);
     text-decoration: none;
+    transition: color 0.2s ease;
+    border: none;
   }
 
   .breadcrumb a:hover {
-    text-decoration: underline;
+    color: var(--accent);
+  }
+
+  .breadcrumb .sep {
+    color: var(--border);
   }
 
   .breadcrumb .current {
-    color: var(--text-secondary);
+    color: var(--text-muted);
+    font-weight: 500;
   }
 
   .concept-page {
     max-width: 800px;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 0;
+  }
+
+  .concept-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .concept-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .concept-number {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent);
+    padding: 0.25rem 0.6rem;
+    background: var(--accent-subtle);
+    border-radius: var(--radius-sm);
+    letter-spacing: 0.05em;
+  }
+
+  .concept-header h1 {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    margin: 0;
+    color: var(--text-primary);
   }
 
   .concept-content {
     line-height: 1.8;
+    font-size: 1.05rem;
   }
 
-  .concept-content pre {
+  .concept-content :global(h2) {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+  }
+
+  .concept-content :global(h3) {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.15rem;
+  }
+
+  .concept-content :global(p) {
+    margin-bottom: 1rem;
+  }
+
+  .concept-content :global(pre) {
     background: var(--code-bg);
+    color: var(--code-text);
     padding: 1rem;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     overflow-x: auto;
     margin: 1.5rem 0;
-    border: 1px solid var(--border);
   }
 
-  .concept-content code {
-    background: var(--code-bg);
-    color: var(--text-primary);
+  .concept-content :global(code) {
+    background: var(--bg-tertiary);
     padding: 0.2rem 0.4rem;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     font-size: 0.9em;
   }
 
-  .concept-content pre code {
-    background: transparent;
-    padding: 0;
-  }
-
-  .concept-content h1 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    color: var(--text-primary);
-  }
-
-  .concept-content h2 {
-    font-size: 1.5rem;
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-    color: var(--text-primary);
-    border-bottom: 2px solid var(--border);
-    padding-bottom: 0.5rem;
-  }
-
-  .concept-content h3 {
-    font-size: 1.25rem;
-    margin-top: 1.5rem;
-    margin-bottom: 0.75rem;
-    color: var(--text-secondary);
-  }
-
-  .concept-content ul, .concept-content ol {
-    margin: 1rem 0;
-    padding-left: 2rem;
-  }
-
-  .concept-content li {
-    margin-bottom: 0.5rem;
-  }
-
   .concept-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-top: 3rem;
     padding: 1.5rem;
     background: var(--bg-secondary);
-    border-radius: 8px;
     border: 1px solid var(--border);
-  }
-
-  .concept-nav h2 {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-    color: var(--text-primary);
-  }
-
-  .concept-nav ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .concept-nav li {
-    margin-bottom: 0.5rem;
+    border-radius: var(--radius-lg);
+    gap: 1rem;
   }
 
   .concept-nav a {
-    color: var(--accent);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
     text-decoration: none;
+    color: var(--text-secondary);
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+    flex: 1;
+    max-width: 250px;
   }
 
   .concept-nav a:hover {
-    text-decoration: underline;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+  }
+
+  .concept-nav .nav-up {
+    text-align: center;
+    flex: 0;
+    min-width: auto;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+
+  .nav-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+  }
+
+  .nav-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .nav-arrow {
+    font-size: 0.8rem;
+  }
+
+  .nav-icon {
+    font-size: 1.25rem;
+  }
+
+  .all-concepts {
+    margin-top: 3rem;
+  }
+
+  .all-concepts h3 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .concepts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .concept-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .concept-card:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--accent);
+  }
+
+  .concept-card.active {
+    border-color: var(--accent);
+    background: var(--accent-subtle);
+  }
+
+  .concept-index {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .concept-name {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+  }
+
+  .concept-card:hover .concept-name {
+    color: var(--accent);
+  }
+
+  @media (max-width: 640px) {
+    .concept-nav {
+      flex-direction: column;
+    }
+
+    .concept-nav .nav-up {
+      border: none;
+      order: -1;
+      width: 100%;
+      max-width: none;
+    }
+
+    .concepts-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
