@@ -1,4 +1,4 @@
-# Chapter Content Validator Skill - 完整设计理念
+# Docwise Skill - 完整设计理念
 
 > **版本**: 1.0.0
 > **日期**: 2026-02-08
@@ -24,7 +24,7 @@
 ### 2.1 Skill 是独立工具，不是项目脚本
 
 ```
-Skill (.claude/skills/chapter-content-validator/)
+Skill (.claude/skills/docwise/)
 ├── 经验库: 学习什么场景用什么协作方式
 ├── 执行引擎: 协调 Agent 完成验证/生成
 └── 反馈循环: 从结果中学习，持续优化
@@ -37,7 +37,7 @@ Skill (.claude/skills/chapter-content-validator/)
 ```
 +---------------------------------------------------------------+
 |              Paradigm (项目层方法论)                          |
-|    docs/frameworks/chapter-validation-paradigm.md              |
+|    docs/frameworks/docwise-paradigm.md              |
 |                                                               |
 |  定义:                                                        |
 |  - 什么是章节验证、为什么需要                                |
@@ -50,7 +50,7 @@ Skill (.claude/skills/chapter-content-validator/)
                            v
 +---------------------------------------------------------------+
 |                   Skill (通用协作引擎)                        |
-|    .claude/skills/chapter-content-validator/                   |
+|    .claude/skills/docwise/                   |
 |                                                               |
 |  能力:                                                        |
 |  - 经验库: 场景特征 → 协作模式的映射                           |
@@ -66,7 +66,7 @@ Skill (.claude/skills/chapter-content-validator/)
                            v
 +---------------------------------------------------------------+
 |           Chapter Config (可选，按需创建)                     |
-|    .chapter-validation/config.yaml 或章节目录下的配置          |
+|    .docwise/config.yaml 或章节目录下的配置          |
 |                                                               |
 |  定义:                                                        |
 |  - 章节类型 (academic_paper / technical_guide / ...)         |
@@ -275,7 +275,7 @@ site.dist/      # 生产构建输出
 ### 7.1 配置集中化
 
 ```
-.chapter-validation/
+.docwise/
 └── config.yaml          # 唯一的配置入口
 
 章节目录保持干净，无配置文件散落

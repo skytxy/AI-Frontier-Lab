@@ -16,7 +16,7 @@ The Skill (implementation) is generic and project-agnostic. This Paradigm (metho
 ```
 Paradigm (this document)
   -> Project methodology, dependencies, quality standards
-Skill (.claude/skills/chapter-content-validator/)
+Skill (.claude/skills/docwise/)
   -> Generic engine, experience store, mode selection
 Config (.docwise/config.yaml)
   -> Project-specific chapter types, sections, overrides
