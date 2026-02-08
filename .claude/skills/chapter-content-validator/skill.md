@@ -1,202 +1,198 @@
 ---
-description: 通过双Agent协作验证并完善章节内容。Learner Agent 尝试完成实战场景，发现知识缺口；Author Agent 负责补充内容。
+description: "Experience-driven collaboration engine for validating, generating, and optimizing educational content. Supports dynamic agent collaboration modes that evolve from execution history."
 
 parameters:
   chapter:
-    description: 章节目录路径（如 agent/mcp-deep-dive）
+    description: "Chapter path relative to project root (e.g. agent/mcp-deep-dive, algo/attention/self-attention)"
     type: string
     required: true
 
-  scenario_mode:
-    description: 场景模式：template(预设模板), freeform(自由描述), brainstorming(引导细化)
+  mode:
+    description: "Work mode: validate (check existing), generate (create from topic/paper), optimize (improve existing)"
     type: string
-    enum: [template, freeform, brainstorming]
-    default: template
+    enum: [validate, generate, optimize]
+    default: validate
 
   scenario:
-    description: 场景描述（freeform/brainstorming 模式）或场景名称（template 模式）
+    description: "Scenario description (freeform/brainstorming) or template name (template mode)"
     type: string
     required: false
 
-  preset_scenario:
-    description: 预设场景名称（当 scenario_mode=template 时使用）
+  scenario_mode:
+    description: "How to define the scenario: template (from config), freeform (user describes), brainstorming (interactive refinement)"
     type: string
+    enum: [template, freeform, brainstorming]
+    default: freeform
+
+  collaboration_mode:
+    description: "Override collaboration mode (default: auto-selected from experience)"
+    type: string
+    enum: [single-agent, dual-agent, triple-agent, parallel-agents]
     required: false
 
   max_iterations:
-    description: 最大迭代次数（默认5，防止无限循环）
+    description: "Maximum iteration count (default: 5)"
     type: number
     default: 5
 
-  review:
-    description: 查看指定迭代的建议详情（如 --review=iteration-1）
-    type: string
-    required: false
+  setup:
+    description: "Run interactive setup to create .chapter-validation/config.yaml"
+    type: boolean
+    default: false
 ---
 
 # Chapter Content Validator
 
-通过双 Agent 协作验证并完善章节内容的 Skill。让零基础学习者在实战中发现知识缺口，动态补全文档。
+Experience-driven collaboration engine that validates, generates, and optimizes educational content through dynamic multi-agent collaboration.
 
-## 核心理念
+## Core Philosophy
 
-> **"授人以鱼，不如授人以渔"** — 这不是一个文档验证工具，而是通过实战场景帮助学习者真正掌握知识的助手。
+> "Let Skill grow smarter with every execution."
 
-### 设计特点
+This is NOT a static linter. It is an evolving engine that:
+1. Learns which collaboration mode works best for which scenario
+2. Adapts to project structure via external config (not hardcoded)
+3. Supports three work modes: validate, generate, optimize
 
-1. **用户自定义场景** - 不限制难/易场景，用户可以描述自己遇到的实际应用需求
-2. **保留学习产物** - Learner 实际实现的代码可供用户参考（虽然不提交到仓库）
-3. **分层级反馈** - 自动应用文档修复，谨慎处理全局性修改
-4. **持续改进** - 每次执行都让 Skill 和范式变得更聪明
-
-## 工作流程
+## Three-Layer Architecture
 
 ```
-+-------------------------------------------------------------------+
-|                   Chapter Content Validator                     |
-+-------------------------------------------------------------------+
-|                                                                   |
-|  1. 用户定义场景 (template / freeform / brainstorming)           |
-|                                                                   |
-|  +--------------+          +--------------+                       |
-|  | Learner Agent|  -------> | Author Agent |                       |
-|  | (零基础学习者) |  发现缺口  |  (内容作者)  |                       |
-|  +--------------+          +--------------+                       |
-|         |                        |                               |
-|         v                        v                               |
-|  +-------------------------------------------------------+        |
-|  |           Chapter Content                              |        |
-|  |  - README.md, concepts/, experiments/                    |        |
-|  +-------------------------------------------------------+        |
-|                                                                   |
-|  2. 分层级反馈更新                                              |
-|     Level 1-2: 直接修改章节内容/配置                              |
-|     Level 3-4: 记录建议，等待确认                                |
-|                                                                   |
-+-------------------------------------------------------------------+
+Paradigm (docs/frameworks/chapter-validation-paradigm.md)
+  -> defines methodology, dependencies, quality standards
+Skill (this file + lib/)
+  -> generic engine, experience store, mode selection
+Config (.chapter-validation/config.yaml)
+  -> project-specific chapter types, sections, overrides
 ```
 
-## 场景模式
+## Execution Flow
 
-### 1. Template 模式（预设模板）
+### Step 1: Load Context
 
-使用章节配置文件中定义的预设场景：
+1. Read project config from `.chapter-validation/config.yaml`
+2. Read paradigm from `docs/frameworks/chapter-validation-paradigm.md`
+3. Load chapter-specific config (merged with defaults)
+4. Check chapter dependencies are met
 
-```bash
-/chapter-content-validator --chapter=agent/mcp-deep-dive --scenario_mode=template --preset_scenario=basic-tool
+### Step 2: Select Collaboration Mode
+
+Priority order:
+1. User override via `--collaboration_mode` parameter
+2. Experience store match (if confidence > 60%)
+3. Heuristic fallback based on work mode and content type
+
+Report the selection to the user:
+```
+[Mode] Experience pattern "academic-paper-high" (3 uses, 90% success)
+       recommends triple-agent. Confidence: 78%
 ```
 
-### 2. Freeform 模式（自由描述）
+### Step 3: Execute Work Mode
 
-直接描述你的实际需求：
-
-```bash
-/chapter-content-validator \
-  --chapter=agent/mcp-deep-dive \
-  --scenario_mode=freeform \
-  --scenario="我需要实现一个能批量重命名文件的 MCP Server，支持正则匹配模式"
+#### Validate Mode
+```
+Learner reads chapter content -> attempts scenario -> reports gaps
+Author analyzes gaps -> fixes content -> Learner retries
+Repeat until Learner completes or max_iterations reached
 ```
 
-### 3. Brainstorming 模式（引导细化）
-
-场景不清晰时，Skill 会通过自动化、上下文感知的问答逐步细化需求：
-
-```bash
-/chapter-content-validator \
-  --chapter=agent/mcp-deep-dive \
-  --scenario_mode=brainstorming \
-  --scenario="我想做一个 MCP Server"
+#### Generate Mode
+```
+Author generates initial content from topic/paper description
+Learner reads generated content -> attempts scenario -> reports gaps
+Author fixes gaps -> Learner retries
+Repeat until quality threshold met
 ```
 
-Skill 会根据章节类型（如 MCP、Skills、Algo 等）自动生成针对性的问题：
-- 这个 Server 主要用来做什么？
-- 需要哪些工具？
-- 有什么特殊的验证需求？
-
-**自动化特性**：问题生成是上下文感知的，不是僵硬的规则列表，会根据章节类型动态调整。
-
-## 分层级反馈机制
-
-每次执行后，Skill 会自动分类并处理反馈：
-
-| 级别 | 更新目标 | 影响范围 | 处理方式 |
-|------|----------|----------|----------|
-| **Level 1** | 章节内容 (concepts/, experiments/) | 单章节 | 直接修改，记录日志 |
-| **Level 2** | 章节配置 (.chapter-validator.yaml) | 单章节 | 直接修改，记录日志 |
-| **Level 3** | 范式文档 (paradigm.md) | 跨章节 | 记录建议，批量应用 |
-| **Level 4** | Skill 代码 (lib/*.ts) | 全局 | 记录建议，等待确认 |
-
-### 输出示例
-
-```markdown
-## 验证完成
-
-### 直接应用的修改 (Level 1-2)
-- [x] concepts/stdio-transport.md: 添加 console.error 日志说明
-- [x] .chapter-validator.yaml: 将验证标准从"能启动"调整为"能响应 tools/list"
-
-### 记录的建议 (Level 3-4)
-- [ ] paradigm.md: 添加新缺口类型 "dependency_missing"
-- [ ] skill.md: 优化 Learner 约束描述，强调"不能搜索互联网"
-
-### Level 3-4 重要建议自动提示
-对于高优先级的 Level 3-4 建议（如 prompt_clarity < 3），Agent 会主动提示并询问是否直接应用。
-较低优先级的建议仅记录在 validation-log.md 中供后续查看。
-
-### 查看详情
-运行 /chapter-content-validator --review=iteration-1 查看建议详情并决定是否应用
+#### Optimize Mode
+```
+Learner reads existing content with new requirements -> reports gaps
+Author optimizes content addressing new requirements
+Learner re-validates -> Repeat if needed
 ```
 
-## Agent 角色
+### Step 4: Agent Roles
 
-### Learner Agent (零基础学习者)
+**Learner Agent** (SubAgent with restricted context):
+- MUST NOT use external knowledge or internet
+- CAN ONLY read files within the chapter directory (and declared prerequisites)
+- Reports: completion status, knowledge gaps with exact locations, blockers
 
-**角色定位**：一个真正不懂当前章节主题的开发者
+**Author Agent** (SubAgent with full context):
+- Analyzes Learner's gap report
+- Creates/modifies content files to fill gaps
+- Reports: files changed, new gap categories discovered
 
-**约束**：
-- 不能搜索互联网
-- 不能使用外部知识
-- 只能查阅 Chapter 内的文档
+**Reviewer Agent** (triple-agent mode only):
+- Verifies mathematical formulas match paper
+- Checks code implementations match algorithms
+- Cross-references external sources
 
-**输出**：
-- 场景执行结果（成功/部分/失败）
-- 知识缺口报告（缺少什么、在哪里缺少）
+### Step 5: Feedback Processing
 
-### Author Agent (内容作者)
+Classify all feedback by impact level:
 
-**角色定位**：负责章节内容质量的作者
+| Level | Target | Action |
+|-------|--------|--------|
+| 1 | Chapter content | Apply directly during iteration |
+| 2 | Chapter config | Apply directly during iteration |
+| 3 | Paradigm doc | Record; prompt user if high priority |
+| 4 | Skill code | Record; prompt user if high priority |
 
-**能力**：
-- 分析 Learner 的缺口报告
-- 补充缺失的概念文档
-- 完善实验步骤
-- 修复代码示例
+### Step 6: Record & Learn
 
-## 输出文件
+After execution completes:
+1. Generate `validation-log.md` in chapter directory (ONCE, not incrementally)
+2. Update experience store with execution result
+3. Report significant Level 3-4 suggestions to user
 
-### validation-log.md
+## First-Time Setup
 
-在验证流程**结束时一次性生成**，记录在章节目录下，包含完整的迭代脉络：
+If .chapter-validation/config.yaml does not exist, the Skill will:
+1. Detect the missing configuration
+2. Show setup instructions (copy template OR run --setup)
+3. Offer to run with defaults if user continues
 
-```markdown
-# Chapter Validation Log
+### Interactive Setup (--setup flag)
 
-## Iteration 1: 实现文件批量重命名 Server
+When `--setup=true`, the Skill guides through configuration:
 
-### Gaps Found
-- stdio 传输日志方式未说明 (concepts/stdio-transport.md)
-- Zod schema 用法不清晰 (experiments/02-mcp-server/README.md)
+1. **Project Type**: What kind of content does this project have?
+   - Agent/Infrastructure (MCP, Skills, Workflows)
+   - Algorithms & Papers (CNN, Transformer, RL)
+   - General/Other
 
-### Fixes Applied (Level 1-2)
-- [x] concepts/stdio-transport.md: 添加"为什么不能用 console.log"章节
-- [x] experiments/02-mcp-server/README.md: 补充 Zod schema 定义示例
+2. **Content Structure**: Which directories contain chapter content?
+   - Default: [concepts/, experiments/, implementation/]
+   - User can specify custom directories
 
-### Suggestions Recorded (Level 3-4)
-- [ ] paradigm.md: 新增缺口类型 "api_integration_pattern"
-- [ ] skill.md: Learner 提示词需要更明确"零基础"的定义
-```
+3. **Dependencies**: Do chapters have prerequisite relationships?
+   - If yes: Prompt to define dependency graph
+   - If no: Skip dependency handling
 
-## 相关文档
+4. **Complexity**: Does your project include complex content requiring triple-agent?
+   - Academic papers with math formulas
+   - Proof-heavy algorithms
+   - If yes: Add triple-agent seed patterns
 
-- [范式文档](/docs/frameworks/chapter-validation-paradigm.md) - 通用方法论，可复用到其他章节
-- [MCP 章节配置示例](/agent/mcp-deep-dive/.chapter-validator.yaml)
+## Web Verification (when configured)
+
+When paradigm requires web verification:
+1. Build the site: `cd site && npm run build:no-check`
+2. Read built HTML to verify rendering
+3. Use @frontend-design skill if available for visual verification
+4. Isolation: use dedicated port (3001+) to avoid conflicts
+
+## Batch Execution
+
+For multiple chapters:
+1. Parse dependency graph from paradigm
+2. Topological sort to determine execution order
+3. Execute independent chapters in parallel batches
+4. Use @superpowers:dispatching-parallel-agents for parallelism
+
+## Related Documentation
+
+- Design philosophy: `docs/frameworks/chapter-validator-design.md`
+- Project paradigm: `docs/frameworks/chapter-validation-paradigm.md`
+- Project config: `.chapter-validation/config.yaml`
