@@ -37,6 +37,13 @@ When you discover a pattern, rule, or best practice during execution, learn it s
 ## Execution Flow
 
 ```
+STEP 0: LOAD SKILL-CREATOR (MANDATORY - DO NOT SKIP)
+
+**Before ANY execution**, use Skill tool to load skill-creator.
+This is NOT optional. Do NOT proceed until skill-creator is loaded.
+
+If this step is skipped, the update will violate skill-creator best practices.
+
 1. PARSE INPUT
    - Extract: lesson description from <args>
    - Detect: level (2|3|4) if not specified
@@ -76,6 +83,9 @@ When you discover a pattern, rule, or best practice during execution, learn it s
 
 **CRITICAL**: For Level 4 updates, ALWAYS load skill-creator before making changes.
 Do NOT rely on memory - the skill-creator guidance is authoritative.
+
+**MANDATORY**: The STEP 0 above requires loading skill-creator BEFORE any execution.
+If skill-creator is not loaded, STOP and load it first.
 
 ## Level Detection
 

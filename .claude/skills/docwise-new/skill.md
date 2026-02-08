@@ -33,6 +33,8 @@ parameters:
 
 Generate new educational content from scenario description via multi-agent collaboration.
 
+**CRITICAL**: When modifying this skill or any Docwise skill code, ALWAYS load skill-creator first. Use `/skill-creator:skill-creator` before making any changes to ensure compliance with best practices.
+
 ## When to Use
 
 Use this subcommand when:

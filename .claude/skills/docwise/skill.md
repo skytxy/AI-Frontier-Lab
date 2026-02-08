@@ -30,6 +30,8 @@ parameters:
 
 Experience-driven collaboration engine for validating, generating, and optimizing educational content. Matches scenarios to collaboration modes via `.docwise/config.yaml` seed patterns.
 
+**CRITICAL**: When modifying this skill or any Docwise skill code, ALWAYS load skill-creator first. Use `/skill-creator:skill-creator` before making any changes to ensure compliance with best practices.
+
 ## Quick Start
 
 Use subcommands for specific collaboration modes:
