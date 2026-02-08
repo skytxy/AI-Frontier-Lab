@@ -1,6 +1,8 @@
 ---
 description: "Experience-driven collaboration engine for validating, generating, and optimizing educational content. Supports dynamic agent collaboration modes that evolve from execution history."
 
+command: docwise
+
 parameters:
   chapter:
     description: "Chapter path relative to project root (e.g. agent/mcp-deep-dive, algo/attention/self-attention)"
