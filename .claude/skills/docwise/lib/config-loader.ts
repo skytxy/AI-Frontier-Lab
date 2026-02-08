@@ -1,6 +1,6 @@
 // .claude/skills/docwise/lib/config-loader.ts
 
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, readFileSync as readFileSyncNew, existsSync } from 'fs';
 import { join, resolve } from 'path';
 import type {
   ProjectConfig,
@@ -10,6 +10,8 @@ import type {
   DependencyGraph,
   QualityStandards,
   IsolationConfig,
+  ChapterOverview,
+  IsolationType,
 } from './types.js';
 
 /**
@@ -251,5 +253,196 @@ export class ConfigLoader {
 
     paradigm.dependencies.nodes = Array.from(nodes);
     return paradigm;
+  }
+
+  // --- Scenario System Extensions ---
+
+  /**
+   * Detect primary language for a chapter
+   */
+  detectChapterLanguage(chapterPath: string): 'python' | 'node' | 'rust' | 'go' | 'java' | 'cpp' | 'none' {
+    // Check config.yaml for explicit language declaration
+    const config = this.loadChapterConfig(chapterPath);
+    if ((config as any).language) {
+      return (config as any).language;
+    }
+
+    // Auto-detect from directory structure
+    const fullPath = join(this.projectRoot, chapterPath);
+
+    // Check for package.json (Node.js)
+    if (existsSync(join(fullPath, 'package.json'))) {
+      return 'node';
+    }
+
+    // Check for pyproject.toml, setup.py, requirements.txt (Python)
+    if (existsSync(join(fullPath, 'pyproject.toml')) ||
+        existsSync(join(fullPath, 'setup.py')) ||
+        existsSync(join(fullPath, 'requirements.txt'))) {
+      return 'python';
+    }
+
+    // Check for Cargo.toml (Rust)
+    if (existsSync(join(fullPath, 'Cargo.toml'))) {
+      return 'rust';
+    }
+
+    // Check for go.mod (Go)
+    if (existsSync(join(fullPath, 'go.mod'))) {
+      return 'go';
+    }
+
+    // Check for pom.xml or build.gradle (Java)
+    if (existsSync(join(fullPath, 'pom.xml')) ||
+        existsSync(join(fullPath, 'build.gradle'))) {
+      return 'java';
+    }
+
+    // Check for CMakeLists.txt or Makefile (C++)
+    if (existsSync(join(fullPath, 'CMakeLists.txt')) ||
+        existsSync(join(fullPath, 'Makefile'))) {
+      return 'cpp';
+    }
+
+    return 'none';
+  }
+
+  /**
+   * Get sandbox isolation type for a language
+   */
+  getSandboxIsolationType(language: string): IsolationType {
+    const isolationMap: Record<string, IsolationType> = {
+      'python': 'python-uv',
+      'node': 'node-local',
+      'rust': 'cargo',
+      'go': 'go-mod',
+      'java': 'maven',
+      'cpp': 'none',
+      'none': 'none'
+    };
+    return isolationMap[language] || 'none';
+  }
+
+  /**
+   * Load chapter overview from README.md
+   */
+  loadChapterOverview(chapterPath: string): ChapterOverview | null {
+    const readmePath = join(this.projectRoot, chapterPath, 'README.md');
+
+    if (!existsSync(readmePath)) {
+      return null;
+    }
+
+    const content = readFileSync(readmePath, 'utf-8');
+    const frontmatter = this.extractFrontmatter(content);
+
+    // Extract status from frontmatter
+    const status = frontmatter.status || 'draft';
+
+    // Extract overview from first few sections
+    const whatIs = this.extractWhatIs(content);
+    const whatFor = this.extractWhatFor(content);
+
+    return {
+      what_is: whatIs,
+      what_for: whatFor,
+      status: status
+    };
+  }
+
+  private extractFrontmatter(content: string): Record<string, any> {
+    const frontmatterRegex = /^---\n([\s\S]*?)\n---/m;
+    const match = content.match(frontmatterRegex);
+
+    if (!match) return {};
+
+    const lines = match[1].split('\n');
+    const result: Record<string, any> = {};
+
+    for (const line of lines) {
+      const [key, ...valueParts] = line.split(':');
+      if (key && valueParts.length > 0) {
+        const value = valueParts.join(':').trim();
+        // Handle various YAML formats
+        if (value.startsWith('[') && value.endsWith(']')) {
+          result[key.trim()] = value.slice(1, -1).split(',').map((v: string) => v.trim());
+        } else {
+          result[key.trim()] = value;
+        }
+      }
+    }
+
+    return result;
+  }
+
+  private extractWhatIs(content: string): string {
+    // Look for first heading or paragraph that describes the technology
+    const lines = content.split('\n');
+    let inContent = false;
+
+    for (const line of lines) {
+      if (line.startsWith('---')) {
+        if (inContent) break;
+        inContent = true;
+        continue;
+      }
+
+      if (inContent && line.trim() && !line.startsWith('#')) {
+        return line.trim();
+      }
+
+      if (line.startsWith('# ')) {
+        return line.slice(2).trim();
+      }
+    }
+
+    return 'Unknown topic';
+  }
+
+  private extractWhatFor(content: string): string[] {
+    const useCases: string[] = [];
+    const useCasePatterns = [
+      /(?:用于|用途|应用|Used for|Use case)[:：]\s*([^\n]+)/i,
+      /(?:场景|scenario)[:：]\s*([^\n]+)/i,
+    ];
+
+    for (const pattern of useCasePatterns) {
+      const matches = content.matchAll(new RegExp(pattern, 'gi'));
+      for (const match of matches) {
+        if (match[1]) {
+          const useCase = match[1].trim();
+          if (useCase && !useCases.includes(useCase)) {
+            useCases.push(useCase);
+          }
+        }
+      }
+    }
+
+    // Fallback: look for bullet lists near the beginning
+    if (useCases.length === 0) {
+      const lines = content.split('\n');
+      let inList = false;
+
+      for (let i = 0; i < Math.min(50, lines.length); i++) {
+        const line = lines[i].trim();
+
+        if (line.startsWith('- ') || line.startsWith('* ')) {
+          inList = true;
+          useCases.push(line.slice(1).trim());
+        } else if (inList && line === '') {
+          break;
+        }
+      }
+    }
+
+    return useCases.slice(0, 4); // Max 4 use cases
+  }
+
+  /**
+   * Check if chapter status is 'completed' and should warn user
+   */
+  requiresCompletedWarning(chapterPath: string): boolean {
+    const overview = this.loadChapterOverview(chapterPath);
+    return overview?.status === 'completed';
   }
 }
