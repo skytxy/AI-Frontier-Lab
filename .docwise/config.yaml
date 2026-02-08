@@ -59,6 +59,7 @@ chapters:
   # --- Agent chapters ---
   agent/mcp-deep-dive:
     type: technical_guide
+    language: node        # Primary language for sandbox isolation
     sections: [concepts/, experiments/]
     scenarios:
       basic-tool:
@@ -72,28 +73,34 @@ chapters:
 
   agent/skills:
     type: technical_guide
+    language: node
     sections: [platform-comparison/, experiments/]
 
   agent/agent-workflows:
     type: technical_guide
+    language: node
     sections: [framework-survey/, experiments/]
 
   agent/lsp-enhancement:
     type: technical_guide
+    language: node
     sections: [protocol-analysis/, prototypes/]
 
   # --- Algo chapters ---
   algo/foundations/gradient-descent:
     type: technical_guide
+    language: python
     sections: [concepts/, implementation/]
 
   algo/foundations/backpropagation:
     type: technical_guide
+    language: python
     sections: [concepts/, implementation/]
     prerequisites: [algo/foundations/gradient-descent]
 
   algo/attention/self-attention:
     type: academic_paper
+    language: python
     sections: [paper-summary/, implementation/, experiments/]
     prerequisites: [algo/foundations/backpropagation]
     scenarios:
@@ -104,6 +111,7 @@ chapters:
 
   algo/attention/attention-is-all-you-need:
     type: academic_paper
+    language: python
     sections: [paper-summary/, implementation/, experiments/]
     prerequisites: [algo/attention/self-attention]
     collaboration_mode: triple-agent
