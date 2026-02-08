@@ -37,41 +37,93 @@ Validate chapter content quality via dual-agent collaboration.
    - Extract: chapter, focus (links/logic/content/all)
    - Detect: complexity
 
-2. MATCH PATTERN (.docwise/config.yaml -> seed_patterns)
-   - Find seed_pattern matching validate + complexity
-   - Get recommended_mode (single for simple, dual/triple for complex)
+2. SHOW OVERVIEW (NEW)
+   - Check document status (draft/in-progress/published/completed)
+   - Display: 【是什么】【有什么用】
+   - If status=completed: show warning, require confirmation
 
-3. CONFIRM MODE
-   - Show matched pattern and recommended mode
-   - User can accept or override
+3. GENERATE SCENARIO (NEW)
+   - Analyze chapter type (Agent/Algo)
+   - WebSearch for practical examples
+   - Generate scenario + core topics
+   - Show scenario confirmation dialog
 
-4. EXECUTE WITH TASK TOOL (ITERATIVE LOOP)
+4. CONFIRM SCENARIO (NEW)
+   - User can accept or adjust scenario/topics
+   - Generate sandbox directory name based on scenario
+
+5. SETUP SANDBOX (NEW)
+   - Detect chapter language (python/node/rust/go/java/cpp/none)
+   - Create sandbox directory (.docwise/sandbox/XXX-description/)
+   - Setup language isolation (.venv, node_modules, etc.)
+
+6. EXECUTE WITH TASK TOOL (ITERATIVE LOOP)
    Loop (max_iterations from config, default 5):
 
    a) Spawn Learner Agent (subagent_type=general-purpose)
       * Reads chapter content (zero-knowledge)
-      * Checks according to focus:
-        - links: External HTTP status, internal file existence
-        - logic: Consistency, contradictions, missing steps
-        - content: Completeness, clarity
-      * Reports: completion status, issues with locations
+      * Executes practical task according to documentation (not just checks!)
+      * Records: which steps clear, which blockers encountered
+      * Reports: completion status, issues, findings
 
    b) Check Learner's completion status
-      * If COMPLETE (no issues): END iteration
+      * If COMPLETE: Generate artifacts (README, learning-log)
       * If issues found: Continue
 
-   c) Spawn Author Agent (if --fix is true)
+   c) Spawn Author Agent (if --fix is true and issues not critical)
+      * Prioritize: critical > important > minor
+      * Show change summary for confirmation
       * Fixes reported issues
       * Reports: files changed
 
    d) Increment iteration counter, loop back to (a)
 
-5. (triple-agent only) Spawn Reviewer Agent
+7. (triple-agent only) Spawn Reviewer Agent
    * Verifies technical accuracy of fixes
    * If issues found: spawn Author to fix, then Learner to re-validate
+
+8. GENERATE LEARNER ARTIFACTS (NEW)
+   - Create README.md in sandbox (topics, findings, gaps)
+   - Create learning-log.md (execution process, learnings)
+   - Preserve code/ and validation/ directories
 ```
 
 **Critical**: The loop is **Learner → Author → Learner → Author → ...** until Learner confirms COMPLETE (no issues).
+
+## Scenario Confirmation Output
+
+When scenario is generated, display:
+
+```
+🎯 实操场景确认
+─────────────────────────────────
+章节: [chapter name]
+
+【场景描述 - 你要做什么】
+[detailed scenario description for beginners]
+
+【核心议题 - 重点学习什么】
+1. [Topic one]: [description]
+2. [Topic two]: [description]
+
+【协作方式 - Agent 如何帮你】
+  Learner Agent: Execute task according to documentation
+  Author Agent: Fix issues found by Learner (if --fix)
+  Reviewer Agent: Verify technical accuracy (triple-agent mode)
+
+【你将获得 - 学习成果】
+  ✓ Validation report showing what works/doesn't
+  ✓ Learning notes documenting gaps and difficulties
+  ✓ Working code reference (if applicable)
+
+【执行说明 - 代码放哪里】
+  Sandbox: .docwise/sandbox/[id]-[description]/
+  Language isolation: [type] (.venv, node_modules, etc.)
+  Directory won't be overwritten
+
+─────────────────────────────────
+这个场景 OK 吗？[Y/n/修改场景/调整议题]
+```
 
 ## Check Categories
 
