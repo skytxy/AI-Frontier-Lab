@@ -30,9 +30,9 @@ Complete execution flow for the `:improve` subcommand.
    - Use AskUserQuestion tool to present scenario confirmation
    - Wait for user response before proceeding
    - Options should be:
-     * "执行验证" - Execute the validation scenario
-     * "调整重点" - Modify the validation focus
-     * "取消" - Cancel the improvement
+     * "Execute" - Run the validation scenario
+     * "Adjust" - Modify the validation focus
+     * "Cancel" - Cancel the improvement
 
 **CRITICAL**: This step MUST use AskUserQuestion tool and wait for response.
 Do NOT proceed without user confirmation.
@@ -40,15 +40,15 @@ Do NOT proceed without user confirmation.
 **AskUserQuestion options format**:
 ```yaml
 questions:
-  - question: "确认场景：[scenario description]"
-    header: "场景确认"
+  - question: "Confirm scenario: [scenario description]"
+    header: "Scenario Confirmation"
     options:
-      - label: "执行验证"
+      - label: "Execute"
         description: "[brief description of what will happen]"
-      - label: "调整重点"
-        description: "修改验证方向或范围"
-      - label: "取消"
-        description: "放弃本次改进"
+      - label: "Adjust"
+        description: "Modify validation focus or scope"
+      - label: "Cancel"
+        description: "Cancel this improvement"
     multiSelect: false
 ```
 
