@@ -1,5 +1,5 @@
 ---
-description: 通过双Agent协作验证并并并完善章节内容。Learner Agent 尝试完成实战场景，发现知识缺口；Author Agent 负责补充内容。
+description: 通过双Agent协作验证并完善章节内容。Learner Agent 尝试完成实战场景，发现知识缺口；Author Agent 负责补充内容。
 
 parameters:
   chapter:
@@ -7,19 +7,19 @@ parameters:
     type: string
     required: true
 
-  scenario:
-    description: 实战场景类型
+  scenario_mode:
+    description: 场景模式：template(预设模板), freeform(自由描述), brainstorming(引导细化)
     type: string
-    enum: [tool, integration, data]
-    default: tool
+    enum: [template, freeform, brainstorming]
+    default: template
 
-  simple_scenario:
-    description: 简单场景描述（如"实现一个文件批量重命名Server"）
+  scenario:
+    description: 场景描述（freeform/brainstorming 模式）或场景名称（template 模式）
     type: string
     required: false
 
-  complex_scenario:
-    description: 复杂场景描述（如"实现一个GitHub API集成Server"）
+  preset_scenario:
+    description: 预设场景名称（当 scenario_mode=template 时使用）
     type: string
     required: false
 
@@ -27,175 +27,170 @@ parameters:
     description: 最大迭代次数（默认5，防止无限循环）
     type: number
     default: 5
+
+  review:
+    description: 查看指定迭代的建议详情（如 --review=iteration-1）
+    type: string
+    required: false
 ---
 
 # Chapter Content Validator
 
-通过双 Agent 协作验证并完善章节内容的 Skill。
+通过双 Agent 协作验证并完善章节内容的 Skill。让零基础学习者在实战中发现知识缺口，动态补全文档。
 
-## 核心理念：持续改进反馈循环
+## 核心理念
 
-> **"Skill 本身也在学习中"** — 每次验证执行都是对 Skill 本身的测试和改进机会。
+> **"授人以鱼，不如授人以渔"** — 这不是一个文档验证工具，而是通过实战场景帮助学习者真正掌握知识的助手。
 
-本 Skill 处于早期创建阶段，难免存在未考虑到的边界情况。因此，我们在验证流程中加入了**反馈循环机制**：
+### 设计特点
 
-### 反馈收集机制
+1. **用户自定义场景** - 不限制难/易场景，用户可以描述自己遇到的实际应用需求
+2. **保留学习产物** - Learner 实际实现的代码可供用户参考（虽然不提交到仓库）
+3. **分层级反馈** - 自动应用文档修复，谨慎处理全局性修改
+4. **持续改进** - 每次执行都让 Skill 和范式变得更聪明
 
-每次执行验证时，主 Agent 会：
-1. 收集 Learner Agent 的执行反馈（哪些步骤顺利、哪些卡住）
-2. 收集 Author Agent 的修复反馈（哪些类型的缺口容易/难修复）
-3. 记录发现的 Skill 自身问题（提示词不够清晰、流程有缺陷等）
-
-### 反馈格式
-
-执行后生成的报告会包含：
-
-```markdown
-## Skill 自身反馈
-
-### Learner 反馈
-- [ ] 提示词清晰度：能否准确理解"零基础"约束？
-- [ ] 场景定义：场景描述是否足够具体？
-- [ ] 缺口识别：是否正确识别了真正的知识缺口？
-
-### Author 反馈
-- [ ] 缺口分类：当前4种分类是否足够？
-- [ ] 修复策略：哪些类型的缺口修复困难？
-- [ ] 工具调用：是否需要更多 Skill 辅助？
-
-### 流程改进建议
-- [ ] 发现的新问题
-- [ ] 建议的新功能
-- [ ] 需要调整的参数
-```
-
-### 版本迭代
-
-- **v1.0.0** (当前): 初始版本，基础双 Agent 协作
-- **v1.1.0**: 根据首次 MCP 验证反馈改进
-- **v1.2.0**: 根据其他章节验证反馈改进
-
----
-
-## 工作原理
+## 工作流程
 
 ```
 +-------------------------------------------------------------------+
 |                   Chapter Content Validator                     |
 +-------------------------------------------------------------------+
 |                                                                   |
+|  1. 用户定义场景 (template / freeform / brainstorming)           |
+|                                                                   |
 |  +--------------+          +--------------+                       |
 |  | Learner Agent|  -------> | Author Agent |                       |
-|  | (零基础程序员) |  发现缺口  |  (内容作者)  |                       |
+|  | (零基础学习者) |  发现缺口  |  (内容作者)  |                       |
 |  +--------------+          +--------------+                       |
 |         |                        |                               |
 |         v                        v                               |
 |  +-------------------------------------------------------+        |
 |  |           Chapter Content                              |        |
-|  |  - README.md                                           |        |
-|  |  - concepts/*.md (知识库)                              |        |
-|  |  - experiments/*/README.md (实验)                     |        |
+|  |  - README.md, concepts/, experiments/                    |        |
 |  +-------------------------------------------------------+        |
+|                                                                   |
+|  2. 分层级反馈更新                                              |
+|     Level 1-2: 直接修改章节内容/配置                              |
+|     Level 3-4: 记录建议，等待确认                                |
+|                                                                   |
 +-------------------------------------------------------------------+
 ```
 
-## 使用方法
+## 场景模式
 
-### 基础用法
+### 1. Template 模式（预设模板）
+
+使用章节配置文件中定义的预设场景：
 
 ```bash
-# 验证 MCP 章节
-/chapter-content-validator --chapter=agent/mcp-deep-dive
-
-# 指定场景类型
-/chapter-content-validator --chapter=agent/mcp-deep-dive --scenario=integration
+/chapter-content-validator --chapter=agent/mcp-deep-dive --scenario_mode=template --preset_scenario=basic-tool
 ```
 
-### 自定义场景
+### 2. Freeform 模式（自由描述）
+
+直接描述你的实际需求：
 
 ```bash
 /chapter-content-validator \
   --chapter=agent/mcp-deep-dive \
-  --simple-scenario="实现一个文件批量处理 Server" \
-  --complex-scenario="实现一个 GitHub API 集成 Server"
+  --scenario_mode=freeform \
+  --scenario="我需要实现一个能批量重命名文件的 MCP Server，支持正则匹配模式"
+```
+
+### 3. Brainstorming 模式（引导细化）
+
+场景不清晰时，Skill 会通过问答逐步细化需求：
+
+```bash
+/chapter-content-validator \
+  --chapter=agent/mcp-deep-dive \
+  --scenario_mode=brainstorming \
+  --scenario="我想做一个 MCP Server"
+```
+
+然后 Skill 会问：
+- 这个 Server 主要用来做什么？
+- 需要哪些工具？
+- 有什么特殊的验证需求？
+
+## 分层级反馈机制
+
+每次执行后，Skill 会自动分类并处理反馈：
+
+| 级别 | 更新目标 | 影响范围 | 处理方式 |
+|------|----------|----------|----------|
+| **Level 1** | 章节内容 (concepts/, experiments/) | 单章节 | 直接修改，记录日志 |
+| **Level 2** | 章节配置 (.chapter-validator.yaml) | 单章节 | 直接修改，记录日志 |
+| **Level 3** | 范式文档 (paradigm.md) | 跨章节 | 记录建议，批量应用 |
+| **Level 4** | Skill 代码 (lib/*.ts) | 全局 | 记录建议，等待确认 |
+
+### 输出示例
+
+```markdown
+## 验证完成
+
+### 直接应用的修改 (Level 1-2)
+- [x] concepts/stdio-transport.md: 添加 console.error 日志说明
+- [x] .chapter-validator.yaml: 将验证标准从"能启动"调整为"能响应 tools/list"
+
+### 记录的建议 (Level 3-4)
+- [ ] paradigm.md: 添加新缺口类型 "dependency_missing"
+- [ ] skill.md: 优化 Learner 约束描述，强调"不能搜索互联网"
+
+### 查看详情
+运行 /chapter-content-validator --review=iteration-1 查看建议详情并决定是否应用
 ```
 
 ## Agent 角色
 
-### Learner Agent (零基础程序员)
+### Learner Agent (零基础学习者)
 
-**约束**:
+**角色定位**：一个真正不懂当前章节主题的开发者
+
+**约束**：
 - 不能搜索互联网
 - 不能使用外部知识
 - 只能查阅 Chapter 内的文档
 
-**输出**: 知识缺口报告
-- 缺失点位置 (哪个文件、哪一步)
-- 缺失信息类型 (概念/步骤/代码)
-- 影响说明 (导致无法完成哪个场景)
+**输出**：
+- 场景执行结果（成功/部分/失败）
+- 知识缺口报告（缺少什么、在哪里缺少）
 
 ### Author Agent (内容作者)
 
-**能力**:
+**角色定位**：负责章节内容质量的作者
+
+**能力**：
 - 分析 Learner 的缺口报告
 - 补充缺失的概念文档
 - 完善实验步骤
 - 修复代码示例
 
-## 输出格式
+## 输出文件
 
-### 知识缺口报告
+### validation-log.md
+
+记录在章节目录下，包含完整的迭代脉络：
 
 ```markdown
-## 知识缺口报告
+# Chapter Validation Log
 
-### 缺失点 1: XXX
-- **位置**: concepts/xxx.md
-- **问题**: 当前内容只解释了概念 X，但没有说明如何应用
-- **影响**: 无法完成 Simple Scenario 的第 3 步
-- **建议**: 添加一个代码示例展示...
-```
+## Iteration 1: 实现文件批量重命名 Server
 
-### 验证结果摘要
+### Gaps Found
+- stdio 传输日志方式未说明 (concepts/stdio-transport.md)
+- Zod schema 用法不清晰 (experiments/02-mcp-server/README.md)
 
-```
-=== Chapter Validation Summary ===
-Status: PASSED/FAILED
-Iterations: 3
-Simple Scenario: PASSED
-Complex Scenario: PASSED
-Gaps Resolved: 5
-Gaps Remaining: 0
-```
+### Fixes Applied (Level 1-2)
+- [x] concepts/stdio-transport.md: 添加"为什么不能用 console.log"章节
+- [x] experiments/02-mcp-server/README.md: 补充 Zod schema 定义示例
 
-## 章节配置文件
-
-每个章节可以定义 `.chapter-validator.yaml`:
-
-```yaml
-validation:
-  experiments:
-    - experiments/01-protocol-inspector
-    - experiments/02-mcp-server
-
-  prerequisites:
-    - TypeScript
-    - Node.js
-    - "Reading concepts/*.md"
-
-  scenarios:
-    simple:
-      type: tool
-      description: "实现一个文件批量处理 Server"
-      verify: "Server 能响应 tools/list 并返回自定义工具"
-
-    complex:
-      type: integration
-      description: "实现一个 GitHub API 集成 Server"
-      verify: "能调用 GitHub API 并返回 issue 列表"
+### Suggestions Recorded (Level 3-4)
+- [ ] paradigm.md: 新增缺口类型 "api_integration_pattern"
+- [ ] skill.md: Learner 提示词需要更明确"零基础"的定义
 ```
 
 ## 相关文档
 
-- [完整范式文档](/docs/frameworks/chapter-validation-paradigm.md)
-- [MCP 章节示例](/agent/mcp-deep-dive/.chapter-validator.yaml)
+- [范式文档](/docs/frameworks/chapter-validation-paradigm.md) - 通用方法论，可复用到其他章节
+- [MCP 章节配置示例](/agent/mcp-deep-dive/.chapter-validator.yaml)
