@@ -147,12 +147,14 @@ When issues are discovered **in Docwise itself** (the skill system, not chapter 
 
 | Practice | Requirement | Anti-Pattern |
 |----------|-------------|---------------|
+| **Project-agnostic** | Skill MUST NOT contain project-specific rules | Hardcoding `/topics/`, directory names, project-specific paths |
 | **Progressive disclosure** | SKILL.md <5k words, details in `references/` | 200+ line skill.md with everything inline |
 | **Description quality** | "Use when..." in frontmatter | Vague descriptions |
 | **Naming clarity** | Verbs that indicate action (check, learn, improve) | Abstract nouns (record, note) |
 | **Structure** | frontmatter + imperative body | Missing frontmatter or passive voice |
 | **No version history** | SKILL.md is timeless | `## Version`, `## Changelog` sections |
 | **Path references** | Relative to skill bundle | Absolute paths like `~/.claude/skills/` |
+| **Reference paradigm** | Project-specific rules reference `.docwise/paradigm.md` | Embedding project rules in skill |
 
 **Before updating Docwise**, run through skill-creator Step 4 (Edit the Skill):
 1. Is the frontmatter complete with `name`, `description`, `command`?
@@ -160,6 +162,7 @@ When issues are discovered **in Docwise itself** (the skill system, not chapter 
 3. Is the content structured with progressive disclosure?
 4. Should detailed content move to `references/`?
 5. Are all referenced paths relative and valid?
+6. **CRITICAL**: Does this contain ANY project-specific content? If yes, move to paradigm or config.
 
 ### Feedback Loop Pattern
 

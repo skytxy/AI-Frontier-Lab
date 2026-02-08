@@ -104,6 +104,7 @@ Add to `Gap Categories` table:
 
 | Practice | Requirement | Anti-Pattern |
 |----------|-------------|---------------|
+| **Project-agnostic** | Skill MUST NOT contain project-specific rules | Hardcoding `/topics/`, directory names, project-specific paths |
 | **Progressive disclosure** | SKILL.md <5k words, details in `references/` | 200+ line skill.md with everything inline |
 | **Description quality** | "Use when..." in frontmatter | Vague descriptions |
 | **Naming clarity** | Verbs that indicate action (check, learn, improve) | Abstract nouns (record, note) |
@@ -117,6 +118,7 @@ Add to `Gap Categories` table:
 3. Is the content structured with progressive disclosure?
 4. Should detailed content move to `references/`?
 5. Are all referenced paths relative and valid?
+6. **CRITICAL**: Does this contain ANY project-specific content? If yes, move to paradigm or config.
 
 Update targets:
 - `.claude/skills/docwise/skill.md` (main skill, keep <100 lines)
