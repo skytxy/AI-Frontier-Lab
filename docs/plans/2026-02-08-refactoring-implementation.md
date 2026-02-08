@@ -211,7 +211,7 @@ mv topics/004-hooks agent/agent-004-hooks
 **Step 2: 验证迁移**
 
 Run: `ls agent/`
-Expected: `agent-mcp-deep-dive  agent-002-agent-workflows  agent-003-lsp-enhancement  agent-004-hooks  _template`
+Expected: `mcp-deep-dive  agent-workflows  lsp-enhancement  hooks  _template`
 
 **Step 3: 验证 topics 目录为空（除 README.md）**
 
@@ -230,10 +230,10 @@ git commit -m "refactor: migrate existing topics to agent/ directory"
 ### Task 3: 更新 frontmatter 添加 sort 字段
 
 **Files:**
-- Modify: `agent/agent-mcp-deep-dive/README.md`
-- Modify: `agent/agent-002-agent-workflows/README.md`
-- Modify: `agent/agent-003-lsp-enhancement/README.md`
-- Modify: `agent/agent-004-hooks/README.md`
+- Modify: `agent/mcp-deep-dive/README.md`
+- Modify: `agent/agent-workflows/README.md`
+- Modify: `agent/lsp-enhancement/README.md`
+- Modify: `agent/hooks/README.md`
 
 **Step 1: 读取 agent-001 frontmatter**
 
@@ -252,17 +252,17 @@ sort: 2026.01
 # agent-002
 sed -i '' '/^status:/a\
 sort: 2026.02
-' agent/agent-002-agent-workflows/README.md
+' agent/agent-workflows/README.md
 
 # agent-003
 sed -i '' '/^status:/a\
 sort: 2026.03
-' agent/agent-003-lsp-enhancement/README.md
+' agent/lsp-enhancement/README.md
 
 # agent-004
 sed -i '' '/^status:/a\
 sort: 2026.04
-' agent/agent-004-hooks/README.md
+' agent/hooks/README.md
 ```
 
 **Step 3: 验证修改**
@@ -1498,10 +1498,10 @@ Run: `cat README.md`
 ```
 AI-Frontier-Lab/
 ├── agent/              # Agent 方向：MCP、Workflows、LSP、Hooks
-│   ├── agent-mcp-deep-dive/
-│   ├── agent-002-agent-workflows/
-│   ├── agent-003-lsp-enhancement/
-│   └── agent-004-hooks/
+│   ├── mcp-deep-dive/
+│   ├── agent-workflows/
+│   ├── lsp-enhancement/
+│   └── hooks/
 │
 ├── algo/               # Algo 方向：深度学习、Transformer、RL
 │   ├── foundations/    # 通用基础知识
