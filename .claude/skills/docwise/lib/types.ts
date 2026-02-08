@@ -174,3 +174,53 @@ export interface FixResult {
   new_categories: string[];
   difficult_types: string[];
 }
+
+// --- Scenario Generation ---
+
+export interface ScenarioConfig {
+  id: string;
+  name: string;
+  description: string;
+  complexity: 'simple' | 'medium' | 'complex';
+  topics: string[];              // Core topics to validate
+  goals: string[];                // Learning objectives
+  workflow: string[];             // Step-by-step execution plan
+  verification_commands?: string[]; // Commands to validate success
+}
+
+export interface ChapterOverview {
+  what_is: string;               // "What is this technology?"
+  what_for: string[];            // Use cases (2-4 items)
+  status: 'draft' | 'in-progress' | 'published' | 'completed';
+}
+
+export interface SandboxConfig {
+  id: string;                     // e.g., "001-exec-validate-progress"
+  path: string;                  // Absolute path to sandbox
+  language: 'python' | 'node' | 'rust' | 'go' | 'java' | 'cpp' | 'none';
+  isolation: IsolationType;
+}
+
+export type IsolationType =
+  | 'python-venv'
+  | 'python-uv'
+  | 'node-local'
+  | 'cargo'
+  | 'go-mod'
+  | 'maven'
+  | 'gradle'
+  | 'none';
+
+export interface LearnerArtifact {
+  readme_path: string;
+  learning_log_path: string;
+  code_path?: string;
+  validation_path: string;
+  scenario_id: string;
+  timestamp: string;
+}
+
+export interface GapPriority {
+  category: 'critical' | 'important' | 'minor';
+  rule: string;
+}
