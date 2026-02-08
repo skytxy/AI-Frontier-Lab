@@ -147,42 +147,44 @@ const { title } = Astro.props;
 
 <style is:global>
   /* ============================================
-     DESIGN SYSTEM: Technical Laboratory Aesthetic
+     DESIGN SYSTEM: Modern AI Platform Aesthetic
+     Inspired by Claude, ChatGPT, Gemini
      ============================================ */
 
   :root {
-    /* Light Mode - Clean, precise, lab-like */
-    --bg-primary: #fafafa;
-    --bg-secondary: #ffffff;
+    /* Light Mode - Clean, professional */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f9fafb;
     --bg-tertiary: #f3f4f6;
     --bg-elevated: #ffffff;
 
-    --text-primary: #1a1a2e;
-    --text-secondary: #4a4a5e;
+    --text-primary: #111827;
+    --text-secondary: #374151;
     --text-muted: #6b7280;
 
-    --accent: #e94560;
-    --accent-hover: #ff6b6b;
-    --accent-subtle: rgba(233, 69, 96, 0.1);
+    /* Accent - Professional blue-violet */
+    --accent: #6366f1;
+    --accent-hover: #4f46e5;
+    --accent-subtle: rgba(99, 102, 241, 0.1);
 
     --border: #e5e7eb;
     --border-strong: #d1d5db;
 
-    --code-bg: #1e1e2e;
-    --code-text: #cdd6f4;
+    --code-bg: #1e293b;
+    --code-text: #e2e8f0;
 
     --success: #10b981;
     --warning: #f59e0b;
     --danger: #ef4444;
     --info: #3b82f6;
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
 
-    --header-bg: #ffffff;
-    --header-border: #e5e7eb;
-    --header-text: #1a1a2e;
+    --header-bg: rgba(255, 255, 255, 0.85);
+    --header-border: rgba(229, 231, 235, 0.8);
+    --header-text: #111827;
 
     --blockquote-bg: #fef3c7;
     --blockquote-text: #92400e;
@@ -190,34 +192,35 @@ const { title } = Astro.props;
 
     --card-hover: #f9fafb;
 
-    --radius-sm: 4px;
+    --radius-sm: 6px;
     --radius-md: 8px;
     --radius-lg: 12px;
     --radius-xl: 16px;
   }
 
   [data-effective-theme="dark"] {
-    /* Dark Mode - IDE-like, high contrast */
-    --bg-primary: #0a0a0f;
-    --bg-secondary: #12121a;
-    --bg-tertiary: #1a1a24;
-    --bg-elevated: #1a1a24;
+    /* Dark Mode - Modern, comfortable (Claude-inspired) */
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #242424;
+    --bg-tertiary: #2d2d2d;
+    --bg-elevated: #2d2d2d;
 
-    --text-primary: #e4e4e7;
-    --text-secondary: #a1a1aa;
-    --text-muted: #71717a;
+    --text-primary: #ececec;
+    --text-secondary: #b4b4b4;
+    --text-muted: #737373;
 
-    --accent: #ff4757;
-    --accent-hover: #ff6b6b;
-    --accent-subtle: rgba(255, 71, 87, 0.15);
+    /* Accent - Softer blue-violet for dark mode */
+    --accent: #818cf8;
+    --accent-hover: #a5b4fc;
+    --accent-subtle: rgba(129, 140, 248, 0.15);
 
-    --border: #27272a;
-    --border-strong: #3f3f46;
+    --border: #404040;
+    --border-strong: #525252;
 
-    --code-bg: #0d0d12;
-    --code-text: #cdd6f4;
+    --code-bg: #0d0d0d;
+    --code-text: #e4e4e7;
 
-    --success: #22c55e;
+    --success: #4ade80;
     --warning: #fbbf24;
     --danger: #f87171;
     --info: #60a5fa;
@@ -226,20 +229,20 @@ const { title } = Astro.props;
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
 
-    --header-bg: #0a0a0f;
-    --header-border: #27272a;
-    --header-text: #e4e4e7;
+    --header-bg: rgba(26, 26, 26, 0.85);
+    --header-border: rgba(64, 64, 64, 0.6);
+    --header-text: #ececec;
 
-    --blockquote-bg: rgba(251, 191, 36, 0.1);
-    --blockquote-text: #fcd34d;
+    --blockquote-bg: rgba(251, 191, 36, 0.12);
+    --blockquote-text: #fde68a;
     --blockquote-border: #fbbf24;
 
-    --card-hover: #1a1a24;
+    --card-hover: #2d2d2d;
   }
 
   /* Smooth theme transitions */
   * {
-    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.1s ease;
+    transition: background-color 0.25s ease, border-color 0.25s ease, color 0.15s ease;
   }
 
   /* Animations */

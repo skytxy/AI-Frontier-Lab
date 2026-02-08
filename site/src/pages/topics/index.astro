@@ -34,7 +34,7 @@ const algoTopics = sortBySort(allAlgoTopics);
           </svg>
         </div>
         <div>
-          <h2>Agent Topics</h2>
+          <h2>Agent</h2>
           <p class="section-desc">Agent infrastructure: MCP, Workflows, LSP, Hooks</p>
         </div>
       </div>
@@ -43,7 +43,6 @@ const algoTopics = sortBySort(allAlgoTopics);
           <a href={`/topics/${topic.id.replace(/\/readme$/, '')}/`} class="topic-card">
             <div class="card-accent"></div>
             <div class="card-header">
-              <span class="topic-id">{topic.id.split('/')[0]}</span>
               <span class="difficulty-badge" data-level={topic.data.difficulty}>
                 {topic.data.difficulty === 'beginner' && 'Beginner'}
                 {topic.data.difficulty === 'intermediate' && 'Intermediate'}
@@ -52,7 +51,6 @@ const algoTopics = sortBySort(allAlgoTopics);
             </div>
             <h3 class="topic-title">{topic.data.title}</h3>
             <div class="topic-meta">
-              <span class="category-badge">{topic.data.category}</span>
               <span class="status-indicator" data-status={topic.data.status}>
                 <span class="status-dot"></span>
                 {topic.data.status === 'completed' && 'Complete'}
@@ -84,7 +82,7 @@ const algoTopics = sortBySort(allAlgoTopics);
             </svg>
           </div>
           <div>
-            <h2>Algo Topics</h2>
+            <h2>Algo</h2>
             <p class="section-desc">Core algorithms: Deep Learning, Transformer, RL</p>
           </div>
         </div>
@@ -93,7 +91,6 @@ const algoTopics = sortBySort(allAlgoTopics);
             <a href={`/algo/${topic.id.replace(/\/readme$/, '')}/`} class="topic-card">
               <div class="card-accent"></div>
               <div class="card-header">
-                <span class="topic-id">{topic.id.split('/')[0]}</span>
                 <span class="difficulty-badge" data-level={topic.data.difficulty}>
                   {topic.data.difficulty === 'beginner' && 'Beginner'}
                   {topic.data.difficulty === 'intermediate' && 'Intermediate'}
@@ -102,7 +99,6 @@ const algoTopics = sortBySort(allAlgoTopics);
               </div>
               <h3 class="topic-title">{topic.data.title}</h3>
               <div class="topic-meta">
-                <span class="category-badge">{topic.data.category}</span>
                 <span class="status-indicator" data-status={topic.data.status}>
                   <span class="status-dot"></span>
                   {topic.data.status === 'completed' && 'Complete'}
@@ -239,20 +235,9 @@ const algoTopics = sortBySort(allAlgoTopics);
 
   .card-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     margin-bottom: 1rem;
-  }
-
-  .topic-id {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    background: var(--bg-tertiary);
-    padding: 0.3rem 0.5rem;
-    border-radius: var(--radius-sm);
-    letter-spacing: 0.05em;
   }
 
   .difficulty-badge {
@@ -291,15 +276,6 @@ const algoTopics = sortBySort(allAlgoTopics);
     gap: 0.5rem;
     margin-bottom: 1rem;
     flex-wrap: wrap;
-  }
-
-  .category-badge {
-    font-size: 0.7rem;
-    color: var(--text-secondary);
-    background: var(--bg-tertiary);
-    padding: 0.3rem 0.6rem;
-    border-radius: var(--radius-sm);
-    font-weight: 500;
   }
 
   .status-indicator {
