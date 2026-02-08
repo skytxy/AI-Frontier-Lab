@@ -109,6 +109,15 @@ Author creates files according to chapter type:
 - `implementation/*.md` - Algorithm code
 - `experiments/*/*.md` - Reproducible results
 
+## Link Format Conventions
+
+**CRITICAL**: Internal links MUST follow the format specified in `.docwise/paradigm.md` under "Link Format Conventions".
+
+Before creating any internal links:
+1. Read `.docwise/paradigm.md` section "Link Format Conventions"
+2. Verify against actual site build output
+3. Project-specific rules are defined in paradigm, NOT in this skill
+
 ## Example Scenario Output
 
 ```yaml

@@ -511,5 +511,5 @@ server.setRequestHandler('resources/subscribe', async (request) => {
 ## 延伸阅读
 
 - [MCP 规范 - 进度通知](https://modelcontextprotocol.io/docs/concepts/notifications/)
-- [实验 02：MCP Server 实现](/agent/mcp-deep-dive/experiments/02-mcp-server/)
-- [生产部署模式](/agent/mcp-deep-dive/concepts/production-deployment)
+- [实验 02：MCP Server 实现](/topics/mcp-deep-dive/experiments/02-mcp-server/)
+- [生产部署模式](/topics/mcp-deep-dive/concepts/production-deployment)

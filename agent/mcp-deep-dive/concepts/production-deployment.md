@@ -269,5 +269,5 @@ function loadConfig(): ServerConfig {
 ## 延伸阅读
 
 - [MCP 规范 - 安全](https://modelcontextprotocol.io/docs/concepts/security/)
-- [实验 02：MCP Server 实现](/agent/mcp-deep-dive/experiments/02-mcp-server/)
-- [高级服务端模式](/agent/mcp-deep-dive/concepts/advanced-patterns)
+- [实验 02：MCP Server 实现](/topics/mcp-deep-dive/experiments/02-mcp-server/)
+- [高级服务端模式](/topics/mcp-deep-dive/concepts/advanced-patterns)

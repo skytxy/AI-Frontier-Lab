@@ -226,14 +226,26 @@ Typical sections:
 **规则**：内部链接指向 Web 路由，**不包含 `.md` 扩展名**。
 
 ```markdown
-<!-- 正确 -->
+<!-- 正确：使用 /topics/ 前缀 -->
 [MCP 入门](/topics/mcp-deep-dive/concepts/mcp-basics)
+[实验 01](/topics/mcp-deep-dive/experiments/01-protocol-inspector/)
 
-<!-- 错误 -->
-[MCP 入门](/topics/mcp-deep-dive/concepts/mcp-basics.md)
+<!-- 错误 1：使用物理目录结构 /agent/ -->
+[MCP 入门](/agent/mcp-deep-dive/concepts/mcp-basics)  <!-- 404! -->
+
+<!-- 错误 2：带 .md 扩展名 -->
+[MCP 入门](/topics/mcp-deep-dive/concepts/mcp-basics.md)  <!-- 404! -->
 ```
 
-**原因**：Astro 站点生成的是扩展less 路由（`/concepts/mcp-basics`），带 `.md` 会导致 404。
+**重要区别**：
+
+| 物理目录 | Web 路由 |
+|---------|---------|
+| `agent/mcp-deep-dive/` | `/topics/mcp-deep-dive/` |
+| `algo/attention/` | `/topics/attention/` |
+| `agent/skills/` | `/topics/skills/` |
+
+**原因**：Astro 站点统一使用 `/topics/` 作为所有章节的路由前缀。物理目录结构（`agent/`、`algo/`）不反映在 Web 路由中。
 
 ### External Links
 

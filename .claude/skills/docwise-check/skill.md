@@ -117,6 +117,15 @@ See `docwise/references/agent-constraints.md` for detailed constraints.
 
 Issues reported using categories from `docwise/references/quality-categories.md`.
 
+## Link Format Conventions
+
+**CRITICAL**: Internal links MUST follow the format specified in `.docwise/paradigm.md` under "Link Format Conventions".
+
+Before checking any links:
+1. Read `.docwise/paradigm.md` section "Link Format Conventions"
+2. Verify against actual site build output
+3. Project-specific rules (e.g., `/topics/` vs `/agent/`) are defined in paradigm, NOT in this skill
+
 ## Example
 
 **Input**: `/docwise:check --focus=links`

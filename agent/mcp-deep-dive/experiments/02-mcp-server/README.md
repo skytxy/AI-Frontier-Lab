@@ -19,8 +19,8 @@ prerequisites: ['01-protocol-inspector']
 - **传输层**：stdio（标准输入/输出）和 Streamable HTTP 两种传输方式
 
 > **零基础？** 推荐先阅读：
-> - [MCP 入门指南](/agent/mcp-deep-dive/concepts/mcp-basics)
-> - [能力协商机制](/agent/mcp-deep-dive/concepts/capabilities)
+> - [MCP 入门指南](/topics/mcp-deep-dive/concepts/mcp-basics)
+> - [能力协商机制](/topics/mcp-deep-dive/concepts/capabilities)
 
 ## 🎯 学习目标
 
@@ -220,7 +220,7 @@ await this.server.connect(transport);
 
 #### Step 5.5: HTTP (SSE) 传输（参考）
 
-本实验实现 stdio 传输。HTTP (SSE) 适用于远程访问和 Web 集成，详见 [stdio 传输原理](/agent/mcp-deep-dive/concepts/stdio-transport/#与-http-sse-的对比)。
+本实验实现 stdio 传输。HTTP (SSE) 适用于远程访问和 Web 集成，详见 [stdio 传输原理](/topics/mcp-deep-dive/concepts/stdio-transport/#与-http-sse-的对比)。
 
 **简要对比**：
 - **stdio**：本地部署、CLI 工具、快速原型
@@ -422,7 +422,7 @@ await server.sendNotification('notifications/progress', {
 
 ### Q5: HTTP 传输和 stdio 有什么区别？
 
-**Answer**：详见 [stdio 传输原理](/agent/mcp-deep-dive/concepts/stdio-transport/#与-http-sse-的对比) 中的完整对比表。
+**Answer**：详见 [stdio 传输原理](/topics/mcp-deep-dive/concepts/stdio-transport/#与-http-sse-的对比) 中的完整对比表。
 
 简要总结：stdio 适合本地开发和 CLI 工具，HTTP (SSE) 适合远程调用和 Web 集成。
 
@@ -430,8 +430,8 @@ await server.sendNotification('notifications/progress', {
 
 - [MCP Server 规范](https://modelcontextprotocol.io/docs/specification/)
 - [SDK 文档](https://github.com/modelcontextprotocol/typescript-sdk)
-- [实验 01：协议拦截器](/agent/mcp-deep-dive/experiments/01-protocol-inspector/) — 用 Inspector 调试你的 Server
-- [实验 03：从零实现 MCP Client](/agent/mcp-deep-dive/experiments/03-mcp-client/) — 理解 Host 侧的视角
+- [实验 01：协议拦截器](/topics/mcp-deep-dive/experiments/01-protocol-inspector/) — 用 Inspector 调试你的 Server
+- [实验 03：从零实现 MCP Client](/topics/mcp-deep-dive/experiments/03-mcp-client/) — 理解 Host 侧的视角
 
 ## 🎓 下一步
 

@@ -78,16 +78,16 @@ Generated: 2026-02-08T21:00:00.000Z
 
 | 链接 | 状态 |
 |------|------|
-| /agent/mcp-deep-dive/concepts/mcp-basics | ✓ |
-| /agent/mcp-deep-dive/concepts/json-rpc | ✓ |
-| /agent/mcp-deep-dive/concepts/stdio-transport | ✓ |
-| /agent/mcp-deep-dive/concepts/framing | ✓ |
-| /agent/mcp-deep-dive/concepts/capabilities | ✓ |
-| /agent/mcp-deep-dive/concepts/security-model | ✓ |
-| /agent/mcp-deep-dive/experiments/01-protocol-inspector/ | ✓ |
-| /agent/mcp-deep-dive/experiments/02-mcp-server/ | ✓ |
-| /agent/mcp-deep-dive/experiments/03-mcp-client/ | ✓ |
-| /agent/mcp-deep-dive/experiments/04-security-lab/ | ✓ |
+| /topics/mcp-deep-dive/concepts/mcp-basics | ✓ |
+| /topics/mcp-deep-dive/concepts/json-rpc | ✓ |
+| /topics/mcp-deep-dive/concepts/stdio-transport | ✓ |
+| /topics/mcp-deep-dive/concepts/framing | ✓ |
+| /topics/mcp-deep-dive/concepts/capabilities | ✓ |
+| /topics/mcp-deep-dive/concepts/security-model | ✓ |
+| /topics/mcp-deep-dive/experiments/01-protocol-inspector/ | ✓ |
+| /topics/mcp-deep-dive/experiments/02-mcp-server/ | ✓ |
+| /topics/mcp-deep-dive/experiments/03-mcp-client/ | ✓ |
+| /topics/mcp-deep-dive/experiments/04-security-lab/ | ✓ |
 
 ### Previous Iteration Fixes (来自 Iteration 1)
 
