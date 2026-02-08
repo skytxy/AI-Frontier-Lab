@@ -113,6 +113,7 @@ These categories are defined at the paradigm level because they apply across all
 | `web_rendering_issue` | Content renders incorrectly on website |
 | `link_broken` | External or internal link returns 404/4xx/5xx |
 | `link_extension_mismatch` | Internal link uses `.md` extension (should be extensionless for web routes) |
+| `frontmatter_parse_error` | YAML frontmatter fails to parse (js-yaml error due to complex formatting) |
 
 ### Quality Issues (Content Bloat)
 

@@ -14,6 +14,9 @@ Behavioral rules for agents in the `:new` workflow.
 - MUST follow chapter structure from config
 - MUST report all files created/modified
 - MUST use project-specific link format conventions
+- MUST read existing chapter frontmatter formats before creating new content
+- MUST follow detected frontmatter format patterns from existing chapters
+- MUST validate YAML frontmatter parses correctly (keep formatting simple, avoid complex inline syntax)
 
 ### Output Format
 ```
@@ -92,3 +95,27 @@ Before creating any internal links:
 1. Read `.docwise/paradigm.md` section "Link Format Conventions"
 2. Verify against actual site build output
 3. Project-specific rules are defined in paradigm, NOT in this skill
+
+### Frontmatter Format Validation
+
+Before creating frontmatter for any content file:
+1. Read existing chapter frontmatter examples from the project
+2. Follow detected format patterns exactly
+3. Keep YAML syntax simple - avoid complex inline formatting
+4. Validate YAML parses correctly after creation
+
+**Frontmatter Anti-Patterns** (causes js-yaml parsing errors):
+- Complex inline syntax in list items: `macOS: \`brew install jq\``
+- Nested structures with mixed quotes and parentheses
+- Platform-specific formatting in prerequisites field
+
+**Frontmatter Best Practices**:
+- Simple string values for scalar fields
+- Flat list structures for array fields
+- Quote values only when necessary (contains special chars)
+- Platform-specific notes in content body, not frontmatter
+
+**Validation**:
+- Run site build after creating frontmatter
+- If YAML parse error occurs, simplify the syntax
+- Project-specific formats are defined in paradigm, NOT in this skill
