@@ -13,7 +13,36 @@ AI-Frontier-Lab/
 │   └── lsp-enhancement/        # 子类：开发工具
 │
 └── algo/                       # 算法大类（与 agent 平级）
-    └── <paper-topics>/        # 论文解读章节
+    ├── foundations/            # 通用基础知识
+    │   ├── gradient-descent/
+    │   ├── backpropagation/
+    │   └── optimization/
+    │
+    ├── cnn/                   # 大领域目录
+    │   ├── lenet/
+    │   ├── alexnet/
+    │   ├── resnet/
+    │   └── ...
+    │
+    ├── transformer/           # 大领域目录
+    │   ├── original/
+    │   ├── encoder/
+    │   └── decoder/
+    │
+    ├── rl/                    # 大领域目录
+    │   ├── dqn/
+    │   ├── policy-gradient/
+    │   └── ppo/
+    │
+    ├── attention/             # 跨领域技术（独立目录）
+    │   ├── bahdanau/
+    │   ├── self-attention/
+    │   └── efficient/
+    │
+    └── diffusion/             # 跨领域技术
+        ├── ddpm/
+        ├── stable-diffusion/
+        └── diffusion-lm/
 ```
 
 ## Relationship with Skill Implementation
@@ -226,10 +255,10 @@ No adaptation needed — use the same `.chapter-validator.yaml` format.
 
 ### Algo Chapters (algo/**)
 
-Paper-based chapters require slight adaptation:
+Algo chapters are organized by domain (cnn, transformer, rl, attention, diffusion, etc.) and specific technique within that domain:
 
 ```yaml
-# algo/<paper-topic>/.chapter-validator.yaml
+# algo/attention/self-attention/.chapter-validator.yaml
 validation:
   sections:
     - paper-summary/      # 论文解读
@@ -237,7 +266,8 @@ validation:
     - experiments/        # 实验验证
 
   prerequisites:
-    - "Math background: XXX"
+    - "algo/foundations/backprop"
+    - "Math: Linear algebra, calculus"
     - "Framework: PyTorch / JAX"
 
   scenarios:
@@ -250,6 +280,11 @@ validation:
       type: apply
       description: "将算法应用到实际问题"
       verify: "能修改代码解决自己的任务"
+
+    visualization:
+      type: demo
+      description: "可视化 Attention 权重"
+      verify: "能生成注意力热力图"
 ```
 
 ### Key Differences
@@ -271,8 +306,11 @@ Define sections, prerequisites, and scenarios specific to your chapter.
 # For agent chapters
 /chapter-content-validator --chapter=agent/mcp-deep-dive
 
-# For algo chapters
-/chapter-content-validator --chapter=algo/attention-is-all-you-need
+# For algo chapters (domain/technique format)
+/chapter-content-validator --chapter=algo/attention/self-attention
+
+# Or for foundations
+/chapter-content-validator --chapter=algo/foundations/backprop
 ```
 
 ### Step 3: Review Results
@@ -306,7 +344,9 @@ The validator produces:
 - validation-log.md shows complete iteration history
 - One Level 3 suggestion recorded for paradigm improvement
 
-### Case 2: Attention Is All You Need (Algo)
+### Case 2: Self-Attention (Algo)
+
+**Location**: `algo/attention/self-attention/`
 
 ### Typical Gaps
 
@@ -316,6 +356,10 @@ The validator produces:
 
 2. **Gap**: Matrix dimensions in code don't match paper notation
    - **Fix**: Add notation-to-code mapping in implementation/
+   - **Level**: 1
+
+3. **Gap**: How to compute attention weights for variable-length sequences
+   - **Fix**: Add padding/masking explanation
    - **Level**: 1
 
 ## Extending the Framework
