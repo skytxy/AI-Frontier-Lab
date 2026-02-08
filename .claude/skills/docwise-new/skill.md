@@ -31,124 +31,67 @@ parameters:
 
 # Docwise: New
 
-Generate new educational content from scenario description via dual-agent collaboration.
+Generate new educational content from scenario description via multi-agent collaboration.
 
-## Execution Flow
+## When to Use
+
+Use this subcommand when:
+- Creating entirely new chapter content from scratch
+- Starting a new educational topic that needs validation
+- Writing content that should be tested by a zero-knowledge learner
+
+## How It Works
 
 ```
-1. PARSE INPUT
-   - Extract scenario description from <args>
-   - Detect complexity from keywords
-   - Detect content_type from chapter path (agent/algo)
-
-2. SHOW OVERVIEW FROM WEBSEARCH (NEW)
-   - WebSearch: What is this technology?
-   - WebSearch: What are the use cases?
-   - Display: 【是什么】【有什么用】
-
-3. GENERATE SCENARIO FROM SEARCH (NEW)
-   - Analyze chapter type (Agent/Algo)
-   - WebSearch for practical examples
-   - Extract core topics from search results
-   - Generate scenario + topics + goals
-   - Show scenario confirmation dialog
-
-4. CONFIRM SCENARIO (NEW)
-   - User can adjust scenario/topics
-   - Skip if auto_confirm=true
-
-5. SETUP SANDBOX (NEW)
-   - Detect chapter language (or ask user if unclear)
-   - Create sandbox directory
-   - Setup language isolation
-
-6. EXECUTE WITH TASK TOOL (ITERATIVE LOOP)
-   Loop (max_iterations from config, default 5):
-
-   a) Spawn Author Agent (subagent_type=general-purpose)
-      * Creates new content files (first iteration) or modifies existing (subsequent)
-      * Follows chapter structure from config
-      * Reports: files created/changed
-
-   b) Spawn Learner Agent (subagent_type=general-purpose)
-      * Reads only new/modified content (zero-knowledge validation)
-      * Executes practical tasks in sandbox to verify content
-      * Reports: completion status, gaps, blockers
-
-   c) Check Learner's completion status
-      * If COMPLETE: Generate artifacts (README, learning-log)
-      * If gaps found: increment counter, loop back to (a)
-
-7. (triple-agent only) Spawn Reviewer Agent
-   * Verifies technical accuracy
-   * If issues found: spawn Author to fix, then Learner to re-validate
-
-8. GENERATE LEARNER ARTIFACTS (NEW)
-   - Create README.md in sandbox
-   - Create learning-log.md
+User Scenario -> WebSearch Overview -> Generate Topics -> Confirm -> Author Creates -> Learner Validates -> (Loop) -> Artifacts
 ```
 
-**Critical**: The loop is **Author → Learner → Author → Learner → ...** until Learner confirms COMPLETE.
+1. **Parse** scenario and detect complexity
+2. **Search** web for topic overview and use cases
+3. **Generate** scenario with topics and goals
+4. **Confirm** scenario with user (skip with `auto_confirm`)
+5. **Setup** sandbox with language isolation
+6. **Execute** iterative Author -> Learner loop
+7. **Generate** learner artifacts (README, learning-log)
+
+## Collaboration Modes
+
+| Mode | When | Agents |
+|------|------|--------|
+| single | Simple, low-complexity content | Author only |
+| dual | Medium complexity, needs validation | Author + Learner |
+| triple | Academic papers, math-heavy, security-critical | Author + Learner + Reviewer |
 
 ## Complexity Detection
 
+Keywords trigger complexity levels:
+
 | Keywords | Level |
 |----------|-------|
-| single, basic, 简单, 单个 | simple |
-| multiple, 2-3, 集成, 多个 | medium |
-| full, complete, 完整, 全面 | complex |
-| security, performance, 安全, 性能 | advanced |
+| single, basic, simple | simple |
+| multiple, integrate, 2-3 | medium |
+| full, complete, comprehensive | complex |
+| security, performance, advanced | advanced |
 
-## Agent Constraints
+## Agent Roles
 
-See `docwise/references/agent-constraints.md` for detailed constraints.
+**Author Agent**: Creates new content files following chapter structure from config.
 
-**Author Agent**:
-- CAN create new content files
-- CAN read paradigm for gap categories
-- Reports: files created
+**Learner Agent**: Zero-knowledge validation - reads only new content, executes practical tasks in sandbox.
 
-**Learner Agent**:
-- MUST NOT use external knowledge
-- CAN ONLY read newly created files
-- Reports: completion status, gaps
+**Reviewer Agent** (triple-mode): Verifies technical accuracy, math formulas, cross-references.
 
-## Chapter Structure
+## References
 
-Author creates files according to chapter type:
+Detailed documentation in `references/`:
 
-**Agent chapters** (agent/*):
-- `concepts/*.md` - Theory and background
-- `experiments/*/*.md` - Hands-on implementation
+- **workflow.md** - Complete execution flow with iteration details
+- **agent-constraints.md** - Behavioral rules for each agent type
+- **scenario-format.md** - Scenario configuration schema
+- **artifacts.md** - Output files generated in sandbox
 
-**Algo chapters** (algo/*):
-- `paper-summary/*.md` - Paper overview
-- `implementation/*.md` - Algorithm code
-- `experiments/*/*.md` - Reproducible results
+## Project-Specific
 
-## Link Format Conventions
-
-**CRITICAL**: Internal links MUST follow the format specified in `.docwise/paradigm.md` under "Link Format Conventions".
-
-Before creating any internal links:
-1. Read `.docwise/paradigm.md` section "Link Format Conventions"
-2. Verify against actual site build output
-3. Project-specific rules are defined in paradigm, NOT in this skill
-
-## Example Scenario Output
-
-```yaml
-name: GitHub API集成Server
-description: 实现一个能够查询issues、创建issues、添加评论的MCP Server
-complexity: medium
-
-prerequisites:
-  - concept: HTTP客户端认证
-    required: true
-
-success_criteria:
-  - criterion: Server能成功连接GitHub API
-    verification: curl检查返回200
-  - criterion: 所有tools功能正常
-    verification: MCP Inspector测试
-```
+Chapter structure, gap categories, and output templates are defined in:
+- `.docwise/paradigm.md` - Project methodology
+- `.docwise/config.yaml` - Chapter configuration

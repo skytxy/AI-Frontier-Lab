@@ -268,4 +268,52 @@ Typical sections:
 curl -s -o /dev/null -w "%{http_code}" https://example.com
 ```
 
+## Scenario Confirmation Template
+
+Project-specific template for scenario confirmation dialog (used by `:new`, `:check`, `:improve` subcommands).
+
+```markdown
+🎯 Scenario Confirmation
+─────────────────────────────────
+Chapter: [chapter name]
+
+【Scenario Description - What you will do】
+[detailed scenario description for beginners]
+
+【Core Topics - What you will learn】
+1. [Topic one]: [description]
+2. [Topic two]: [description]
+
+【Collaboration Mode - How agents help you】
+  Learner Agent: Execute task according to documentation
+  Author Agent: Fix issues found by Learner (if applicable)
+  Reviewer Agent: Verify technical accuracy (triple-agent mode)
+
+【What You Will Get - Learning outcomes】
+  ✓ Validation report showing what works/doesn't
+  ✓ Learning notes documenting gaps and difficulties
+  ✓ Working code reference (if applicable)
+
+【Execution Details - Where code goes】
+  Sandbox: .docwise/sandbox/[id]-[description]/
+  Language isolation: [type] (.venv, node_modules, etc.)
+  Directory won't be overwritten
+
+─────────────────────────────────
+Is this scenario OK? [Y/n/modify/adjust topics]
+```
+
+### Template Fields
+
+- **Scenario Description**: Practical, beginner-friendly description of what will be done
+- **Core Topics**: 2-4 key learning objectives
+- **Collaboration Mode**: Which agents are involved and their roles
+- **Learning Outcomes**: What artifacts will be generated
+- **Execution Details**: Sandbox location and isolation type
+
+### Customization
+
+The template uses Chinese headers for this project (`【】` convention).
+Projects targeting English audiences should localize accordingly.
+
 ---

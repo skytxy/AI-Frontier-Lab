@@ -28,164 +28,66 @@ parameters:
 
 # Docwise: Check
 
-Validate chapter content quality via dual-agent collaboration.
+Validate chapter content quality via multi-agent collaboration.
 
-## Execution Flow
+## When to Use
 
-```
-1. PARSE INPUT
-   - Extract: chapter, focus (links/logic/content/all)
-   - Detect: complexity
+Use this subcommand when:
+- Validating content before publishing
+- Checking after significant content changes
+- Verifying link integrity
+- Reviewing content logic and completeness
 
-2. SHOW OVERVIEW (NEW)
-   - Check document status (draft/in-progress/published/completed)
-   - Display: 【是什么】【有什么用】
-   - If status=completed: show warning, require confirmation
-
-3. GENERATE SCENARIO (NEW)
-   - Analyze chapter type (Agent/Algo)
-   - WebSearch for practical examples
-   - Generate scenario + core topics
-   - Show scenario confirmation dialog
-
-4. CONFIRM SCENARIO (NEW)
-   - User can accept or adjust scenario/topics
-   - Generate sandbox directory name based on scenario
-
-5. SETUP SANDBOX (NEW)
-   - Detect chapter language (python/node/rust/go/java/cpp/none)
-   - Create sandbox directory (.docwise/sandbox/XXX-description/)
-   - Setup language isolation (.venv, node_modules, etc.)
-
-6. EXECUTE WITH TASK TOOL (ITERATIVE LOOP)
-   Loop (max_iterations from config, default 5):
-
-   a) Spawn Learner Agent (subagent_type=general-purpose)
-      * Reads chapter content (zero-knowledge)
-      * Executes practical task according to documentation (not just checks!)
-      * Records: which steps clear, which blockers encountered
-      * Reports: completion status, issues, findings
-
-   b) Check Learner's completion status
-      * If COMPLETE: Generate artifacts (README, learning-log)
-      * If issues found: Continue
-
-   c) Spawn Author Agent (if --fix is true and issues not critical)
-      * Prioritize: critical > important > minor
-      * Show change summary for confirmation
-      * Fixes reported issues
-      * Reports: files changed
-
-   d) Increment iteration counter, loop back to (a)
-
-7. (triple-agent only) Spawn Reviewer Agent
-   * Verifies technical accuracy of fixes
-   * If issues found: spawn Author to fix, then Learner to re-validate
-
-8. GENERATE LEARNER ARTIFACTS (NEW)
-   - Create README.md in sandbox (topics, findings, gaps)
-   - Create learning-log.md (execution process, learnings)
-   - Preserve code/ and validation/ directories
-```
-
-**Critical**: The loop is **Learner → Author → Learner → Author → ...** until Learner confirms COMPLETE (no issues).
-
-## Scenario Confirmation Output
-
-When scenario is generated, display:
+## How It Works
 
 ```
-🎯 实操场景确认
-─────────────────────────────────
-章节: [chapter name]
-
-【场景描述 - 你要做什么】
-[detailed scenario description for beginners]
-
-【核心议题 - 重点学习什么】
-1. [Topic one]: [description]
-2. [Topic two]: [description]
-
-【协作方式 - Agent 如何帮你】
-  Learner Agent: Execute task according to documentation
-  Author Agent: Fix issues found by Learner (if --fix)
-  Reviewer Agent: Verify technical accuracy (triple-agent mode)
-
-【你将获得 - 学习成果】
-  ✓ Validation report showing what works/doesn't
-  ✓ Learning notes documenting gaps and difficulties
-  ✓ Working code reference (if applicable)
-
-【执行说明 - 代码放哪里】
-  Sandbox: .docwise/sandbox/[id]-[description]/
-  Language isolation: [type] (.venv, node_modules, etc.)
-  Directory won't be overwritten
-
-─────────────────────────────────
-这个场景 OK 吗？[Y/n/修改场景/调整议题]
+Parse Input -> Show Overview -> Generate Scenario -> Setup Sandbox -> Learner Validates -> (Optional) Author Fixes -> Artifacts
 ```
 
-## Check Categories
+1. **Parse** chapter and focus (links/logic/content/all)
+2. **Show** document overview with status
+3. **Generate** validation scenario
+4. **Confirm** scenario with user
+5. **Setup** sandbox with language isolation
+6. **Execute** Learner validation (and optional Author fixes)
+7. **Generate** validation report
 
-### Links
-- **External**: HTTP 200-399 status (use curl)
-- **Internal**: File exists
-- **Extension**: No `.md` in web routes (Astro convention)
+## Focus Areas
 
-### Logic
-- Step sequence complete
-- No contradictions
-- Referenced concepts exist
-- Prerequisites declared
+| Focus | What It Checks |
+|-------|----------------|
+| `links` | External link status, internal file existence, extension format |
+| `logic` | Step sequences, contradictions, referenced concepts, prerequisites |
+| `content` | Completeness, clarity, code examples |
+| `all` | All of the above (default) |
 
-### Content
-- Completeness: All concepts explained
-- Clarity: Zero-knowledge learner can understand
-- Examples: Code samples provided
+## Collaboration Modes
 
-### Theme (requires web verification)
-- **Code blocks**: Syntax highlighting works in both Light and Dark modes
-- **Inline code**: Contrast sufficient in both themes (not color-dependent)
-- **Tables**: Borders visible in both themes
-- **Images**: Legible in both themes (no hardcoded backgrounds)
+| Mode | When | Agents |
+|------|------|--------|
+| single | Quick checks, non-critical content | Learner only |
+| dual | Standard validation | Learner + (optional) Author |
+| triple | Critical content, math-heavy | Learner + Author + Reviewer |
 
-**To check themes**: Build site (`cd site && npm run build:no-check`), open in browser, toggle theme, verify rendering.
+## Agent Roles
 
-## Agent Constraints
+**Learner Agent**: Executes content as zero-knowledge learner, reports issues.
 
-See `docwise/references/agent-constraints.md` for detailed constraints.
+**Author Agent**: (if `fix=true`) Fixes reported issues, prioritizes critical > important > minor.
 
-**Learner Agent**:
-- MUST NOT use external knowledge
-- CAN ONLY read chapter files + declared prerequisites
-- Reports: issues with locations and categories
+**Reviewer Agent** (triple-mode): Verifies technical accuracy of fixes.
 
-**Author Agent** (spawned if issues found and --fix):
-- Reads Learner's issue report
-- CAN modify content files
-- Reports: files changed
+## References
 
-## Gap Categories
+Detailed documentation in `references/`:
 
-Issues reported using categories from `docwise/references/quality-categories.md`.
+- **workflow.md** - Complete execution flow with iteration details
+- **check-categories.md** - Detailed definitions of each check type
+- **agent-constraints.md** - Behavioral rules for each agent type
+- **report-format.md** - Validation report output format
 
-## Link Format Conventions
+## Project-Specific
 
-**CRITICAL**: Internal links MUST follow the format specified in `.docwise/paradigm.md` under "Link Format Conventions".
-
-Before checking any links:
-1. Read `.docwise/paradigm.md` section "Link Format Conventions"
-2. Verify against actual site build output
-3. Project-specific rules (e.g., `/topics/` vs `/agent/`) are defined in paradigm, NOT in this skill
-
-## Example
-
-**Input**: `/docwise:check --focus=links`
-
-**Process**:
-1. Parse: collaboration mode=validate, focus=links
-2. Match: `technical-guide-low` -> single-agent (simple check)
-3. Execute:
-   - Agent checks all links in chapter
-   - Reports broken links with locations
-4. Output: List of issues, fixes applied if --fix
+Quality standards, gap categories, and link format conventions are defined in:
+- `.docwise/paradigm.md` - Project methodology
+- `.docwise/config.yaml` - Chapter configuration

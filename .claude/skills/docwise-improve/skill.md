@@ -26,137 +26,81 @@ parameters:
 
 # Docwise: Improve
 
-Optimize existing content for new requirements via dual-agent collaboration.
+Optimize existing content for new requirements via multi-agent collaboration.
 
-## Execution Flow
+## When to Use
+
+Use this subcommand when:
+- Adding new features to existing content
+- Enhancing coverage of specific topics
+- Clarifying unclear sections
+- Adapting content for new use cases
+
+## How It Works
 
 ```
-1. PARSE INPUT
-   - Extract: chapter (from args or infer from context)
-   - Extract: scenario/requirements from <args>
-   - Detect: complexity (simple/medium/complex/advanced)
-
-2. SHOW OVERVIEW WITH CURRENT STATUS (NEW)
-   - Check document status
-   - Display: 【是什么】【有什么用】
-   - Display: 【当前概况】已覆盖/缺口 (from doc summary)
-   - If status=completed: show warning, require confirmation
-
-3. GENERATE SCENARIO FOCUSED ON GAPS (NEW)
-   - Analyze current coverage from doc summary
-   - WebSearch for best practices on missing topics
-   - Generate scenario targeting identified gaps
-   - Show scenario confirmation dialog
-
-4. CONFIRM SCENARIO (NEW)
-   - User can accept or adjust scenario/focus areas
-
-5. SETUP SANDBOX (NEW)
-   - Detect chapter language
-   - Create sandbox directory
-   - Setup language isolation
-
-6. EXECUTE WITH TASK TOOL (ITERATIVE LOOP)
-   Loop (max_iterations from config, default 5):
-
-   a) Spawn Learner Agent (subagent_type=general-purpose)
-      * Reads existing chapter content (first iteration) or modified files (subsequent)
-      * Executes practical tasks to test documentation
-      * Reports: completion status, gaps, blockers
-
-   b) Check Learner's completion status
-      * If COMPLETE: Generate artifacts (README, learning-log)
-      * If gaps found: Continue
-
-   c) Spawn Author Agent (subagent_type=general-purpose)
-      * Reads Learner's gap report
-      * Prioritizes: critical > important > minor
-      * Shows change summary for confirmation
-      * Creates/modifies content files to fill gaps
-      * Reports: files changed
-
-   d) Increment iteration counter, loop back to (a)
-
-7. (triple-agent only) Spawn Reviewer Agent
-   * Verifies technical accuracy
-   * If issues found: spawn Author to fix, then Learner to re-validate
-
-8. GENERATE LEARNER ARTIFACTS (NEW)
-   - Create README.md in sandbox
-   - Create learning-log.md
+User Requirements -> Current Status -> Generate Focused Scenario -> Confirm -> Learner Analyzes -> Author Fixes -> (Loop) -> Artifacts
 ```
 
-**Critical**: The loop is **Learner → Author → Learner → Author → ...** until Learner confirms COMPLETE.
+1. **Parse** requirements and detect complexity
+2. **Show** current document status (draft/in-progress/published/completed)
+3. **Generate** scenario targeting identified gaps
+4. **Confirm** scenario with user
+5. **Setup** sandbox with language isolation
+6. **Execute** iterative Learner -> Author -> Learner loop
+7. **Generate** learner artifacts
+
+## Collaboration Modes
+
+| Mode | When | Agents |
+|------|------|--------|
+| single | Simple additions, minor clarifications | Author only |
+| dual | Medium complexity improvements | Learner + Author |
+| triple | Complex enhancements, security-critical | Learner + Author + Reviewer |
 
 ## Mode Selection Decision Tree
 
 ```
 User specifies agent count?
-  ├─ User says "use single agent" → single-agent mode
-  ├─ User says "use dual agent" or "2 agents" → dual-agent mode
-  ├─ User says "use triple agent" or "3 agents" → triple-agent mode
+  ├─ User says "single agent" -> single-agent
+  ├─ User says "dual agent" or "2 agents" -> dual-agent
+  ├─ User says "triple agent" or "3 agents" -> triple-agent
   └─ No specification: Auto-detect below
 
 Detect complexity from keywords:
-  ├─ Contains: simple, basic, quick, minor → single-agent
-  ├─ Contains: complex, security, performance, full, 完整, 全面 → triple-agent
+  ├─ Contains: simple, basic, quick, minor -> single-agent
+  ├─ Contains: complex, security, performance, full -> triple-agent
   └─ Default: dual-agent (covers most improvements)
 ```
-
-| Trigger | Mode | Reason |
-|---------|------|--------|
-| User explicitly specifies agent count | As specified | User knows best |
-| Keywords: simple, basic, quick, minor | single-agent | Low complexity |
-| Keywords: complex, security, performance, full | triple-agent | High stakes/complexity |
-| No explicit keywords | dual-agent | Balanced default |
 
 ## Complexity Detection
 
 | Keywords | Level |
 |----------|-------|
-| simple, basic, 简单 | simple |
-| medium, 多个 | medium |
-| complex, full, 完整, 全面 | complex |
-| advanced, security, performance, 安全, 性能 | advanced |
+| simple, basic | simple |
+| medium, multiple | medium |
+| complex, full, comprehensive | complex |
+| advanced, security, performance | advanced |
 
-## Agent Constraints
+## Agent Roles
 
-See `docwise/references/agent-constraints.md` for detailed constraints.
+**Learner Agent**: Analyzes existing content, identifies gaps, executes practical tasks.
 
-**Learner Agent**:
-- MUST NOT use external knowledge
-- CAN ONLY read chapter files + declared prerequisites
-- Reports: gaps with locations and categories
+**Author Agent**: Fills reported gaps, prioritizes critical > important > minor.
 
-**Author Agent**:
-- Reads Learner's gap report
-- CAN modify content files
-- Reports: files changed
+**Reviewer Agent** (triple-mode): Verifies technical accuracy of changes.
 
-## Gap Categories
+## References
 
-Learner reports gaps using categories from `docwise/references/quality-categories.md`.
+Detailed documentation in `references/`:
 
-**When quality issues are found**, Author should consolidate/prune rather than expand.
+- **workflow.md** - Complete execution flow with iteration details
+- **gap-prioritization.md** - How gaps are categorized and prioritized
+- **agent-constraints.md** - Behavioral rules for each agent type
+- **artifacts.md** - Output files generated in sandbox
 
-## Link Format Conventions
+## Project-Specific
 
-**CRITICAL**: Internal links MUST follow the format specified in `.docwise/paradigm.md` under "Link Format Conventions".
-
-Before modifying any links:
-1. Read `.docwise/paradigm.md` section "Link Format Conventions"
-2. Verify against actual site build output
-3. Project-specific rules (e.g., `/topics/` vs `/agent/`) are defined in paradigm, NOT in this skill
-
-## Example
-
-**Input**: `/docwise:improve "mcp, 复杂场景"`
-
-**Process**:
-1. Parse: collaboration mode=optimize, chapter=agent/mcp-deep-dive, complexity=high
-2. Match: seed_pattern `optimize-existing` -> recommended_mode=dual-agent
-3. Confirm: Execute dual-agent? [y/n]
-4. Execute:
-   - Learner: Reads mcp-deep-dive, identifies gaps for "复杂场景"
-   - Author: Adds missing content (e.g., advanced patterns, error handling)
-5. Output: Files changed list
+Gap categories and quality standards are defined in:
+- `.docwise/paradigm.md` - Project methodology, gap categories
+- `.docwise/config.yaml` - Chapter configuration
