@@ -1,4 +1,4 @@
-// .claude/skills/chapter-content-validator/index.ts
+// .claude/skills/docwise/index.ts
 
 /**
  * Chapter Content Validator Skill

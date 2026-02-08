@@ -1,4 +1,4 @@
-// .claude/skills/chapter-content-validator/api.ts
+// .claude/skills/docwise/api.ts
 
 /**
  * Public API for the Chapter Content Validator Skill.
