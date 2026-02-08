@@ -1,6 +1,6 @@
-# Chapter Content Validator - Project Configuration Template
+# Docwise - Project Configuration Template
 #
-# Copy this file to: <project-root>/.chapter-validation/config.yaml
+# Copy this file to: <project-root>/.docwise/config.yaml
 # All fields are optional. Skill provides sensible defaults.
 
 version: "1.0"

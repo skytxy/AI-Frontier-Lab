@@ -18,9 +18,9 @@ difficulty: beginner
 - **Node.js Child Process**：Node.js 的 `spawn` API 可以启动子进程并控制其 stdin/stdout/stderr 流。
 
 > **零基础？** 推荐先阅读：
-> - [MCP 入门指南](/topics/mcp-deep-dive/concepts/mcp-basics.md)
-> - [JSON-RPC 基础](/topics/mcp-deep-dive/concepts/json-rpc.md)
-> - [stdio 传输原理](/topics/mcp-deep-dive/concepts/stdio-transport.md)
+> - [MCP 入门指南](/topics/mcp-deep-dive/concepts/mcp-basics)
+> - [JSON-RPC 基础](/topics/mcp-deep-dive/concepts/json-rpc)
+> - [stdio 传输原理](/topics/mcp-deep-dive/concepts/stdio-transport)
 
 ## 🎯 学习目标
 
@@ -318,7 +318,7 @@ if (msg.params) {
 ## 📚 延伸阅读
 
 - [JSON-RPC 2.0 规范](https://www.jsonrpc.org/specification)
-- [MCP 协议规范：Transport Layer](https://spec.modelcontextprotocol.io/specification/2024-11-05/basic/transport/)
+- [MCP 协议规范：Transport Layer](https://modelcontextprotocol.io/docs/specification/)
 - [Node.js Child Process 文档](https://nodejs.org/api/child_process.html)
 - [实验 02：从零实现 MCP Server](/topics/mcp-deep-dive/experiments/02-mcp-server/) — 使用本 Inspector 来调试你写的 Server
 

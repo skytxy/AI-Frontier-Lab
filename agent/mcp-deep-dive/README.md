@@ -270,19 +270,19 @@ npx @modelcontextprotocol/inspector
 **A**：
 1. 查看实验 README 的"常见问题"章节
 2. 用 Exp-01 的 Inspector 观察消息流
-3. 查看 [MCP 官方文档](https://modelcontextprotocol.io)
+3. 查看 [MCP 官方文档](https://modelcontextprotocol.io/docs/)
 4. 提交 Issue 到本仓库
 
 ## 延伸资源
 
 ### 官方资源
 - [MCP 官方网站](https://modelcontextprotocol.io)
-- [MCP 规范](https://spec.modelcontextprotocol.io)
+- [MCP 规范](https://modelcontextprotocol.io/docs/specification/)
 - [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk)
 - [MCP 示例服务器](https://github.com/modelcontextprotocol/servers)
 
 ### 社区资源
-- [MCP 官方文档](https://modelcontextprotocol.io/) - 官方规范和文档
+- [MCP 官方文档](https://modelcontextprotocol.io/docs/) - 官方规范和文档
 - [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk) - 官方 SDK 实现
 
 ### 相关技术

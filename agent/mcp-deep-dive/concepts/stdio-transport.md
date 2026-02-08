@@ -31,6 +31,9 @@ const serverProcess = spawn('node', ['server.js'], {
   - `stdout`: 管道（Server 写入，Host 读取）
   - `stderr`: 继承（直接输出到终端）
 
+> **为什么 stderr 用 `inherit` 而不是 `pipe`？**
+> `inherit` 表示直接继承父进程的 stderr（通常是终端），这样 Server 的日志会直接显示在用户控制台，无需额外处理。如果用 `pipe`，Host 需要额外读取并转发 stderr 内容。
+
 ### 2. 双向通信
 
 **Host → Server**（写数据到 Server 的 stdin）：

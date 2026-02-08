@@ -65,8 +65,8 @@ export async function runValidator(params: ValidatorParams): Promise<ExecutionRe
         files_created: [],
         feedback: [{
           level: 3,
-          target: '.chapter-validation/config.yaml',
-          description: 'Run /chapter-content-validator --setup to configure',
+          target: '.docwise/config.yaml',
+          description: 'Run /docwise --setup to configure',
           category: 'setup_required',
           applied: false,
           priority: 'high',
@@ -93,7 +93,7 @@ export async function runValidator(params: ValidatorParams): Promise<ExecutionRe
   }
 
   // 3. Determine collaboration mode
-  // Experience store reads from project-level .chapter-validation/experience.yaml
+  // Experience store reads from project-level .docwise/experience.yaml
   // Seed patterns from project config bootstrap the store on first run
   const experienceStore = new ExperienceStore(projectRoot, projectConfig.seed_patterns);
   const recommender = new ModeRecommender(experienceStore);

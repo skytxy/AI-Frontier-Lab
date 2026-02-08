@@ -18,8 +18,8 @@ difficulty: intermediate
 - **传输层**：stdio（标准输入/输出）和 Streamable HTTP 两种传输方式
 
 > **零基础？** 推荐先阅读：
-> - [MCP 入门指南](/topics/mcp-deep-dive/concepts/mcp-basics.md)
-> - [能力协商机制](/topics/mcp-deep-dive/concepts/capabilities.md)
+> - [MCP 入门指南](/topics/mcp-deep-dive/concepts/mcp-basics)
+> - [能力协商机制](/topics/mcp-deep-dive/concepts/capabilities)
 
 ## 🎯 学习目标
 
@@ -135,6 +135,10 @@ export const FileSearchInputSchema = z.object({
   maxResults: z.number().default(50),
 });
 // #endregion
+```
+
+> **`.describe()` 是什么？**
+> Zod 的 `.describe()` 方法为字段添加人类可读的描述，这会被转换为 JSON Schema 的 `description` 字段，让 Host（如 Claude Desktop）在 UI 中显示参数提示。
 
 // 实现搜索逻辑
 async execute(input: FileSearchInput): Promise<FileSearchResult[]> {
@@ -184,6 +188,9 @@ async read(input: { uri: string }): Promise<{ uri: string; content: string }> {
 }
 ```
 
+> **为什么需要 URI 模板？**
+> URI 模板（如 `file://{path}`）允许 Resources 接收**运行时参数**。Host 可以在调用时替换模板变量，让同一个 Resource 能访问不同的文件或数据源，类似于 REST API 的路径参数。
+
 #### Step 4: 实现 Prompts
 
 **Code Review Prompt** (`src/prompts/code-review.ts`)
@@ -214,6 +221,30 @@ Please review this file with focus on:
 [structured review request]
 ```
 
+#### Step 4.5: SDK 导入说明
+
+**必需的导入**：
+```typescript
+// Server 和传输层
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+
+// 请求类型常量（用于 setRequestHandler）
+import {
+  CallToolRequestSchema,
+  ListToolsRequestSchema,
+  ListResourcesRequestSchema,
+  ReadResourceRequestSchema,
+  ListPromptsRequestSchema,
+  GetPromptRequestSchema,
+} from '@modelcontextprotocol/sdk/types.js';
+
+// Schema 验证
+import { z } from 'zod';
+```
+
+**完整可运行代码**：参见 `src/server.ts`（约 380 行，包含完整实现）
+
 #### Step 5: 组装 Server
 
 **主服务器** (`src/server.ts`)
@@ -233,6 +264,7 @@ this.server = new Server(
 );
 
 // 注册 Tool 处理器
+// CallToolRequestSchema 来自 @modelcontextprotocol/sdk/types.js
 this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
 
@@ -457,7 +489,7 @@ await server.sendNotification('notifications/progress', {
 
 ## 📚 延伸阅读
 
-- [MCP Server 规范](https://spec.modelcontextprotocol.io/specification/2024-11-05/basic/server/)
+- [MCP Server 规范](https://modelcontextprotocol.io/docs/specification/)
 - [SDK 文档](https://github.com/modelcontextprotocol/typescript-sdk)
 - [实验 01：协议拦截器](/topics/mcp-deep-dive/experiments/01-protocol-inspector/) — 用 Inspector 调试你的 Server
 - [实验 03：从零实现 MCP Client](/topics/mcp-deep-dive/experiments/03-mcp-client/) — 理解 Host 侧的视角

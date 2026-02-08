@@ -19,7 +19,7 @@ prerequisites: ['01-protocol-inspector', '02-mcp-server', '03-mcp-client']
 - **安全审计**：如何检测和防御恶意行为
 
 > **零基础？** 推荐先阅读：
-> - [MCP 安全模型](/topics/mcp-deep-dive/concepts/security-model.md)
+> - [MCP 安全模型](/topics/mcp-deep-dive/concepts/security-model)
 > - **必须先完成**：Exp-01、Exp-02、Exp-03
 
 ## 🎯 学习目标
@@ -359,7 +359,7 @@ MCP 规范的假设是：**Server 是可信的，或者 Host 能验证 Server �
 
 **证据**：
 - [ChatGPT 插件注入攻击](https://arxiv.org/abs/2302.12173)（学术研究）
-- [Direct Injection Attacks](https://simonwillison.net/2023/Mar/23/prompt-injection/)（实际案例）
+- [Prompt Injection Explained](https://simonwillison.net/2023/Nov/27/prompt-injection-explained/)（实际案例）
 
 **为什么 LLM 无法防御**：
 - 训练目标是"遵循指令"，不是"区分指令/数据"
@@ -418,7 +418,7 @@ MCP 规范的假设是：**Server 是可信的，或者 Host 能验证 Server �
 
 - [Prompt Injection 攻击详解](https://promptingguide.ai/blog/prompt-injection/)
 - [LLM 安全综述](https://arxiv.org/abs/2302.12173)
-- [MCP 安全最佳实践](https://spec.modelcontextprotocol.io/specification/2024-11-05/basic/security/)
+- [MCP 安全最佳实践](https://modelcontextprotocol.io/docs/specification/)
 - [OWASP LLM Top 10](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
 
 ## 🎓 下一步
