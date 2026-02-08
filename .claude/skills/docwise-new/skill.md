@@ -41,15 +41,28 @@ Generate new educational content from scenario description via dual-agent collab
    - Detect complexity from keywords
    - Detect content_type from chapter path (agent/algo)
 
-2. MATCH PATTERN (.docwise/config.yaml -> seed_patterns)
-   - Find seed_pattern matching generate + complexity + keywords
-   - Get recommended_mode (usually dual-agent for generate)
+2. SHOW OVERVIEW FROM WEBSEARCH (NEW)
+   - WebSearch: What is this technology?
+   - WebSearch: What are the use cases?
+   - Display: 【是什么】【有什么用】
 
-3. CONFIRM SCENARIO
-   - Show: generated scenario with prerequisites, success_criteria
-   - User can edit before execution
+3. GENERATE SCENARIO FROM SEARCH (NEW)
+   - Analyze chapter type (Agent/Algo)
+   - WebSearch for practical examples
+   - Extract core topics from search results
+   - Generate scenario + topics + goals
+   - Show scenario confirmation dialog
 
-4. EXECUTE WITH TASK TOOL (ITERATIVE LOOP)
+4. CONFIRM SCENARIO (NEW)
+   - User can adjust scenario/topics
+   - Skip if auto_confirm=true
+
+5. SETUP SANDBOX (NEW)
+   - Detect chapter language (or ask user if unclear)
+   - Create sandbox directory
+   - Setup language isolation
+
+6. EXECUTE WITH TASK TOOL (ITERATIVE LOOP)
    Loop (max_iterations from config, default 5):
 
    a) Spawn Author Agent (subagent_type=general-purpose)
@@ -59,16 +72,20 @@ Generate new educational content from scenario description via dual-agent collab
 
    b) Spawn Learner Agent (subagent_type=general-purpose)
       * Reads only new/modified content (zero-knowledge validation)
-      * Attempts to complete scenario using ONLY the content
-      * Reports: completion status, gaps
+      * Executes practical tasks in sandbox to verify content
+      * Reports: completion status, gaps, blockers
 
    c) Check Learner's completion status
-      * If COMPLETE: END iteration
+      * If COMPLETE: Generate artifacts (README, learning-log)
       * If gaps found: increment counter, loop back to (a)
 
-5. (triple-agent only) Spawn Reviewer Agent
+7. (triple-agent only) Spawn Reviewer Agent
    * Verifies technical accuracy
    * If issues found: spawn Author to fix, then Learner to re-validate
+
+8. GENERATE LEARNER ARTIFACTS (NEW)
+   - Create README.md in sandbox
+   - Create learning-log.md
 ```
 
 **Critical**: The loop is **Author → Learner → Author → Learner → ...** until Learner confirms COMPLETE.
