@@ -1,0 +1,29 @@
+{
+  "name": "chapter-content-validator",
+  "version": "1.0.0",
+  "description": "Dual-agent collaboration framework for validating and improving chapter content",
+  "type": "module",
+  "main": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./api": "./api.ts"
+  },
+  "scripts": {
+    "check": "tsc --noEmit"
+  },
+  "keywords": [
+    "validation",
+    "agent",
+    "collaboration",
+    "content-quality"
+  ],
+  "author": "AI Frontier Lab",
+  "license": "MIT",
+  "dependencies": {
+    "yaml": "^2.3.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,36 @@
+# Chapter Configuration Template
+# Place this file at: topics/<chapter-id>/.chapter/config.yaml
+
+# Chapter identification
+id: chapter-id
+title: Chapter Title
+difficulty: beginner|intermediate|advanced
+estimated_hours: 0
+
+# Scenario mapping for each content type
+scenarios:
+  tool:
+    simple: simple-tool-scenario-name
+    complex: complex-tool-scenario-name
+  integration:
+    simple: simple-integration-scenario-name
+    complex: complex-integration-scenario-name
+  data:
+    simple: simple-data-scenario-name
+    complex: complex-data-scenario-name
+
+# Validation rules
+validation:
+  require_code_comments: true
+  require_diagrams: false
+  require_test_coverage: 0.0
+  require_explanation_md: true
+
+# Content requirements
+requirements:
+  min_code_lines: 0
+  min_test_lines: 0
+  required_files:
+    - README.md
+    - implementation/
+    - tests/
