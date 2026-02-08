@@ -33,12 +33,12 @@ const algoTopics = sortBySort(allAlgoTopics);
       <div class="hero-stats">
         <div class="stat">
           <div class="stat-number">{agentTopics.length}</div>
-          <div class="stat-label">Agent Topics</div>
+          <div class="stat-label">Agent</div>
         </div>
         <div class="stat-divider"></div>
         <div class="stat">
           <div class="stat-number">{algoTopics.length}</div>
-          <div class="stat-label">Algo Topics</div>
+          <div class="stat-label">Algo</div>
         </div>
         <div class="stat-divider"></div>
         <div class="stat">
@@ -60,7 +60,7 @@ const algoTopics = sortBySort(allAlgoTopics);
         </svg>
       </div>
       <div>
-        <h2>Agent Topics</h2>
+        <h2>Agent</h2>
         <p class="section-description">Agent 基础设施：MCP、Workflows、LSP、Hooks</p>
       </div>
     </div>
@@ -121,7 +121,7 @@ const algoTopics = sortBySort(allAlgoTopics);
         </svg>
       </div>
       <div>
-        <h2>Algo Topics</h2>
+        <h2>Algo</h2>
         <p class="section-description">核心算法：深度学习、Transformer、强化学习</p>
       </div>
     </div>
@@ -255,12 +255,12 @@ const algoTopics = sortBySort(allAlgoTopics);
     font-size: clamp(1.1rem, 2.5vw, 1.35rem);
     line-height: 1.6;
     margin-bottom: 0.5rem;
-    color: var(--text-secondary);
+    color: var(--text-primary);
   }
 
   .hero-subtitle {
     font-size: 1rem;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     margin-bottom: 2.5rem;
     font-family: 'IBM Plex Mono', monospace;
   }
@@ -281,11 +281,12 @@ const algoTopics = sortBySort(allAlgoTopics);
     font-weight: 700;
     font-family: 'IBM Plex Mono', monospace;
     margin-bottom: 0.25rem;
+    color: var(--text-primary);
   }
 
   .stat-label {
     font-size: 0.75rem;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
