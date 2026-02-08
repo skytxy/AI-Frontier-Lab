@@ -219,7 +219,7 @@ Sections:
 ## Three-Layer Architecture
 
 ```
-Paradigm (docs/frameworks/docwise-workflow.md)
+Paradigm (docs/frameworks/docwise-paradigm.md)
   -> defines methodology, dependencies, quality standards
 Skill (this file + lib/)
   -> generic engine, experience store, mode selection
@@ -239,5 +239,5 @@ Config (.docwise/config.yaml)
 ## Related Documentation
 
 - Design philosophy: `docs/frameworks/docwise-design.md`
-- Project paradigm: `docs/frameworks/docwise-workflow.md`
+- Project paradigm: `docs/frameworks/docwise-paradigm.md`
 - Project config: `.docwise/config.yaml`

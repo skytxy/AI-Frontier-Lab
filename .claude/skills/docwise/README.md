@@ -86,7 +86,7 @@ chapters:
 ## Three-Layer Architecture
 
 ```
-Paradigm (docs/frameworks/docwise-workflow.md)
+Paradigm (docs/frameworks/docwise-paradigm.md)
   -> defines methodology, dependencies, quality standards
 Skill (this directory)
   -> generic engine, experience store, mode selection
@@ -111,7 +111,7 @@ console.log(result.success ? 'PASSED' : 'FAILED');
 
 ## Related Documentation
 
-- [Workflow Paradigm](docs/frameworks/docwise-workflow.md) - Project methodology
+- [Workflow Paradigm](docs/frameworks/docwise-paradigm.md) - Project methodology
 - [Design Philosophy](docs/frameworks/docwise-design.md) - Architecture decisions
 - [Project Config](.docwise/config.yaml) - This project's chapters
 
