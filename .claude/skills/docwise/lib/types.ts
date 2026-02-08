@@ -224,3 +224,7 @@ export interface GapPriority {
   category: 'critical' | 'important' | 'minor';
   rule: string;
 }
+
+// --- Export classes for convenience ---
+export { ScenarioLoader } from './scenario-loader.js';
+export { SandboxManager } from './sandbox-manager.js';
