@@ -61,3 +61,16 @@ target/
 *.a
 *.so
 *.dylib
+
+# Claude Code
+.claude/settings.json
+.claude/cache/
+
+# Docwise validation artifacts
+.docwise/sandbox/
+**/.docwise/sandbox/
+
+# Local test scripts
+*.local.mjs
+run.mjs
+test-*.mjs
