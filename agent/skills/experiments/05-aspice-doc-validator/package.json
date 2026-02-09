@@ -1,0 +1,20 @@
+{
+  "name": "aspice-doc-validator-exp",
+  "version": "1.0.0",
+  "description": "ASPICE Document Validator - Experiment 05",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "validate": "node dist/validator.js validate",
+    "report": "node dist/validator.js report"
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/js-yaml": "^4.0.9",
+    "typescript": "^5.3.3"
+  }
+}

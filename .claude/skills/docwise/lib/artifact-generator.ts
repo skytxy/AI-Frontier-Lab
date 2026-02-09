@@ -176,7 +176,8 @@ export class ArtifactGenerator {
       '- **Time**: Started at ' + new Date().toLocaleString(),
       '- **Approach**: Zero-knowledge reading of documentation',
       '- **Findings**:',
-      '';
+      '',
+    ];
 
     // Add findings from topic results
     for (const result of data.topicResults) {

@@ -1,0 +1,30 @@
+{
+  "name": "aspice-doc-validator",
+  "version": "1.0.0",
+  "description": "Validate ASPICE-compliant documentation against template requirements",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc && cp -r lib/templates dist/ 2>/dev/null || true",
+    "validate": "node dist/index.js validate",
+    "report": "node dist/index.js report",
+    "test": "node test/test.js"
+  },
+  "keywords": [
+    "aspice",
+    "documentation",
+    "validation",
+    "automotive",
+    "iso26262",
+    "iso21434"
+  ],
+  "dependencies": {
+    "js-yaml": "^4.1.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3"
+  }
+}

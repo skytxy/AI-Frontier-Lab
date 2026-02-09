@@ -1,0 +1,206 @@
+# CARIAD Software Detailed Design Template
+# ASPICE v4.0 compliant template configuration
+
+name: "CARIAD 软件详细设计说明书"
+version: "1.0"
+aspice_level: 3
+description: "CARIAD DMS SDK Software Detailed Design Document Template"
+
+sections:
+  # Cover page definition
+  cover:
+    label: "封面"
+    required: true
+    fields:
+      project_id:
+        label: "项目编号"
+        required: true
+        pattern: "^[A-Z0-9]+$"
+        description: "Project identifier code"
+      file_id:
+        label: "文件编号"
+        required: true
+        pattern: "^[A-Z]{2}-[A-Z0-9]+-[0-9]+-[0-9]+$"
+        description: "File identifier following CARIAD convention"
+      version:
+        label: "版本"
+        required: true
+        pattern: "^V[0-9]+\\.[0-9]+$"
+        description: "Document version in Vx.y format"
+      aspice_levels:
+        label: "ASPICE 等级"
+        required: true
+        options:
+          - "ASPICE-1"
+          - "ASPICE-2"
+          - "ASPICE-3"
+          - "ASPICE-4"
+          - "ASPICE-5"
+        min_selection: 1
+        description: "Target ASPICE capability levels"
+      asil_levels:
+        label: "ASIL 等级"
+        required: true
+        options:
+          - "ASIL-A"
+          - "ASIL-B"
+          - "ASIL-C"
+          - "ASIL-D"
+        min_selection: 1
+        description: "Automotive Safety Integrity Level per ISO 26262"
+      cal_levels:
+        label: "CAL 等级"
+        required: true
+        options:
+          - "CAL-1"
+          - "CAL-2"
+          - "CAL-3"
+          - "CAL-4"
+        min_selection: 1
+        description: "Cybersecurity Assurance Level per ISO/SAE 21434"
+      preparer:
+        label: "编制者"
+        required: true
+        description: "Document author name"
+      reviewer:
+        label: "审核者"
+        required: false
+        description: "Technical reviewer name"
+      validator:
+        label: "评审者"
+        required: false
+        description: "Validator name"
+      approver:
+        label: "批准者"
+        required: false
+        description: "Approver name (required for baseline/release)"
+      sender:
+        label: "发出方"
+        required: true
+        description: "Sending organization"
+      receiver:
+        label: "接收方"
+        required: true
+        description: "Receiving organization"
+      confidentiality:
+        label: "保密要求"
+        required: true
+        options:
+          - "绝密"
+          - "机密"
+          - "秘密"
+          - "内部"
+        description: "Document classification level"
+      format:
+        label: "格式要求"
+        required: true
+        options:
+          - "电子版"
+          - "签字扫描版"
+          - "电子版+签字扫描版"
+        description: "Document format requirement"
+      status:
+        label: "当前状态"
+        required: true
+        options:
+          - "草稿"
+          - "基线"
+          - "公布"
+        description: "Document status"
+
+  # Change log definition
+  change_log:
+    label: "变更履历"
+    required: true
+    min_rows: 1
+    fields:
+      - version
+      - date
+      - author
+      - reviewer
+      - approver
+      - description
+    description: "Document change history"
+
+  # Section 1: Overview
+  section_1:
+    label: "1.概要"
+    required: true
+    min_content_length: 200
+    subsections:
+      - purpose        # 1.1 目的
+      - scope          # 1.2 范围
+      - references     # 1.3 参考文献
+      - abbreviations  # 1.4 术语缩写
+    description: "Document overview and purpose"
+
+  # Section 2: Constraints
+  section_2:
+    label: "2.制约条件"
+    required: true
+    min_content_length: 150
+    subsections:
+      - design_constraints    # 2.1 组件设计约束
+      - technical_constraints # 2.2 技术约束
+    description: "Design and technical constraints"
+
+  # Section 3: Component Design
+  section_3:
+    label: "3.组件设计"
+    required: true
+    min_content_length: 300
+    subsections:
+      - static_design   # 3.1 组件静态设计
+      - dynamic_design  # 3.2 组件动态设计
+    description: "Component architecture and design"
+
+  # Section 4: Component Function Design
+  section_4:
+    label: "4.组件函数设计"
+    required: true
+    min_content_length: 500
+    subsections:
+      - function_list      # 4.1 函数列表
+      - function_details   # 4.2 函数详细设计
+    description: "Detailed function design specifications"
+
+  # Section 5: Other
+  section_5:
+    label: "5.其他"
+    required: false
+    min_content_length: 0
+    subsections:
+      - appendix    # 5.1 附录
+      - glossary    # 5.2 术语表
+    description: "Additional information and appendices"
+
+# Validation rules by ASPICE level
+aspice_requirements:
+  level_1:
+    - "All required fields present"
+    - "All required sections present"
+    - "Change log has at least one entry"
+
+  level_2:
+    - "Version numbers follow Vx.y format"
+    - "Dates follow YYYY-MM-DD format"
+    - "Project codes follow naming convention"
+    - "ASPICE/ASIL/CAL levels are valid"
+
+  level_3:
+    - "Cover version matches latest change log"
+    - "Change log versions are sequential"
+    - "Cross-references are valid"
+    - "Declared ASPICE level matches content requirements"
+    - "Approver filled for non-draft status"
+
+  level_4:
+    - "Content depth meets minimum requirements"
+    - "Safety requirements for ASIL C/D"
+    - "Traceability information present"
+    - "No placeholder text remaining"
+
+  level_5:
+    - "Quantitative metrics defined"
+    - "Quality trends documented"
+    - "Process improvement opportunities identified"
